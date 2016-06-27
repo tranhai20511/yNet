@@ -31,7 +31,6 @@ eYnReturnCode YnActivationTypeFromStringGet(char * string, eYnActivationType* ty
     mYnRetEqual(strcmp(string, "loggy"),    0, cYnActivationLogistic);
     mYnRetEqual(strcmp(string, "relu"),     0, cYnActivationLogistic);
     mYnRetEqual(strcmp(string, "elu"),      0, cYnActivationLogistic);
-    mYnRetEqual(strcmp(string, "relie"),    0, cYnActivationLogistic);
     mYnRetEqual(strcmp(string, "plse"),     0, cYnActivationLogistic);
     mYnRetEqual(strcmp(string, "linear"),   0, cYnActivationLogistic);
     mYnRetEqual(strcmp(string, "ramp"),     0, cYnActivationLogistic);
@@ -53,8 +52,6 @@ YN_FINAL char * YnActivationTypeStringGet(eYnActivationType type)
             return "relu";
         case cYnActivationElu:
             return "elu";
-        case cYnActivationRelie:
-            return "relie";
         case cYnActivationRamp:
             return "ramp";
         case cYnActivationLinear:
