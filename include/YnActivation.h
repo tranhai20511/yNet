@@ -1,5 +1,5 @@
-#ifndef YNACTIVATIONS_H
-#define YNACTIVATIONS_H
+#ifndef YNACTIVATION_H
+#define YNACTIVATION_H
 
 #include "../YnStd.h"
 
@@ -12,59 +12,58 @@ extern "C" {
 
 /**************** Macro */
 
-/**/
-#define mYnActivationLinear (x)   (x)
+#define mYnActivationLinear (inVal)   (inVal)
 
-#define mYnGradientLinear (x)     (1)
+#define mYnGradientLinear (inVal)     (1)
 
-#define mYnActivationRelu (x)\
-    ((x) * ((x) > 0))
+#define mYnActivationRelu (inVal)\
+    ((inVal) * ((inVal) > 0))
 
-#define mYnGradientRelu (x)\
-    ((x) > 0)
+#define mYnGradientRelu (inVal)\
+    ((inVal) > 0)
 
-#define mYnActivationElu (x)\
-    ((x) * ((x) >= 0) + (exp((x)) - 1) * ((x) < 0))
+#define mYnActivationElu (inVal)\
+    ((inVal) * ((inVal) >= 0) + (exp((inVal)) - 1) * ((inVal) < 0))
 
-#define mYnGradientElu (x)\
-    (((x) >= 0) + ((x) + 1) * ((x) < 0))
+#define mYnGradientElu (inVal)\
+    (((inVal) >= 0) + ((inVal) + 1) * ((inVal) < 0))
 
-#define mYnActivationRamp (x)\
-    ((x) * ((x) > 0) + 0.1 * (x))
+#define mYnActivationRamp (inVal)\
+    ((inVal) * ((inVal) > 0) + 0.1 * (inVal))
 
-#define mYnGradientRamp (x)\
-    (((x) > 0) + 0.1)
+#define mYnGradientRamp (inVal)\
+    (((inVal) > 0) + 0.1)
 
-#define mYnActivationLeaky (x)\
-    ((x) * ((x) > 0) + 0.1 * (x) *((x) <= 0))
+#define mYnActivationLeaky (inVal)\
+    ((inVal) * ((inVal) > 0) + 0.1 * (inVal) *((inVal) <= 0))
 
-#define mYnGradientLeaky (x)\
-    (((x) > 0) + 0.1 * ((x) <= 0))
+#define mYnGradientLeaky (inVal)\
+    (((inVal) > 0) + 0.1 * ((inVal) <= 0))
 
-#define mYnActivationTanh (x)\
-    ((exp(2 * (x)) - 1) / (exp(2 * (x)) + 1))
+#define mYnActivationTanh (inVal)\
+    ((exp(2 * (inVal)) - 1) / (exp(2 * (inVal)) + 1))
 
-#define mYnGradientTanh (x)\
-    (1 - (x) * (x))
+#define mYnGradientTanh (inVal)\
+    (1 - (inVal) * (inVal))
 
-#define mYnActivationPlse (x)\
-    (((x) < -4) ? (.01 * ((x) + 4)) :\
-    (((x) > 4) ? (.01 * ((x) - 4) + 1) : (.125 * (x) + .5)))
+#define mYnActivationPlse (inVal)\
+    (((inVal) < -4) ? (.01 * ((inVal) + 4)) :\
+    (((inVal) > 4) ? (.01 * ((inVal) - 4) + 1) : (.125 * (inVal) + .5)))
 
-#define mYnGradientPlse (x)\
-        (((x) < 0 || (x) > 1) ? .01 : .125)
+#define mYnGradientPlse (inVal)\
+        (((inVal) < 0 || (inVal) > 1) ? .01 : .125)
 
-#define mYnActivationLogistic (x)\
-    (1. / (1. + exp(-(x))))
+#define mYnActivationLogistic (inVal)\
+    (1. / (1. + exp(-(inVal))))
 
-#define mYnGradientLogistic (x)\
-    ((x) * (1 - (x)))
+#define mYnGradientLogistic (inVal)\
+    ((inVal) * (1 - (inVal)))
 
-#define mYnActivationLoggy (float x)\
-    (2. / (1. + exp(-(x))) - 1)
+#define mYnActivationLoggy (inVal)\
+    (2. / (1. + exp(-(inVal))) - 1)
 
-#define mYnGradientLoggy (x)\
-    (2 * (1 - (((x) + 1.) / 2.)) * (((x) + 1.) / 2.))
+#define mYnGradientLoggy (inVal)\
+    (2 * (1 - (((inVal) + 1.) / 2.)) * (((inVal) + 1.) / 2.))
 
 /**************** Enum */
 
@@ -97,12 +96,42 @@ typedef enum eYnActivationType {
 /*
  *	Get Activation function types from string
  */
-YN_FINAL eYnActivationType YnActivationTypeFromStringGet(char * string);
+YN_FINAL eYnRetCode YnActivationTypeFromStringGet(char * string,
+        eYnActivationType* type);
 
 /*
  *	Get Activation function string types
  */
 YN_FINAL char * YnActivationTypeStringGet(eYnActivationType type);
+
+/*
+ *  Calculation activation output value
+ */
+YN_FINAL eYnRetCode YnActivationOutputCal(const float inVal ,
+        const eYnActivationType actType,
+        float * output);
+
+/*
+ *  Calculation gradient value
+ */
+YN_FINAL eYnRetCode YnActivationGradientCal(const float inVal ,
+        const eYnActivationType actType,
+        float * gradient);
+
+/*
+ *  Calculation activation output value for array
+ */
+YN_FINAL eYnRetCode YnActivationOutputArrayCal(float * array,
+        const uint32 num,
+        const eYnActivationType actType);
+
+/*
+ *  Calculation gradient value for array
+ */
+YN_FINAL eYnRetCode YnActivationGradientArrayCal(const float * array,
+        const uint32 num,
+        const eYnActivationType actType,
+        float * gradientArray);
 
 
 #ifdef __cplusplus
