@@ -35,9 +35,15 @@ YN_FINAL eYnRetCode YnActivationLayerInit(tYnLayer * layer,
         eYnActivationType activation);
 
 /*
- * Init layer
+ * Forward layer
  */
 YN_FINAL eYnRetCode YnActivationLayerForward(tYnLayer * layer,
+        tYnNetworkState* netState);
+
+/*
+ * Backward layer
+ */
+YN_FINAL eYnRetCode YnActivationLayerBackward(tYnLayer * layer,
         tYnNetworkState* netState);
 
 

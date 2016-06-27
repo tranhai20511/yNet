@@ -1,10 +1,9 @@
-#ifndef YNACTIVATIONLAYER_H
-#define YNACTIVATIONLAYER_H
+#ifndef YNACTIVATIONLAYERGPU_H
+#define YNACTIVATIONLAYERGPU_H
 
-#include "../YnActivation.h"
+#include "../YnActivationLayer.h"
 #include "../YnLayer.h"
-#include "../YnNetwork.h"
-
+#include "../YnNetworkGpu.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,16 +28,21 @@ extern "C" {
 /*
  * Init layer
  */
-YN_FINAL eYnRetCode YnActivationLayerInit(tYnLayer * layer,
+YN_FINAL eYnRetCode YnActivationLayerGpuInit(tYnLayer * layer,
         uint32 batchNum,
         uint32 inputNum,
         eYnActivationType activation);
+/*
+ * Forward layer
+ */
+YN_FINAL eYnRetCode YnActivationLayerGpuForward(tYnLayer layer,
+        tYnNetworkState netState);
 
 /*
- * Init layer
+ * Backward layer
  */
-YN_FINAL eYnRetCode YnActivationLayerForward(tYnLayer * layer,
-        tYnNetworkState* netState);
+YN_FINAL eYnRetCode YnActivationLayerGpuBackward(tYnLayer layer,
+        tYnNetworkState netState);
 
 
 #ifdef __cplusplus
