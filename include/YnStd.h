@@ -31,12 +31,13 @@ extern "C" {
 
 #define YN_STATIC           static
 #define YN_STATIC_INLINE    static inline
-
+#define YN_EXTERN_C         extern "C"
 
 #define YN_GPU_NUM_THREADS_IN_BLOCK  (512)
 
 /**************** Macro */
 #define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
+#define mYnErrorCheck(_ret)
 
 /**************** Typedef */
 

@@ -104,18 +104,6 @@ YN_FINAL void YnBlasArrayCopyValueSet(float * yArr,
         yArr[i * incIdy] = xArr[i * incIdx];
 }
 
-YN_FINAL void YnBlasArrayDotValueSet(float * yArr,
-        float * xArr,
-        uint32 num,
-        uint32 incIdy,
-        uint32 incIdx)
-{
-    uint32 i;
-
-    for(i = 0; i < num; i ++)
-        yArr[i * incIdy] = xArr[i * incIdx];
-}
-
 /*
  * Smooth gradient array
  */

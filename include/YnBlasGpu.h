@@ -51,6 +51,15 @@ YN_FINAL void YnBlasGpuArrayAxpyValueSet(float * yArr,
         uint32 incIdx,
         uint32 mulVal);
 
+YN_FINAL void YnBlasGpuArrayAxpyOffsetValueSet(float * yArr,
+        float * xArr,
+        uint32 num,
+        uint32 incIdy,
+        uint32 offsetY,
+        uint32 incIdx,
+        uint32 offsetX,
+        uint32 mulVal);
+
 YN_FINAL void YnBlasGpuArrayScaleValueSet(float * xArr,
         uint32 num,
         uint32 incIdx,
@@ -67,14 +76,21 @@ YN_FINAL void YnBlasGpuArrayCopyValueSet(float * yArr,
         uint32 incIdy,
         uint32 incIdx);
 
-YN_FINAL void YnBlasGpuArrayDotValueSet(float * yArr,
+YN_FINAL void YnBlasGpuArrayCopyOffsetValueSet(float * yArr,
         float * xArr,
         uint32 num,
         uint32 incIdy,
-        uint32 incIdx);
+        uint32 offsetY,
+        uint32 incIdx,
+        uint32 offsetX);
+
+YN_FINAL void YnBlasGpuArrayMaskValueSet(float * xArr,
+        uint32 num,
+        float maskNum,
+        float * maskArr);
 
 /*
- * Smooth gradient array
+ * Smooth gradient
  */
 YN_FINAL void YnBlasGpuGradientSmoothL1(float * preArr,
         float * truthArr,
@@ -95,7 +111,7 @@ YN_FINAL void YnBlasGpuShortcut(uint32 batch,
         float * outArr);
 
 /*
- * Calculate mean array
+ * Calculate mean
  */
 YN_FINAL void YnBlasGpuArrayMeanCal(float * inArr,
         uint32 batch,
@@ -103,8 +119,15 @@ YN_FINAL void YnBlasGpuArrayMeanCal(float * inArr,
         uint32 spatial,
         float * meanArr);
 
+YN_FINAL void YnBlasGpuArrayMeanGradientCal(float * gradientArr,
+        float * varianceArr,
+        uint32 batch,
+        uint32 filters,
+        uint32 spatial,
+        float * meanGradientArr);
+
 /*
- * Calculate variance array
+ * Calculate variance
  */
 YN_FINAL void YnBlasGpuArrayVarianceCal(float * arrayIn,
         float * meanArr,
@@ -114,7 +137,7 @@ YN_FINAL void YnBlasGpuArrayVarianceCal(float * arrayIn,
         float * varianceArr);
 
 /*
- * Calculate normalize array
+ * Calculate normalize
  */
 YN_FINAL void YnBlasGpuArrayNormalizeCal(float * arrayIn,
         float * meanArr,
@@ -122,6 +145,16 @@ YN_FINAL void YnBlasGpuArrayNormalizeCal(float * arrayIn,
         uint32 batch,
         uint32 filters,
         uint32 spatial);
+
+YN_FINAL void YnBlasGpuArrayNormalizeGradientCal(float * arrayIn,
+        float * meanArr,
+        float * varianceArr,
+        float * meanGradientArr,
+        float * varianceGradientArr,
+        uint32 batch,
+        uint32 filters,
+        uint32 spatial,
+        float * gradientArr);
 
 /*
  * Fast calculate mean gradient array

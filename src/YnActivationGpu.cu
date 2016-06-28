@@ -211,7 +211,6 @@ YN_GPU_GLOBAL void YnActivationGpuOutputArrayCal(float * array,
         array[idx] = YnActivationGpuOutputCal(array[idx], actType);
 }
 
-extern "C"
 eYnRetCode YnActivationCallGpuOutputArrayCal(float * array,
         const uint32 num,
         const eYnActivationType actType)
@@ -240,7 +239,6 @@ YN_GPU_GLOBAL void YnActivationGpuGradientArrayCal(float * array,
         gradientArray[idx] *= YnActivationGpuGradientCal(array[idx], actType);
 }
 
-extern "C"
 eYnRetCode YnActivationCallGpuGradientArrayCal(const float * array,
         const uint32 num,
         const eYnActivationType actType,

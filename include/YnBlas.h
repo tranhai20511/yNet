@@ -67,14 +67,8 @@ YN_FINAL void YnBlasArrayCopyValueSet(float * yArr,
         uint32 incIdy,
         uint32 incIdx);
 
-YN_FINAL void YnBlasArrayDotValueSet(float * yArr,
-        float * xArr,
-        uint32 num,
-        uint32 incIdy,
-        uint32 incIdx);
-
 /*
- * Smooth gradient array
+ * Smooth gradient
  */
 YN_FINAL void YnBlasGradientSmoothL1(float * preArr,
         float * truthArr,
@@ -95,7 +89,7 @@ YN_FINAL void YnBlasShortcut(uint32 batch,
         float * outArr);
 
 /*
- * Calculate mean array
+ * Calculate mean
  */
 YN_FINAL void YnBlasArrayMeanCal(float * inArr,
         uint32 batch,
@@ -104,7 +98,7 @@ YN_FINAL void YnBlasArrayMeanCal(float * inArr,
         float * meanArr);
 
 /*
- * Calculate variance array
+ * Calculate variance
  */
 YN_FINAL void YnBlasArrayVarianceCal(float * arrayIn,
         float * meanArr,
@@ -114,7 +108,7 @@ YN_FINAL void YnBlasArrayVarianceCal(float * arrayIn,
         float * varianceArr);
 
 /*
- * Calculate normalize array
+ * Calculate normalize
  */
 YN_FINAL void YnBlasArrayNormalizeCal(float * arrayIn,
         float * meanArr,
