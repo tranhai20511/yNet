@@ -26,8 +26,14 @@ extern "C" {
 /* Excuted by GPU & called by CPU */
 #define YN_GPU_GLOBAL       __global__
 
+/* GPU share memory */
+#define YN_GPU_SHARED_MEM   __shared__
+
 #define YN_STATIC           static
 #define YN_STATIC_INLINE    static inline
+
+
+#define YN_GPU_NUM_THREADS_IN_BLOCK  (512)
 
 /**************** Macro */
 #define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)

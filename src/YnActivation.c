@@ -1,5 +1,5 @@
 //	File        :   YnActivation.c
-//	Brief       :   Implement activation function methods.
+//	Brief       :   Implement methods.
 //	DD-MM_YYYY  :   26-06-2016
 //	Author      :   haittt
 
