@@ -502,61 +502,61 @@ YN_GPU_GLOBAL void _YnBlasSmoothL1(uint32 num,
 
 /**************** Implement */
 
-YN_FINAL void YnBlasGpuArrayConstValueSet(float * array,
+void YnBlasGpuArrayConstValueSet(float * array,
         uint32 num,
         uint32 incIdx,
         const float value);
 
-YN_FINAL void YnBlasGpuArrayMultipleValueSet(float * yArr,
+void YnBlasGpuArrayMultipleValueSet(float * yArr,
         float * xArr,
         uint32 num,
         uint32 incIdy,
         uint32 incIdx);
 
-YN_FINAL void YnBlasGpuArrayPowValueSet(float * yArr,
+void YnBlasGpuArrayPowValueSet(float * yArr,
         float * xArr,
         uint32 num,
         uint32 incIdy,
         uint32 incIdx,
         uint32 powVal);
 
-YN_FINAL void YnBlasGpuArrayAxpyValueSet(float * yArr,
+void YnBlasGpuArrayAxpyValueSet(float * yArr,
         float * xArr,
         uint32 num,
         uint32 incIdy,
         uint32 incIdx,
         uint32 mulVal);
 
-YN_FINAL void YnBlasGpuArrayScaleValueSet(float * xArr,
+void YnBlasGpuArrayScaleValueSet(float * xArr,
         uint32 num,
         uint32 incIdx,
         uint32 scaleVal);
 
-YN_FINAL void YnBlasGpuArrayFillValueSet(float * xArr,
+void YnBlasGpuArrayFillValueSet(float * xArr,
         uint32 num,
         uint32 incIdx,
         uint32 fillVal);
 
-YN_FINAL void YnBlasGpuArrayCopyValueSet(float * yArr,
+void YnBlasGpuArrayCopyValueSet(float * yArr,
         float * xArr,
         uint32 num,
         uint32 incIdy,
         uint32 incIdx);
 
-YN_FINAL void YnBlasGpuArrayDotValueSet(float * yArr,
+void YnBlasGpuArrayDotValueSet(float * yArr,
         float * xArr,
         uint32 num,
         uint32 incIdy,
         uint32 incIdx);
 
 
-YN_FINAL void YnBlasGpuGradientSmoothL1(float * preArr,
+void YnBlasGpuGradientSmoothL1(float * preArr,
         float * truthArr,
         float * deltaArr,
         uint32 num);
 
 
-YN_FINAL void YnBlasGpuShortcut(uint32 batch,
+void YnBlasGpuShortcut(uint32 batch,
         uint32 widthAdd,
         uint32 heightAdd,
         uint32 channelAdd,
@@ -567,14 +567,14 @@ YN_FINAL void YnBlasGpuShortcut(uint32 batch,
         float * outArr);
 
 
-YN_FINAL void YnBlasGpuArrayMeanCal(float * inArr,
+void YnBlasGpuArrayMeanCal(float * inArr,
         uint32 batch,
         uint32 filters,
         uint32 spatial,
         float * meanArr);
 
 
-YN_FINAL void YnBlasGpuArrayVarianceCal(float * arrayIn,
+void YnBlasGpuArrayVarianceCal(float * arrayIn,
         float * meanArr,
         uint32 batch,
         uint32 filters,
@@ -582,7 +582,7 @@ YN_FINAL void YnBlasGpuArrayVarianceCal(float * arrayIn,
         float * varianceArr);
 
 
-YN_FINAL void YnBlasGpuArrayNormalizeCal(float * arrayIn,
+void YnBlasGpuArrayNormalizeCal(float * arrayIn,
         float * meanArr,
         float * varianceArr,
         uint32 batch,
@@ -590,14 +590,14 @@ YN_FINAL void YnBlasGpuArrayNormalizeCal(float * arrayIn,
         uint32 spatial);
 
 
-YN_FINAL void YnBlasGpuFastArrayMeanGradientCal(float * gradientArr,
+void YnBlasGpuFastArrayMeanGradientCal(float * gradientArr,
         float * varianceArr,
         uint32 batch,
         uint32 filters,
         uint32 spatial,
         float * meanGradientArr);
 
-YN_FINAL void YnBlasGpuFastArrayVarianceGradientCal(float * arrayIn,
+void YnBlasGpuFastArrayVarianceGradientCal(float * arrayIn,
         float * gradientArr,
         float * meanArr,
         float * varianceArr,
@@ -607,7 +607,7 @@ YN_FINAL void YnBlasGpuFastArrayVarianceGradientCal(float * arrayIn,
         float * varianceGradientArr);
 
 
-YN_FINAL void YnBlasGpuFastArrayVarianceCal(float * arrayIn,
+void YnBlasGpuFastArrayVarianceCal(float * arrayIn,
         float * meanArr,
         uint32 batch,
         uint32 filters,
@@ -615,7 +615,7 @@ YN_FINAL void YnBlasGpuFastArrayVarianceCal(float * arrayIn,
         float * varianceArr);
 
 
-YN_FINAL void YnBlasGpuFastArrayMeanCal(float * inArr,
+void YnBlasGpuFastArrayMeanCal(float * inArr,
         uint32 batch,
         uint32 filters,
         uint32 spatial,

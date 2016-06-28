@@ -41,7 +41,7 @@ eYnRetCode YnActivationTypeFromStringGet(char * string,
     return eYnRetOk;
 }
 
-YN_FINAL char * YnActivationTypeStringGet(eYnActivationType type)
+char * YnActivationTypeStringGet(eYnActivationType type)
 {
     switch (type)
     {
