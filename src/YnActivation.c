@@ -170,7 +170,7 @@ eYnRetCode YnActivationOutputArrayCal(float * array,
     if (!array)
         return eYnRetNull;
 
-    uint32 idx = 0;
+    int32 idx = 0;
 
     for(idx = 0; idx < num; idx ++)
     {
@@ -189,7 +189,7 @@ eYnRetCode YnActivationGradientArrayCal(const float * array,
     if (!array)
         return eYnRetNull;
 
-    uint32 idx = 0;
+    int32 idx = 0;
 
     for(idx = 0; idx < num; idx ++)
     {

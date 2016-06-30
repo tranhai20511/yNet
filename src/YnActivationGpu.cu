@@ -205,7 +205,7 @@ YN_GPU_GLOBAL void YnActivationGpuOutputArrayCal(float * array,
         uint32 num,
         eYnActivationType actType)
 {
-    uint32 idx = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
+    int32 idx = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
     if(idx < num)
         array[idx] = YnActivationGpuOutputCal(array[idx], actType);
@@ -218,7 +218,7 @@ eYnRetCode YnActivationCallGpuOutputArrayCal(float * array,
     if (!array)
         return eYnRetNull;
 
-    uint32 idx = 0;
+    int32 idx = 0;
 
     for(idx = 0; idx < num; idx ++)
     {
@@ -233,7 +233,7 @@ YN_GPU_GLOBAL void YnActivationGpuGradientArrayCal(float * array,
         eYnActivationType actType,
         float * gradientArray)
 {
-    uint32 idx = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
+    int32 idx = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
     if(idx)
         gradientArray[idx] *= YnActivationGpuGradientCal(array[idx], actType);
@@ -247,7 +247,7 @@ eYnRetCode YnActivationCallGpuGradientArrayCal(const float * array,
     if (!array)
         return eYnRetNull;
 
-    uint32 idx = 0;
+    int32 idx = 0;
 
     for(idx = 0; idx < num; idx ++)
     {

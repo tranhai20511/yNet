@@ -21,98 +21,113 @@
 
 /**************** Implement */
 
-YN_FINAL void YnBlasArrayConstValueSet(float * array,
+void YnBlasArrayConstValueSet(float * array,
         uint32 num,
-        uint32 incIdx,
+        int32 incIdx,
         const float value)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         array[i * incIdx] = value;
 }
 
-YN_FINAL void YnBlasArrayMultipleValueSet(float * yArr,
+void YnBlasArrayMultipleValueSet(float * yArr,
         float * xArr,
         uint32 num,
-        uint32 incIdy,
-        uint32 incIdx)
+        int32 incIdy,
+        int32 incIdx)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         yArr[i * incIdy] *= xArr[i * incIdx];
 }
 
-YN_FINAL void YnBlasArrayPowValueSet(float * yArr,
+void YnBlasArrayPowValueSet(float * yArr,
         float * xArr,
         uint32 num,
-        uint32 incIdy,
-        uint32 incIdx,
-        uint32 powVal)
+        int32 incIdy,
+        int32 incIdx,
+        int32 powVal)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         yArr[i * incIdy] = pow(xArr[i * incIdx], powVal);
 }
 
-YN_FINAL void YnBlasArrayAxpyValueSet(float * yArr,
+void YnBlasArrayAxpyValueSet(float * yArr,
         float * xArr,
         uint32 num,
-        uint32 incIdy,
-        uint32 incIdx,
-        uint32 mulVal)
+        int32 incIdy,
+        int32 incIdx,
+        int32 mulVal)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         yArr[i * incIdy] += mulVal * xArr[i * incIdx];
 }
 
-YN_FINAL void YnBlasArrayScaleValueSet(float * xArr,
+void YnBlasArrayScaleValueSet(float * xArr,
         uint32 num,
-        uint32 incIdx,
-        uint32 scaleVal)
+        int32 incIdx,
+        int32 scaleVal)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         xArr[i * incIdx] *= scaleVal;
 }
 
-YN_FINAL void YnBlasArrayFillValueSet(float * xArr,
+void YnBlasArrayFillValueSet(float * xArr,
         uint32 num,
-        uint32 incIdx,
-        uint32 fillVal)
+        int32 incIdx,
+        int32 fillVal)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         xArr[i * incIdx] = fillVal;
 }
 
-YN_FINAL void YnBlasArrayCopyValueSet(float * yArr,
+void YnBlasArrayCopyValueSet(float * yArr,
         float * xArr,
         uint32 num,
-        uint32 incIdy,
-        uint32 incIdx)
+        int32 incIdy,
+        int32 incIdx)
 {
-    uint32 i;
+    int32 i;
 
     for(i = 0; i < num; i ++)
         yArr[i * incIdy] = xArr[i * incIdx];
 }
 
+float YnBlasArrayDotValueSet(float * yArr,
+        float * xArr,
+        uint32 num,
+        int32 incIdy,
+        int32 incIdx)
+{
+    int32 i;
+    float dot = 0;
+
+    for(i = 0; i < num; i ++)
+        dot += xArr[i * incIdx] * yArr[i * incIdy];
+
+    return dot;
+}
+
 /*
  * Smooth gradient array
  */
-YN_FINAL void YnBlasGradientSmoothL1(float * preArr,
+void YnBlasGradientSmoothL1(float * preArr,
         float * truthArr,
         float * deltaArr,
         uint32 num)
 {
-    uint32 i;
+    int32 i;
     float diff = 0;
 
     for (i = 0; i < num; i++)
@@ -129,25 +144,25 @@ YN_FINAL void YnBlasGradientSmoothL1(float * preArr,
 /*
  * Shortcut
  */
-YN_FINAL void YnBlasShortcut(uint32 batch,
-        uint32 widthAdd,
-        uint32 heightAdd,
-        uint32 channelAdd,
+void YnBlasShortcut(int32 batch,
+        int32 widthAdd,
+        int32 heightAdd,
+        int32 channelAdd,
         float * addArr,
-        uint32 widthOut,
-        uint32 heightOut,
-        uint32 channelOut,
+        int32 widthOut,
+        int32 heightOut,
+        int32 channelOut,
         float * outArr)
 {
-    uint32 i, j, k, b;
-    uint32 outIndex = 0;
-    uint32 addIndex = 0;
-    uint32 stride = widthAdd / widthOut;
-    uint32 sample = widthOut / widthAdd;
+    int32 i, j, k, b;
+    int32 outIndex = 0;
+    int32 addIndex = 0;
+    int32 stride = widthAdd / widthOut;
+    int32 sample = widthOut / widthAdd;
 
-    uint32 minw = (widthAdd < widthOut) ? widthAdd : widthOut;
-    uint32 minh = (heightAdd < heightOut) ? heightAdd : heightOut;
-    uint32 minc = (channelAdd < channelOut) ? channelAdd : channelOut;
+    int32 minw = (widthAdd < widthOut) ? widthAdd : widthOut;
+    int32 minh = (heightAdd < heightOut) ? heightAdd : heightOut;
+    int32 minc = (channelAdd < channelOut) ? channelAdd : channelOut;
 
     assert(stride == heightAdd / heightOut);
     assert(sample == heightOut / heightAdd);
@@ -178,15 +193,15 @@ YN_FINAL void YnBlasShortcut(uint32 batch,
 /*
  * Calculate mean array
  */
-YN_FINAL void YnBlasArrayMeanCal(float * inArr,
-        uint32 batch,
-        uint32 filters,
-        uint32 spatial,
+void YnBlasArrayMeanCal(float * inArr,
+        int32 batch,
+        int32 filters,
+        int32 spatial,
         float * meanArr)
 {
     float scale = 1. / (batch * spatial);
-    uint32 i, j, k;
-    uint32 index;
+    int32 i, j, k;
+    int32 index;
 
     for (i = 0; i < filters; ++i)
     {
@@ -206,16 +221,16 @@ YN_FINAL void YnBlasArrayMeanCal(float * inArr,
 /*
  * Calculate variance array
  */
-YN_FINAL void YnBlasArrayVarianceCal(float * inArr,
+void YnBlasArrayVarianceCal(float * inArr,
         float * meanArr,
-        uint32 batch,
-        uint32 filters,
-        uint32 spatial,
+        int32 batch,
+        int32 filters,
+        int32 spatial,
         float * varianceArr)
 {
     float scale = 1. / (batch * spatial);
-    uint32 i, j, k;
-    uint32 index;
+    int32 i, j, k;
+    int32 index;
 
     for (i = 0; i < filters; ++i)
     {
@@ -224,7 +239,7 @@ YN_FINAL void YnBlasArrayVarianceCal(float * inArr,
         {
             for (k = 0; k < spatial; ++k)
             {
-                uint32 index = j * filters * spatial + i * spatial + k;
+                int32 index = j * filters * spatial + i * spatial + k;
                 varianceArr[i] += pow((inArr[index] - meanArr[i]), 2);
             }
         }
@@ -235,14 +250,14 @@ YN_FINAL void YnBlasArrayVarianceCal(float * inArr,
 /*
  * Calculate normalize array
  */
-YN_FINAL void YnBlasArrayNormalizeCal(float * inArr,
+void YnBlasArrayNormalizeCal(float * inArr,
         float * meanArr,
         float * varianceArr,
-        uint32 batch,
-        uint32 filters,
-        uint32 spatial)
+        int32 batch,
+        int32 filters,
+        int32 spatial)
 {
-    uint32 b, f, i;
+    int32 b, f, i;
 
     for (b = 0; b < batch; ++b)
     {
@@ -250,7 +265,7 @@ YN_FINAL void YnBlasArrayNormalizeCal(float * inArr,
         {
             for (i = 0; i < spatial; ++i)
             {
-                uint32 index = b * filters * spatial + f * spatial + i;
+                int32 index = b * filters * spatial + f * spatial + i;
                 inArr[index] = (inArr[index] - meanArr[f]) / (sqrt(varianceArr[f]) + .00001f);
             }
         }

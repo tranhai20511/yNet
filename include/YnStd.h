@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "../YnCuda.h"
 
@@ -13,31 +14,21 @@ extern "C" {
 #endif
 
 /**************** Define */
-
 #define GPU
 
 #define YN_VIRTUAL
 #define YN_FINAL
-#define YN_GPU
-
-/* Only excuted & called by device GPU */
-#define YN_GPU_DEVICE   __device__
-
-/* Excuted by GPU & called by CPU */
-#define YN_GPU_GLOBAL       __global__
-
-/* GPU share memory */
-#define YN_GPU_SHARED_MEM   __shared__
 
 #define YN_STATIC           static
 #define YN_STATIC_INLINE    static inline
 #define YN_EXTERN_C         extern "C"
 
-#define YN_GPU_NUM_THREADS_IN_BLOCK  (512)
+
+#define YN_CHAR_BUFF        (1024)
 
 /**************** Macro */
 #define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
-#define mYnErrorCheck(_ret)
+/*#define mYnErrorCheck(_ret)*/
 
 /**************** Typedef */
 

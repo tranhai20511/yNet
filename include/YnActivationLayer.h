@@ -30,8 +30,8 @@ extern "C" {
  * Init layer
  */
 YN_FINAL eYnRetCode YnActivationLayerInit(tYnLayer * layer,
-        uint32 batchNum,
-        uint32 inputNum,
+        int32 batchNum,
+        int32 inputNum,
         eYnActivationType activation);
 
 /*

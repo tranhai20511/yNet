@@ -29,8 +29,8 @@ extern "C" {
  * Init layer
  */
 YN_FINAL eYnRetCode YnActivationLayerGpuInit(tYnLayer * layer,
-        uint32 batchNum,
-        uint32 inputNum,
+        int32 batchNum,
+        int32 inputNum,
         eYnActivationType activation);
 /*
  * Forward layer

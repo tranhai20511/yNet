@@ -27,10 +27,10 @@ extern "C" {
  * Init layer
  */
 YN_FINAL eYnRetCode YnAvgPoolLayerGpuInit(tYnLayer * layer,
-        uint32 batchNum,
-        uint32 width,
-        uint32 height,
-        uint32 channel);
+        int32 batchNum,
+        int32 width,
+        int32 height,
+        int32 channel);
 
 /*
  * Forward layer

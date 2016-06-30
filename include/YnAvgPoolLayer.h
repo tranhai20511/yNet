@@ -37,17 +37,17 @@ YN_FINAL eYnRetCode YnAvgPoolLayerImageGet(tYnLayer * layer,
  * Init layer
  */
 YN_FINAL eYnRetCode YnAvgPoolLayerInit(tYnLayer * layer,
-        uint32 batchNum,
-        uint32 width,
-        uint32 height,
-        uint32 channel);
+        int32 batchNum,
+        int32 width,
+        int32 height,
+        int32 channel);
 
 /*
  * Init layer
  */
 YN_FINAL eYnRetCode YnAvgPoolLayerResize(tYnLayer * layer,
-        uint32 width,
-        uint32 height);
+        int32 width,
+        int32 height);
 
 /*
  * Forward layer
