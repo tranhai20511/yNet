@@ -29,38 +29,50 @@ extern "C" {
 /*
  *  GPU: Calculation activation output value
  */
-YN_GPU_DEVICE float YnActivationGpuOutputCal(const float inVal ,
-        const eYnActivationType actType);
+YN_GPU_DEVICE
+float YnActivationGpuOutputCal(const float inVal ,
+        const eYnActivationType actType)
+YN_ALSWAY_INLINE;
 
 /*
  *  GPU: Calculation gradient value
  */
-YN_GPU_DEVICE float YnActivationGpuGradientCal(const float inVal ,
-        const eYnActivationType actType);
+YN_GPU_DEVICE
+float YnActivationGpuGradientCal(const float inVal ,
+        const eYnActivationType actType)
+YN_ALSWAY_INLINE;
 
 /*
  *  GPU: Calculation activation output value for array
  */
-YN_GPU_GLOBAL void YnActivationGpuOutputArrayCal(float * array,
+YN_GPU_GLOBAL
+void YnActivationGpuOutputArrayCal(float * array,
         uint32 num,
-        eYnActivationType actType);
+        eYnActivationType actType)
+YN_ALSWAY_INLINE;
 
-YN_FINAL eYnRetCode YnActivationCallGpuOutputArrayCal(float * array,
+YN_FINAL
+eYnRetCode YnActivationCallGpuOutputArrayCal(float * array,
         const uint32 num,
-        const eYnActivationType actType);
+        const eYnActivationType actType)
+YN_ALSWAY_INLINE;
 
 /*
  *  GPU: Calculation gradient value for array
  */
-YN_GPU_GLOBAL void YnActivationGpuGradientArrayCal(float * array,
+YN_GPU_GLOBAL
+void YnActivationGpuGradientArrayCal(float * array,
         uint32 num,
         eYnActivationType actType,
-        float * gradientArray);
+        float * gradientArray)
+YN_ALSWAY_INLINE;
 
-YN_FINAL eYnRetCode YnActivationCallGpuGradientArrayCal(const float * array,
+YN_FINAL
+eYnRetCode YnActivationCallGpuGradientArrayCal(const float * array,
         const uint32 num,
         const eYnActivationType actType,
-        float * gradientArray);
+        float * gradientArray)
+YN_ALSWAY_INLINE;
 
 #endif
 

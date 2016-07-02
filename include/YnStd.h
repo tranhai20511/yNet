@@ -4,8 +4,13 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <stdbool.h>
+#include <float.h>
+#include <string.h>
+#include <unistd.h>
+#include <limits.h>
 
 #include "../YnCuda.h"
 
@@ -19,16 +24,14 @@ extern "C" {
 #define YN_VIRTUAL
 #define YN_FINAL
 
+#define YN_INLINE           inline
 #define YN_STATIC           static
 #define YN_STATIC_INLINE    static inline
 #define YN_EXTERN_C         extern "C"
+#define YN_ALSWAY_INLINE    __attribute__((always_inline))
 
 
 #define YN_CHAR_BUFF        (1024)
-
-/**************** Macro */
-#define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
-/*#define mYnErrorCheck(_ret)*/
 
 /**************** Typedef */
 
@@ -52,6 +55,12 @@ typedef enum eYnRetCode {
     eYnRetNull,
     eYnRetInvalidParam,
 }eYnRetCode;
+
+/**************** Macro */
+#define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
+#define mYnNullRetNull(_val)  if ((_val) == NULL) return NULL
+#define mYnNullRet(_val)  if ((_val) == NULL) return eYnRetNull
+/*#define mYnErrorCheck(_ret)*/
 
 /**************** Struct */
 

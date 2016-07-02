@@ -28,21 +28,27 @@ extern "C" {
 /*
  * Init layer
  */
-YN_FINAL eYnRetCode YnActivationLayerGpuInit(tYnLayer * layer,
+YN_FINAL
+eYnRetCode YnActivationLayerGpuInit(tYnLayer * layer,
         int32 batchNum,
         int32 inputNum,
-        eYnActivationType activation);
+        eYnActivationType activation)
+YN_ALSWAY_INLINE;
 /*
  * Forward layer
  */
-YN_FINAL eYnRetCode YnActivationLayerGpuForward(tYnLayer layer,
-        tYnNetworkState netState);
+YN_FINAL
+eYnRetCode YnActivationLayerGpuForward(tYnLayer layer,
+        tYnNetworkState netState)
+YN_ALSWAY_INLINE;
 
 /*
  * Backward layer
  */
-YN_FINAL eYnRetCode YnActivationLayerGpuBackward(tYnLayer layer,
-        tYnNetworkState netState);
+YN_FINAL
+eYnRetCode YnActivationLayerGpuBackward(tYnLayer layer,
+        tYnNetworkState netState)
+YN_ALSWAY_INLINE;
 
 
 #ifdef __cplusplus

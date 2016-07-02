@@ -95,42 +95,54 @@ typedef enum eYnActivationType {
 /*
  *	Get Activation function types from string
  */
-YN_FINAL eYnRetCode YnActivationTypeFromStringGet(char * string,
-        eYnActivationType* type);
+YN_FINAL
+eYnRetCode YnActivationTypeFromStringGet(char * string,
+        eYnActivationType* type)
+YN_ALSWAY_INLINE;
 
 /*
  *	Get Activation function string types
  */
-YN_FINAL char * YnActivationTypeStringGet(eYnActivationType type);
+YN_FINAL
+char * YnActivationTypeStringGet(eYnActivationType type)
+YN_ALSWAY_INLINE;
 
 /*
  *  Calculation activation output value
  */
-YN_FINAL eYnRetCode YnActivationOutputCal(const float inVal ,
+YN_FINAL
+eYnRetCode YnActivationOutputCal(const float inVal ,
         const eYnActivationType actType,
-        float * output);
+        float * output)
+YN_ALSWAY_INLINE;
 
 /*
  *  Calculation gradient value
  */
-YN_FINAL eYnRetCode YnActivationGradientCal(const float inVal ,
+YN_FINAL
+eYnRetCode YnActivationGradientCal(const float inVal ,
         const eYnActivationType actType,
-        float * gradient);
+        float * gradient)
+YN_ALSWAY_INLINE;
 
 /*
  *  Calculation activation output value for array
  */
-YN_FINAL eYnRetCode YnActivationOutputArrayCal(float * array,
+YN_FINAL
+eYnRetCode YnActivationOutputArrayCal(float * array,
         const uint32 num,
-        const eYnActivationType actType);
+        const eYnActivationType actType)
+YN_ALSWAY_INLINE;
 
 /*
  *  Calculation gradient value for array
  */
-YN_FINAL eYnRetCode YnActivationGradientArrayCal(const float * array,
+YN_FINAL
+eYnRetCode YnActivationGradientArrayCal(const float * array,
         const uint32 num,
         const eYnActivationType actType,
-        float * gradientArray);
+        float * gradientArray)
+YN_ALSWAY_INLINE;
 
 
 #ifdef __cplusplus

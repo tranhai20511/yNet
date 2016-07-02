@@ -26,66 +26,83 @@ extern "C" {
 /*
  * Set value for array elements
  */
-YN_FINAL void YnBlasArrayConstValueSet(float * array,
+YN_FINAL
+void YnBlasArrayConstValueSet(float * array,
         uint32 num,
         int32 incIdx,
-        const float value);
+        const float value)
+YN_ALSWAY_INLINE;
 
-YN_FINAL void YnBlasArrayMultipleValueSet(float * yArr,
+YN_FINAL
+void YnBlasArrayMultipleValueSet(float * yArr,
         float * xArr,
         uint32 num,
         int32 incIdy,
-        int32 incIdx);
+        int32 incIdx)
+YN_ALSWAY_INLINE;
 
-YN_FINAL void YnBlasArrayPowValueSet(float * yArr,
+YN_FINAL
+void YnBlasArrayPowValueSet(float * yArr,
         float * xArr,
         uint32 num,
         int32 incIdy,
         int32 incIdx,
-        int32 powVal);
+        int32 powVal)
+YN_ALSWAY_INLINE;
 
 YN_FINAL void YnBlasArrayAxpyValueSet(float * yArr,
         float * xArr,
         uint32 num,
         int32 incIdy,
         int32 incIdx,
-        int32 mulVal);
+        int32 mulVal)
+YN_ALSWAY_INLINE;
 
-YN_FINAL void YnBlasArrayScaleValueSet(float * xArr,
+YN_FINAL
+void YnBlasArrayScaleValueSet(float * xArr,
         uint32 num,
         int32 incIdx,
-        int32 scaleVal);
+        int32 scaleVal)
+YN_ALSWAY_INLINE;
 
 YN_FINAL void YnBlasArrayFillValueSet(float * xArr,
         uint32 num,
         int32 incIdx,
-        int32 fillVal);
+        int32 fillVal)
+YN_ALSWAY_INLINE;
 
-YN_FINAL void YnBlasArrayCopyValueSet(float * yArr,
+YN_FINAL
+void YnBlasArrayCopyValueSet(float * yArr,
         float * xArr,
         uint32 num,
         int32 incIdy,
-        int32 incIdx);
+        int32 incIdx)
+YN_ALSWAY_INLINE;
 
-YN_FINAL float YnBlasArrayDotValueSet(float * yArr,
+YN_FINAL
+float YnBlasArrayDotValueSet(float * yArr,
         float * xArr,
         uint32 num,
         int32 incIdy,
-        int32 incIdx);
+        int32 incIdx)
+YN_ALSWAY_INLINE;
 
 
 /*
  * Smooth gradient
  */
-YN_FINAL void YnBlasGradientSmoothL1(float * preArr,
+YN_FINAL
+void YnBlasGradientSmoothL1(float * preArr,
         float * truthArr,
         float * deltaArr,
-        uint32 num);
+        uint32 num)
+YN_ALSWAY_INLINE;
 
 /*
  * Shortcut
  */
-YN_FINAL void YnBlasShortcut(int32 batch,
+YN_FINAL
+void YnBlasShortcut(int32 batch,
         int32 widthAdd,
         int32 heightAdd,
         int32 channelAdd,
@@ -93,36 +110,43 @@ YN_FINAL void YnBlasShortcut(int32 batch,
         int32 widthOut,
         int32 heightOut,
         int32 channelOut,
-        float * outArr);
+        float * outArr)
+YN_ALSWAY_INLINE;
 
 /*
  * Calculate mean
  */
-YN_FINAL void YnBlasArrayMeanCal(float * inArr,
+YN_FINAL
+void YnBlasArrayMeanCal(float * inArr,
         int32 batch,
         int32 filters,
         int32 spatial,
-        float * meanArr);
+        float * meanArr)
+YN_ALSWAY_INLINE;
 
 /*
  * Calculate variance
  */
-YN_FINAL void YnBlasArrayVarianceCal(float * arrayIn,
+YN_FINAL
+void YnBlasArrayVarianceCal(float * arrayIn,
         float * meanArr,
         int32 batch,
         int32 filters,
         int32 spatial,
-        float * varianceArr);
+        float * varianceArr)
+YN_ALSWAY_INLINE;
 
 /*
  * Calculate normalize
  */
-YN_FINAL void YnBlasArrayNormalizeCal(float * arrayIn,
+YN_FINAL
+void YnBlasArrayNormalizeCal(float * arrayIn,
         float * meanArr,
         float * varianceArr,
         int32 batch,
         int32 filters,
-        int32 spatial);
+        int32 spatial)
+YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus
 }

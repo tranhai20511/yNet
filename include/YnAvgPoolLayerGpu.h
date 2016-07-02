@@ -26,23 +26,29 @@ extern "C" {
 /*
  * Init layer
  */
-YN_FINAL eYnRetCode YnAvgPoolLayerGpuInit(tYnLayer * layer,
+YN_FINAL
+eYnRetCode YnAvgPoolLayerGpuInit(tYnLayer * layer,
         int32 batchNum,
         int32 width,
         int32 height,
-        int32 channel);
+        int32 channel)
+YN_ALSWAY_INLINE;
 
 /*
  * Forward layer
  */
-YN_FINAL eYnRetCode YnAvgPoolLayerGpuForward(tYnLayer * layer,
-        tYnNetworkState* netState);
+YN_FINAL
+eYnRetCode YnAvgPoolLayerGpuForward(tYnLayer * layer,
+        tYnNetworkState* netState)
+YN_ALSWAY_INLINE;
 
 /*
  * Backward layer
  */
-YN_FINAL eYnRetCode YnAvgPoolLayerGpuBackward(tYnLayer * layer,
-        tYnNetworkState* netState);
+YN_FINAL
+eYnRetCode YnAvgPoolLayerGpuBackward(tYnLayer * layer,
+        tYnNetworkState* netState)
+YN_ALSWAY_INLINE;
 
 
 #ifdef __cplusplus

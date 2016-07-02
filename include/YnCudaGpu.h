@@ -1,7 +1,7 @@
 #ifndef YNCUDAGPU_H
 #define YNCUDAGPU_H
 
-#include "../YnStd.h"
+#include "../YnCuda.h"
 
 #include "cuda_runtime.h"
 #include "curand.h"
@@ -44,61 +44,80 @@ extern int gpuIndex;
 /*
  *  Check cuda errors
  */
-YN_FINAL void YnCudaCheckError(cudaError_t error);
+YN_FINAL
+void YnCudaCheckError(cudaError_t error)
+YN_ALSWAY_INLINE;
 
 /*
  *  Convert num to 3 dim
  */
-YN_FINAL dim3 YnCudaGridSize(uint32 num);
+YN_FINAL
+dim3 YnCudaGridSize(uint32 num)
+YN_ALSWAY_INLINE;
 
 /*
  *  Get cuda blas handle
  */
-YN_FINAL cublasHandle_t YnCudaBlasHandle();
+YN_FINAL
+cublasHandle_t YnCudaBlasHandle()
+YN_ALSWAY_INLINE;
 
 /*
  *  Get cuda make array
  */
-YN_FINAL float * YnCudaMakeArray(float * cpuArr,
-        uint32 num);
+YN_FINAL
+float * YnCudaMakeArray(float * cpuArr,
+        uint32 num)
+YN_ALSWAY_INLINE;
 
 /*
  *  Get cuda make array
  */
-YN_FINAL float * YnCudaMakeIntArray(uint32 num);
+YN_FINAL
+float * YnCudaMakeIntArray(uint32 num)
+YN_ALSWAY_INLINE;
 
 /*
  *  Generate cuda random array
  */
 YN_FINAL float * YnCudaMakeRamdomArray(float * gpuArr,
-        uint32 num);
+        uint32 num)
+YN_ALSWAY_INLINE;
 
 /*
  *  Compare cuda array with cpu array
  */
-YN_FINAL float * YnCudaCompareArray(float * gpuArr,
+YN_FINAL
+float * YnCudaCompareArray(float * gpuArr,
         float * cpuArr,
         uint32 num,
-        char * error);
+        char * error)
+YN_ALSWAY_INLINE;
 
 /*
  *  Free cuda array
  */
-YN_FINAL void YnCudaFreeArray(float * gpuArr);
+YN_FINAL
+void YnCudaFreeArray(float * gpuArr)
+YN_ALSWAY_INLINE;
 
 /*
  *  Push cuda array
  */
-YN_FINAL void YnCudaArrayPushToGpu(float * gpuArr,
+YN_FINAL
+void YnCudaArrayPushToGpu(float * gpuArr,
         float * cpuArr,
-        uint32 num);
+        uint32 num)
+YN_ALSWAY_INLINE;
 
 /*
  *  Pull cuda array
  */
-YN_FINAL void YnCudaArrayPullFromGpu(float * gpuArr,
+YN_FINAL
+void YnCudaArrayPullFromGpu(float * gpuArr,
         float * cpuArr,
-        uint32 num);
+        uint32 num)
+YN_ALSWAY_INLINE;
 
 
 #ifdef __cplusplus

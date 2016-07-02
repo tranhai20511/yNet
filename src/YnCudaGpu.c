@@ -39,7 +39,7 @@ void YnCudaCheckError(cudaError_t errorStatus)
         printf("CUDA Error: %s\n", s);
         assert(0);
         snprintf(buffer, YN_CHAR_BUFF, "CUDA Error: %s", s);
-        error(buffer);
+        YnUtilError(buffer);
     }
 
     memset(buffer, 0, YN_CHAR_BUFF * sizeof(char))
@@ -50,7 +50,7 @@ void YnCudaCheckError(cudaError_t errorStatus)
         printf("CUDA Error Prev: %s\n", s);
         assert(0);
         snprintf(buffer, YN_CHAR_BUFF, "CUDA Error Prev: %s", s);
-        error(buffer);
+        YnUtilError(buffer);
     }
 }
 
@@ -103,7 +103,7 @@ float * YnCudaMakeArray(float * cpuArr,
     }
 
     if(!gpuArr)
-        error("Cuda malloc failed\n");
+        YnUtilError("Cuda malloc failed\n");
 
     return gpuArr;
 }
@@ -152,7 +152,7 @@ float * YnCudaCompareArray(float * gpuArr,
     errAcc = YnBlasArrayDotValueSet(tmp, tmp, num, 1, 1);
 
     printf("Error %s: %f\n", errorS, sqrt(errAcc / num));
-    free(tmp);
+    YnUtilFree(tmp);
 
     return errAcc;
 }
@@ -183,5 +183,5 @@ void YnCudaArrayPullFromGpu(float * gpuArr,
 
     cudaError_t status = cudaMemcpy(cpuArr, gpuArr, size, cudaMemcpyDeviceToHost);
 
-    check_error(status);
+    check_YnUtilError(status);
 }

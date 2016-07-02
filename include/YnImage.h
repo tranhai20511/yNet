@@ -1,7 +1,9 @@
-#ifndef YNCUDA_H
-#define YNBLAS_H
+#ifndef YNIMAGE_H
+#define YNIMAGE_H
 
-#include "../YnCudaGpu.h"
+#include "../YnStd.h"
+
+#include "../YnBBox.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,15 +16,25 @@ extern "C" {
 /**************** Enum */
 
 /**************** Struct */
+typedef struct tYnImage{
+    int height;
+    int width;
+    int channel;
+    float * data;
+} tYnImage;
 
 /**************** Local variables */
 
 /**************** Global variables */
-extern int gpuIndex;
 
 /**************** Local Implement */
 
 /**************** Implement */
+
+/*
+ * Set value for array elements
+ */
+YN_FINAL
 
 #ifdef __cplusplus
 }
