@@ -96,13 +96,13 @@ float * YnCudaMakeArray(float * cpuArr,
     cudaError_t status = cudaMalloc((void **) &gpuArr, size);
     YnCudaCheckError(status);
 
-    if(cpuArr)
+    if (cpuArr)
     {
         status = cudaMemcpy(gpuArr, cpuArr, size, cudaMemcpyHostToDevice);
         YnCudaCheckError(status);
     }
 
-    if(!gpuArr)
+    if (!gpuArr)
         YnUtilError("Cuda malloc failed\n");
 
     return gpuArr;

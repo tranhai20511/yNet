@@ -207,7 +207,7 @@ YN_GPU_GLOBAL void YnActivationGpuOutputArrayCal(float * array,
 {
     int32 idx = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(idx < num)
+    if (idx < num)
         array[idx] = YnActivationGpuOutputCal(array[idx], actType);
 }
 
@@ -235,7 +235,7 @@ YN_GPU_GLOBAL void YnActivationGpuGradientArrayCal(float * array,
 {
     int32 idx = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(idx)
+    if (idx)
         gradientArray[idx] *= YnActivationGpuGradientCal(array[idx], actType);
 }
 

@@ -20,6 +20,7 @@ extern "C" {
 
 /**************** Define */
 #define GPU
+#define OPENCV
 
 #define YN_VIRTUAL
 #define YN_FINAL
@@ -59,7 +60,8 @@ typedef enum eYnRetCode {
 /**************** Macro */
 #define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
 #define mYnNullRetNull(_val)  if ((_val) == NULL) return NULL
-#define mYnNullRet(_val)  if ((_val) == NULL) return eYnRetNull
+#define mYnNullRetRet(_val, _ret)  if ((_val) == NULL) return _ret
+#define mYnNullRet(_val, _ret)  if ((_val) == NULL) return
 /*#define mYnErrorCheck(_ret)*/
 
 /**************** Struct */

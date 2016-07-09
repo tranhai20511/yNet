@@ -3,8 +3,6 @@
 
 #include "../YnStd.h"
 
-#include "../YnBBox.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,6 +23,7 @@ typedef struct tYnImage{
 
 /**************** Local variables */
 
+
 /**************** Global variables */
 
 /**************** Local Implement */
@@ -32,9 +31,21 @@ typedef struct tYnImage{
 /**************** Implement */
 
 /*
- * Set value for array elements
+ * Get color value
  */
 YN_FINAL
+float YnImageColorGet(uint32 channel,
+        int x,
+        int max)
+YN_ALSWAY_INLINE;
+
+/*
+ * Get color value
+ */
+YN_FINAL
+void YnImageDrawLabel(tYnImage image,
+        int x, int max)
+YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus
 }

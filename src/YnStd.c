@@ -3,11 +3,10 @@
 //  DD-MM_YYYY  :   26-06-2016
 //  Author      :   haittt
 
-#include "../YnUtil.h"
+#include "../YnStd.h"
 
 
 /**************** Define */
-#define PI2     (6.2831853071795864769252866)
 
 /**************** Macro */
 
@@ -22,13 +21,3 @@
 /**************** Local Implement */
 
 /**************** Implement */
-
-void YnUtilFree (void * mem)
-{
-
-    if (mem)
-    {
-        free(mem);
-        mem = NULL;
-    }
-}

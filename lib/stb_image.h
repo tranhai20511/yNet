@@ -4796,7 +4796,7 @@ static int stbi__tga_info(stbi__context *s, int *x, int *y, int *comp)
     int sz;
     stbi__get8(s);                   // discard Offset
     sz = stbi__get8(s);              // color type
-    if( sz > 1 ) {
+    if ( sz > 1 ) {
         stbi__rewind(s);
         return 0;      // only RGB or indexed allowed
     }
@@ -4805,12 +4805,12 @@ static int stbi__tga_info(stbi__context *s, int *x, int *y, int *comp)
     if ((sz != 1) && (sz != 2) && (sz != 3) && (sz != 9) && (sz != 10) && (sz != 11)) return 0;
     stbi__skip(s,9);
     tga_w = stbi__get16le(s);
-    if( tga_w < 1 ) {
+    if ( tga_w < 1 ) {
         stbi__rewind(s);
         return 0;   // test width
     }
     tga_h = stbi__get16le(s);
-    if( tga_h < 1 ) {
+    if ( tga_h < 1 ) {
         stbi__rewind(s);
         return 0;   // test height
     }
