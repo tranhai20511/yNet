@@ -75,3 +75,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNAVGPOOLLAYER_H */

@@ -19,8 +19,8 @@ extern "C" {
 #endif
 
 /**************** Define */
-#define GPU
-#define OPENCV
+#define YN_GPU
+#define YN_OPENCV
 
 #define YN_VIRTUAL
 #define YN_FINAL
@@ -74,8 +74,8 @@ typedef enum eYnRetCode {
 
 /**************** Implement */
 
-
-
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNSTD_H */

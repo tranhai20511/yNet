@@ -7,7 +7,7 @@
 #include "stb_image_write.h"
 #include "../YnImage.h"
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
 #include "opencv2/highgui/highgui_c.h"
 #include "opencv2/imgproc/imgproc_c.h"
 

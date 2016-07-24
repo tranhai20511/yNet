@@ -85,3 +85,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNLIST_H */

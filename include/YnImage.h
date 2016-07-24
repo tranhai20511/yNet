@@ -343,8 +343,31 @@ YN_FINAL
 void YnImageFree(tYnImage m)
 YN_ALSWAY_INLINE;
 
+YN_FINAL
+void YnImageCol2ImageAddPixel(float *im,
+        int height,
+        int width,
+        int channels,
+        int row,
+        int col,
+        int channel,
+        int pad,
+        float val)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnImageCol2Image(float* data_col,
+         int channels,
+         int height,
+         int width,
+         int ksize,
+         int stride,
+         int pad,
+         float* data_im)
+YN_ALSWAY_INLINE;
+
 /* OPENCV Image */
-#ifdef OPENCV
+#ifdef YN_OPENCV
 
 YN_FINAL
 void YnImageCvShow(tYnImage p,
@@ -370,3 +393,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNIMAGE_H */

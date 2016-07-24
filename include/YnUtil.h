@@ -320,3 +320,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNUTIL_H */

@@ -12,8 +12,6 @@ extern "C" {
 #endif
 
 /**************** Define */
-#define YN_GPU
-
 /* Only excuted & called by device GPU */
 #define YN_GPU_DEVICE   __device__
 
@@ -123,3 +121,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNCUDAGPU_H */

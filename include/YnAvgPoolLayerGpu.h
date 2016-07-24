@@ -54,3 +54,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNAVGPOOLLAYERGPU_H */

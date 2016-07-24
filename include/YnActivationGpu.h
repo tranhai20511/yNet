@@ -24,7 +24,7 @@ extern "C" {
 
 /**************** Implement */
 
-#ifdef GPU
+#ifdef YN_GPU
 
 /*
  *  GPU: Calculation activation output value
@@ -80,3 +80,5 @@ YN_ALSWAY_INLINE;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* YNACTIVATIONGPU_H */

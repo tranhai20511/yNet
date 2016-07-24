@@ -6,7 +6,7 @@
 #include "../YnCuda.h"
 #include "../YnImage.h"
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
 #include "opencv2/highgui/highgui_c.h"
 #include "opencv2/imgproc/imgproc_c.h"
 #endif
@@ -413,7 +413,7 @@ void YnImageRgbgr(tYnImage im)
 void YnImageShow(tYnImage p,
         const char *name)
 {
-#ifdef OPENCV
+#ifdef YN_OPENCV
     YnImageCvShow(p, name);
 #else
     fprintf(stderr, "Not compiled with OpenCV, saving to %s.png instead\n", name);
@@ -985,7 +985,7 @@ void YnImageTestResize(char *filename)
     YnImageShow(exp2, "Exposure-2");
     YnImageShow(exp5, "Exposure-.5");
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
     cvWaitKey(0);
 #endif
 
@@ -1035,7 +1035,7 @@ tYnImage YnImageLoad(char *filename,
 {
     tYnImage resized;
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
     tYnImage out = YnImageCvLoad(filename, c);
 #else
     tYnImage out = YnImageLoadStb(filename, c);
@@ -1254,4 +1254,74 @@ void YnImageShow(tYnImage *ims,
 void YnImageFree(tYnImage m)
 {
     YnUtilFree(m.data);
+}
+
+void YnImageCol2ImageAddPixel(float *im,
+        int height,
+        int width,
+        int channels,
+        int row,
+        int col,
+        int channel,
+        int pad,
+        float val)
+{
+    row -= pad;
+    col -= pad;
+
+    if (row < 0 || col < 0 || row >= height || col >= width)
+        return;
+
+    im[col + width*(row + height*channel)] += val;
+}
+
+void YnImageCol2Image(float* data_col,
+         int channels,
+         int height,
+         int width,
+         int ksize,
+         int stride,
+         int pad,
+         float* data_im)
+{
+    int c,h,w;
+    int channels_col;
+    int w_offset;
+    int h_offset;
+    int c_im;
+    int im_row;
+    int im_col;
+    int col_index;
+    double val;
+    int height_col = (height - ksize) / stride + 1;
+    int width_col = (width - ksize) / stride + 1;
+
+    if (pad)
+    {
+        height_col = 1 + (height-1) / stride;
+        width_col = 1 + (width-1) / stride;
+        pad = ksize/2;
+    }
+
+    channels_col = channels * ksize * ksize;
+    for (c = 0; c < channels_col; c ++)
+    {
+        w_offset = c % ksize;
+        h_offset = (c / ksize) % ksize;
+        c_im = c / ksize / ksize;
+
+        for (h = 0; h < height_col; h ++)
+        {
+            for (w = 0; w < width_col; w ++)
+            {
+                im_row = h_offset + h * stride;
+                im_col = w_offset + w * stride;
+                col_index = (c * height_col + h) * width_col + w;
+                val = data_col[col_index];
+
+                YnImageCol2ImageAddpixel(data_im, height, width, channels,
+                        im_row, im_col, c_im, pad, val);
+            }
+        }
+    }
 }

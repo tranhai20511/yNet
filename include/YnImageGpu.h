@@ -1,8 +1,7 @@
-#ifndef YNCUDA_H
-#define YNCUDA_H
+#ifndef YNIMAGEGPU_H
+#define YNIMAGEGPU_H
 
-#include "../YnStd.h"
-#include "../YnCudaGpu.h"
+#include "../YnImage.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,14 +18,25 @@ extern "C" {
 /**************** Local variables */
 
 /**************** Global variables */
-extern int gpuIndex;
 
 /**************** Local Implement */
 
 /**************** Implement */
+YN_FINAL
+void YnImageGpuCol2Image(float *data_col,
+        int channels,
+        int height,
+        int width,
+        int ksize,
+        int stride,
+        int pad,
+        float *data_im)
+YN_ALSWAY_INLINE;
+
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* YNCUDA_H */
+#endif /* YNIMAGEGPU_H */
