@@ -20,7 +20,6 @@
 /**************** Local Implement */
 
 /**************** Implement */
-
 void YnBlasArrayConstValueSet(float * array,
         uint32 num,
         int32 incIdx,
@@ -28,7 +27,7 @@ void YnBlasArrayConstValueSet(float * array,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         array[i * incIdx] = value;
 }
 
@@ -40,7 +39,7 @@ void YnBlasArrayMultipleValueSet(float * yArr,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         yArr[i * incIdy] *= xArr[i * incIdx];
 }
 
@@ -53,7 +52,7 @@ void YnBlasArrayPowValueSet(float * yArr,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         yArr[i * incIdy] = pow(xArr[i * incIdx], powVal);
 }
 
@@ -66,7 +65,7 @@ void YnBlasArrayAxpyValueSet(float * yArr,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         yArr[i * incIdy] += mulVal * xArr[i * incIdx];
 }
 
@@ -77,7 +76,7 @@ void YnBlasArrayScaleValueSet(float * xArr,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         xArr[i * incIdx] *= scaleVal;
 }
 
@@ -88,7 +87,7 @@ void YnBlasArrayFillValueSet(float * xArr,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         xArr[i * incIdx] = fillVal;
 }
 
@@ -100,7 +99,7 @@ void YnBlasArrayCopyValueSet(float * yArr,
 {
     int32 i;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         yArr[i * incIdy] = xArr[i * incIdx];
 }
 
@@ -113,7 +112,7 @@ float YnBlasArrayDotValueSet(float * yArr,
     int32 i;
     float dot = 0;
 
-    for(i = 0; i < num; i ++)
+    for (i = 0; i < num; i ++)
         dot += xArr[i * incIdx] * yArr[i * incIdy];
 
     return dot;

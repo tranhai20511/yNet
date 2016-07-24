@@ -21,7 +21,6 @@
 /**************** Local Implement */
 
 /**************** Implement */
-
 eYnRetCode YnActivationTypeFromStringGet(char * string,
         eYnActivationType* type)
 {
@@ -172,7 +171,7 @@ eYnRetCode YnActivationOutputArrayCal(float * array,
 
     int32 idx = 0;
 
-    for(idx = 0; idx < num; idx ++)
+    for (idx = 0; idx < num; idx ++)
     {
         YnActivationGradientCal(array[idx], actType, &(array[idx]));
     }
@@ -191,7 +190,7 @@ eYnRetCode YnActivationGradientArrayCal(const float * array,
 
     int32 idx = 0;
 
-    for(idx = 0; idx < num; idx ++)
+    for (idx = 0; idx < num; idx ++)
     {
         YnActivationGradientCal(array[idx], actType, &(gradientArray[idx]));
     }

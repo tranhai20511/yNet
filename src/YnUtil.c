@@ -22,7 +22,6 @@
 /**************** Local Implement */
 
 /**************** Implement */
-
 void YnUtilFree (void * mem)
 {
     if (mem)
@@ -333,7 +332,7 @@ char * YnUtilFileGetLine(FILE * file)
     line = malloc(size * sizeof(char));
     mYnNullRetNull(line);
 
-    if(feof(file))
+    if (feof(file))
         return NULL;
 
     if (!fgets(line, size, file))

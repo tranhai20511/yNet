@@ -1344,7 +1344,7 @@ static unsigned char *stbi__convert_format(unsigned char *data, int img_n, int r
       unsigned char *dest = good + j * x * req_comp;
 
       #define COMBO(a,b)  ((a)*8+(b))
-      #define CASE(a,b)   case COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
+      #define CASE(a,b)   case COMBO(a,b): for (i=x-1; i >= 0; --i, src += a, dest += b)
       // convert source image with img_n components to one with req_comp components;
       // avoid switch per pixel, so use switch per scanline and massive macros
       switch (COMBO(img_n, req_comp)) {
@@ -1516,7 +1516,7 @@ static int stbi__build_huffman(stbi__huffman *h, int *count)
    // compute actual symbols (from jpeg spec)
    code = 0;
    k = 0;
-   for(j=1; j <= 16; ++j) {
+   for (j=1; j <= 16; ++j) {
       // compute delta to add to code to compute symbol id
       h->delta[j] = k - code;
       if (h->size[k] == j) {
@@ -2746,7 +2746,7 @@ static int stbi__process_frame_header(stbi__jpeg *z, int scan)
       z->img_comp[i].raw_data = stbi__malloc(z->img_comp[i].w2 * z->img_comp[i].h2+15);
 
       if (z->img_comp[i].raw_data == NULL) {
-         for(--i; i >= 0; --i) {
+         for (--i; i >= 0; --i) {
             STBI_FREE(z->img_comp[i].raw_data);
             z->img_comp[i].data = NULL;
          }
@@ -3634,7 +3634,7 @@ static int stbi__zdist_extra[32] =
 static int stbi__parse_huffman_block(stbi__zbuf *a)
 {
    char *zout = a->zout;
-   for(;;) {
+   for (;;) {
       int z = stbi__zhuffman_decode(a, &a->z_length);
       if (z < 256) {
          if (z < 0) return stbi__err("bad huffman code","Corrupt PNG"); // error in huffman codes
@@ -5244,7 +5244,7 @@ static int stbi__pic_test_core(stbi__context *s)
    if (!stbi__pic_is4(s,"\x53\x80\xF6\x34"))
       return 0;
 
-   for(i=0;i<84;++i)
+   for (i=0;i<84;++i)
       stbi__get8(s);
 
    if (!stbi__pic_is4(s,"PICT"))
@@ -5309,10 +5309,10 @@ static stbi_uc *stbi__pic_load_core(stbi__context *s,int width,int height,int *c
 
    *comp = (act_comp & 0x10 ? 4 : 3); // has alpha channel?
 
-   for(y=0; y<height; ++y) {
+   for (y=0; y<height; ++y) {
       int packet_idx;
 
-      for(packet_idx=0; packet_idx < num_packets; ++packet_idx) {
+      for (packet_idx=0; packet_idx < num_packets; ++packet_idx) {
          stbi__pic_packet *packet = &packets[packet_idx];
          stbi_uc *dest = result+y*width*4;
 
@@ -5323,7 +5323,7 @@ static stbi_uc *stbi__pic_load_core(stbi__context *s,int width,int height,int *c
             case 0: {//uncompressed
                int x;
 
-               for(x=0;x<width;++x, dest+=4)
+               for (x=0;x<width;++x, dest+=4)
                   if (!stbi__readval(s,packet->channel,dest))
                      return 0;
                break;
@@ -5344,7 +5344,7 @@ static stbi_uc *stbi__pic_load_core(stbi__context *s,int width,int height,int *c
 
                      if (!stbi__readval(s,packet->channel,value))  return 0;
 
-                     for(i=0; i<count; ++i,dest+=4)
+                     for (i=0; i<count; ++i,dest+=4)
                         stbi__copyval(packet->channel,dest,value);
                      left -= count;
                   }
@@ -5371,13 +5371,13 @@ static stbi_uc *stbi__pic_load_core(stbi__context *s,int width,int height,int *c
                      if (!stbi__readval(s,packet->channel,value))
                         return 0;
 
-                     for(i=0;i<count;++i, dest += 4)
+                     for (i=0;i<count;++i, dest += 4)
                         stbi__copyval(packet->channel,dest,value);
                   } else { // Raw
                      ++count;
                      if (count>left) return stbi__errpuc("bad file","scanline overrun");
 
-                     for(i=0;i<count;++i, dest+=4)
+                     for (i=0;i<count;++i, dest+=4)
                         if (!stbi__readval(s,packet->channel,dest))
                            return 0;
                   }
@@ -5590,7 +5590,7 @@ static stbi_uc *stbi__process_gif_raster(stbi__context *s, stbi__gif *g)
    oldcode = -1;
 
    len = 0;
-   for(;;) {
+   for (;;) {
       if (valid_bits < codesize) {
          if (len == 0) {
             len = stbi__get8(s); // start new block
@@ -5869,7 +5869,7 @@ static float *stbi__hdr_load(stbi__context *s, int *x, int *y, int *comp, int re
       return stbi__errpf("not HDR", "Corrupt HDR image");
 
    // Parse header
-   for(;;) {
+   for (;;) {
       token = stbi__hdr_gettoken(s,buffer);
       if (token[0] == 0) break;
       if (strcmp(token, "FORMAT=32-bit_rle_rgbe") == 0) valid = 1;
@@ -5973,7 +5973,7 @@ static int stbi__hdr_info(stbi__context *s, int *x, int *y, int *comp)
        return 0;
    }
 
-   for(;;) {
+   for (;;) {
       token = stbi__hdr_gettoken(s,buffer);
       if (token[0] == 0) break;
       if (strcmp(token, "FORMAT=32-bit_rle_rgbe") == 0) valid = 1;

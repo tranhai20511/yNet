@@ -20,7 +20,6 @@
 /**************** Local Implement */
 
 /**************** Implement */
-
 tYnList * YnListNew(void * freeFunc)
 {
     tYnList * list = malloc(sizeof(tYnList));

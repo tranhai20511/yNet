@@ -26,7 +26,6 @@
 /**************** Local Implement */
 
 /**************** Implement */
-
 void YnCudaCheckError(cudaError_t errorStatus)
 {
     char buffer[YN_CHAR_BUFF] = {0};

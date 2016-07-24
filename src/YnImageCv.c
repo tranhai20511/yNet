@@ -40,7 +40,7 @@ void YnImageCvShow(tYnImage p,
     sprintf(buff, "%s", name);
 
     YnImageConstrain(copy);
-    if(p.c == 3)
+    if (p.c == 3)
         YnImageRgbgr(copy);
 
     *disp = cvCreateImage(cvSize(p.w,p.h), IPL_DEPTH_8U, p.c);
@@ -48,11 +48,11 @@ void YnImageCvShow(tYnImage p,
     cvNamedWindow(buff, CV_WINDOW_NORMAL);
 
     ++windows;
-    for(y = 0; y < p.h; y ++)
+    for (y = 0; y < p.h; y ++)
     {
-        for(x = 0; x < p.w; x ++)
+        for (x = 0; x < p.w; x ++)
         {
-            for(k = 0; k < p.c; k ++)
+            for (k = 0; k < p.c; k ++)
             {
                 disp->imageData[(y * step) + (x * p.c) + k] = (unsigned char)(get_pixel(copy,x,y,k)*255);
             }
@@ -79,11 +79,11 @@ void YnImageSaveImage(tYnImage p,
     disp = cvCreateImage(cvSize(p.w,p.h), IPL_DEPTH_8U, p.c);
 
     step = disp->widthStep;
-    for(y = 0; y < p.h; y ++)
+    for (y = 0; y < p.h; y ++)
     {
-        for(x = 0; x < p.w; x ++)
+        for (x = 0; x < p.w; x ++)
         {
-            for(k= 0; k < p.c; k ++)
+            for (k= 0; k < p.c; k ++)
             {
                 disp->imageData[y * step + x * p.c + k] = (unsigned char)(YnImageGet(copy, x, y, k) * 255);
             }
@@ -106,11 +106,11 @@ tYnImage YnImageCvIplToimage(IplImage* src)
     int i, j, k, count=0;
     tYnImage out = YnImageMake(w, h, c);
 
-    for(k= 0; k < c; k ++)
+    for (k= 0; k < c; k ++)
     {
-        for(i = 0; i < h; i ++)
+        for (i = 0; i < h; i ++)
         {
-            for(j = 0; j < w; j ++)
+            for (j = 0; j < w; j ++)
             {
                 out.data[count++] = data[(i * step) + (j * c) + k] / 255.;
             }

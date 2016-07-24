@@ -380,7 +380,7 @@ int stbi_write_hdr(char const *filename, int x, int y, int comp, const float *da
       unsigned char *scratch = (unsigned char *) STBIW_MALLOC(x*4);
       fprintf(f, "#?RADIANCE\n# Written by stb_image_write.h\nFORMAT=32-bit_rle_rgbe\n"      );
       fprintf(f, "EXPOSURE=          1.0000000000000\n\n-Y %d +X %d\n"                 , y, x);
-      for(i=0; i < y; i++)
+      for (i=0; i < y; i++)
          stbiw__write_hdr_scanline(f, x, comp, scratch, data + comp*i*x);
       STBIW_FREE(scratch);
       fclose(f);
@@ -580,7 +580,7 @@ unsigned int stbiw__crc32(unsigned char *buffer, int len)
    unsigned int crc = ~0u;
    int i,j;
    if (crc_table[1] == 0)
-      for(i=0; i < 256; i++)
+      for (i=0; i < 256; i++)
          for (crc_table[i]=i, j=0; j < 8; ++j)
             crc_table[i] = (crc_table[i] >> 1) ^ (crc_table[i] & 1 ? 0xedb88320 : 0);
    for (i=0; i < len; ++i)

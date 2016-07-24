@@ -18,7 +18,6 @@
 /**************** Global variables */
 
 /**************** Local Implement */
-
 YN_GPU_GLOBAL void _YnBlasNormalize(uint32 num,
         float * inArr,
         float * meanArr,

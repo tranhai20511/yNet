@@ -220,7 +220,7 @@ eYnRetCode YnActivationCallGpuOutputArrayCal(float * array,
 
     int32 idx = 0;
 
-    for(idx = 0; idx < num; idx ++)
+    for (idx = 0; idx < num; idx ++)
     {
         YnActivationGradientCal(array[idx], actType, &(array[idx]));
     }
@@ -249,7 +249,7 @@ eYnRetCode YnActivationCallGpuGradientArrayCal(const float * array,
 
     int32 idx = 0;
 
-    for(idx = 0; idx < num; idx ++)
+    for (idx = 0; idx < num; idx ++)
     {
         YnActivationGradientCal(array[idx], actType, &(gradientArray[idx]));
     }
