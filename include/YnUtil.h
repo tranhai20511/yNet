@@ -9,8 +9,6 @@ extern "C" {
 
 /**************** Define */
 
-#define YN_CUS_NUM -1234
-
 /**************** Macro */
 
 /**************** Enum */
@@ -293,6 +291,15 @@ YN_FINAL
 void YnUtilArrayScale(float * array,
         uint32 num,
         float scale);
+YN_ALSWAY_INLINE;
+
+/*
+ * Translate array
+ */
+YN_FINAL
+void YnUtilArrayTranslate(float * array,
+        int n,
+        float s)
 YN_ALSWAY_INLINE;
 
 /*

@@ -3,28 +3,28 @@
 //	DD-MM_YYYY  :   24-07-2016
 //	Author      :   haittt
 
-#include "../YnList.h"
-#include "../YnOptionList.h"
-#include "../YnUtil.h"
-#include "../YnActivations.h"
-#include "../YnLayerCrop.h"
-#include "../YnLayerCost.h"
-#include "../YnLayerConvolutional.h"
-#include "../YnLayerActivation.h"
-#include "../YnLayerNormalization.h"
-#include "../YnLayerDeconvolutional.h"
-#include "../YnLayerConnected.h"
-#include "../YnLayerRnn.h"
-#include "../YnLayerMaxpool.h"
-#include "../YnLayerSoftmax.h"
-#include "../YnLayerDropout.h"
-#include "../YnLayerDetection.h"
-#include "../YnLayerAvgpool.h"
-#include "../YnLayerLocal.h"
-#include "../YnLayerRoute.h"
-#include "../YnLayerShortcut.h"
+#include "../include/YnList.h"
+#include "../include/YnOptionList.h"
+#include "../include/YnUtil.h"
+#include "../include/YnActivations.h"
+#include "../include/YnLayerCrop.h"
+#include "../include/YnLayerCost.h"
+#include "../include/YnLayerConvolutional.h"
+#include "../include/YnLayerActivation.h"
+#include "../include/YnLayerNormalization.h"
+#include "../include/YnLayerDeconvolutional.h"
+#include "../include/YnLayerConnected.h"
+#include "../include/YnLayerRnn.h"
+#include "../include/YnLayerMaxpool.h"
+#include "../include/YnLayerSoftmax.h"
+#include "../include/YnLayerDropout.h"
+#include "../include/YnLayerDetection.h"
+#include "../include/YnLayerAvgpool.h"
+#include "../include/YnLayerLocal.h"
+#include "../include/YnLayerRoute.h"
+#include "../include/YnLayerShortcut.h"
 
-#include "../YnParser.h"
+#include "../include/YnParser.h"
 
 /**************** Define */
 
@@ -326,9 +326,9 @@ void YnParserTransposeMatrix(float *a,
     float *transpose = calloc(rows*cols, sizeof(float));
     int x, y;
 
-    for(x = 0; x < rows; x ++)
+    for (x = 0; x < rows; x ++)
     {
-        for(y = 0; y < cols; y ++)
+        for (y = 0; y < cols; y ++)
         {
             transpose[(y * rows) + x] = a[(x * cols) + y];
         }

@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../YnCudaGpu.h"
-#include "../YnUtil.h"
-#include "../YnBlas.h"
+#include "../include/YnCudaGpu.h"
+#include "../include/YnUtil.h"
+#include "../include/YnBlas.h"
 
 /**************** Define */
 
@@ -22,10 +22,21 @@
 /**************** Local variables */
 
 /**************** Global variables */
+static int gpuIndex = 0;
 
 /**************** Local Implement */
 
 /**************** Implement */
+int YnCudaGpuIndexGet(void)
+{
+    return gpuIndex;
+}
+
+void YnCudaGpuIndexSet(int index)
+{
+    gpuIndex = index;
+}
+
 void YnCudaCheckError(cudaError_t errorStatus)
 {
     char buffer[YN_CHAR_BUFF] = {0};

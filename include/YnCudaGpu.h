@@ -33,12 +33,10 @@ extern "C" {
 /**************** Local variables */
 
 /**************** Global variables */
-extern int gpuIndex;
 
 /**************** Local Implement */
 
 /**************** Implement */
-
 /*
  *  Check cuda errors
  */

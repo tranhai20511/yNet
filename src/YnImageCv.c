@@ -5,7 +5,8 @@
 
 #include "stb_image.h"
 #include "stb_image_write.h"
-#include "../YnImage.h"
+
+#include "../include/YnImage.h"
 
 #ifdef YN_OPENCV
 #include "opencv2/highgui/highgui_c.h"
@@ -34,7 +35,7 @@ void YnImageCvShow(tYnImage p,
     char buff[256];
     int x,y,k;
     tYnImage copy = YnImageCopy(p);
-    IplImage *disp;
+    IplImage * disp;
     int step;
 
     sprintf(buff, "%s", name);

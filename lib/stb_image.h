@@ -27,7 +27,7 @@
       BMP non-1bpp, non-RLE
       PSD (composited view only, no extra channels)
 
-      GIF (*comp always reports as 4-channel)
+      Gif (*comp always reports as 4-channel)
       HDR (radiance rgbE format)
       PIC (Softimage PIC)
       PNM (PPM and PGM binary only)

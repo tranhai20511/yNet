@@ -37,8 +37,6 @@ typedef struct tYnList{
 /**************** Local Implement */
 
 /**************** Implement */
-
-
 /*
  * Create new list
  */

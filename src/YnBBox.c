@@ -3,7 +3,7 @@
 //	DD-MM_YYYY  :   03-07-2016
 //	Author      :   haittt
 
-#include "../YnBBox.h"
+#include "../include/YnBBox.h"
 
 /**************** Define */
 

@@ -3,7 +3,7 @@
 //	DD-MM_YYYY  :   28-06-2016
 //	Author      :   haittt
 
-#include "../YnBlasGpu.h"
+#include "../include/YnBlasGpu.h"
 
 /**************** Define */
 

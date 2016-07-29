@@ -3,7 +3,7 @@
 //	DD-MM_YYYY  :   01-07-2016
 //	Author      :   haittt
 
-#include "../YnList.h"
+#include "../include/YnList.h"
 
 /**************** Define */
 

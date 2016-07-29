@@ -19,11 +19,17 @@ extern "C" {
 /**************** Local variables */
 
 /**************** Global variables */
-extern int gpuIndex;
 
 /**************** Local Implement */
 
 /**************** Implement */
+YN_FINAL
+int YnCudaGpuIndexGet(void)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnCudaGpuIndexSet(int index)
+YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
 //	Author      :   haittt
 
 #include <time.h>
-#include "../YnUtil.h"
+#include "../include/YnUtil.h"
 
 /**************** Define */
 #define PI2     (6.2831853071795864769252866)
@@ -573,6 +573,18 @@ void YnUtilArrayScale(float * array,
     for (i = 0; i < num; ++i)
     {
         array[i] *= scale;
+    }
+}
+
+void YnUtilArrayTranslate(float * array,
+        int n,
+        float s)
+{
+    int i;
+
+    for (i = 0; i < n; i ++)
+    {
+        array[i] += s;
     }
 }
 

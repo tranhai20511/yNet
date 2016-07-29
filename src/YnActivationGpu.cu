@@ -7,7 +7,7 @@
 #include "curand.h"
 #include "cublas_v2.h"
 
-#include "../YnActivationGpu.h"
+#include "../include/YnActivationGpu.h"
 
 
 /**************** Define */

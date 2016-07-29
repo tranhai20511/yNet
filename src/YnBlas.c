@@ -3,7 +3,7 @@
 //	DD-MM_YYYY  :   28-06-2016
 //	Author      :   haittt
 
-#include "../YnBlas.h"
+#include "../include/YnBlas.h"
 
 /**************** Define */
 

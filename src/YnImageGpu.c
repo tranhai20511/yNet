@@ -3,8 +3,8 @@
 //	DD-MM_YYYY  :   04-07-2016
 //	Author      :   haittt
 
-#include "../YnCuda.h"
-#include "../YnImageGpu.h"
+#include "../include/YnCuda.h"
+#include "../include/YnImageGpu.h"
 
 #ifdef YN_GPU
 

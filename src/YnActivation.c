@@ -3,8 +3,7 @@
 //	DD-MM_YYYY  :   26-06-2016
 //	Author      :   haittt
 
-#include "../YnActivation.h"
-
+#include "../include/YnActivation.h"
 
 /**************** Define */
 

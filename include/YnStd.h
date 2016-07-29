@@ -31,6 +31,7 @@ extern "C" {
 
 
 #define YN_CHAR_BUFF        (1024)
+#define YN_CUS_NUM          (-1234)
 
 /**************** Typedef */
 
