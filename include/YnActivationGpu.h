@@ -52,7 +52,7 @@ void YnActivationGpuOutputArrayCal(float * array,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-eYnRetCode YnActivationCallGpuOutputArrayCal(float * array,
+eYnRetCode YnActivationGpuOutputArrayCal(float * array,
         const uint32 num,
         const eYnActivationType actType)
 YN_ALSWAY_INLINE;
@@ -68,7 +68,7 @@ void YnActivationGpuGradientArrayCal(float * array,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-eYnRetCode YnActivationCallGpuGradientArrayCal(const float * array,
+void YnActivationGpuGradientArrayCal(const float * array,
         const uint32 num,
         const eYnActivationType actType,
         float * gradientArray)

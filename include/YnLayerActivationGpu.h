@@ -1,5 +1,5 @@
-#ifndef YNACTIVATIONLAYER_H
-#define YNACTIVATIONLAYER_H
+#ifndef YNLAYERACTIVATIONGPU_H
+#define YNLAYERACTIVATIONGPU_H
 
 #include "../YnActivation.h"
 #include "../YnLayer.h"
@@ -25,22 +25,11 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-
-/*
- * Init layer
- */
-YN_FINAL
-eYnRetCode YnActivationLayerInit(tYnLayer * layer,
-        int32 batchNum,
-        int32 inputNum,
-        eYnActivationType activation)
-YN_ALSWAY_INLINE;
-
 /*
  * Forward layer
  */
 YN_FINAL
-eYnRetCode YnActivationLayerForward(tYnLayer * layer,
+void YnLayerActivationGpuForward(tYnLayer * layer,
         tYnNetworkState* netState)
 YN_ALSWAY_INLINE;
 
@@ -48,7 +37,7 @@ YN_ALSWAY_INLINE;
  * Backward layer
  */
 YN_FINAL
-eYnRetCode YnActivationLayerBackward(tYnLayer * layer,
+void YnLayerActivationGpuBackward(tYnLayer * layer,
         tYnNetworkState* netState)
 YN_ALSWAY_INLINE;
 
@@ -57,4 +46,4 @@ YN_ALSWAY_INLINE;
 }
 #endif
 
-#endif /* YNACTIVATIONLAYER_H */
+#endif /* YNLAYERACTIVATIONGPU_H */

@@ -500,7 +500,7 @@ YN_GPU_GLOBAL void _YnBlasSmoothL1(uint32 num,
 }
 
 /**************** Implement */
-
+YN_EXTERN_C
 void YnBlasGpuArrayConstValueSet(float * array,
         uint32 num,
         int32 incIdx,
@@ -511,6 +511,7 @@ void YnBlasGpuArrayConstValueSet(float * array,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayMultipleValueSet(float * yArr,
         float * xArr,
         uint32 num,
@@ -522,6 +523,7 @@ void YnBlasGpuArrayMultipleValueSet(float * yArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayPowValueSet(float * yArr,
         float * xArr,
         uint32 num,
@@ -534,6 +536,7 @@ void YnBlasGpuArrayPowValueSet(float * yArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayAxpyValueSet(float * yArr,
         float * xArr,
         uint32 num,
@@ -544,6 +547,7 @@ void YnBlasGpuArrayAxpyValueSet(float * yArr,
     YnBlasGpuArrayAxpyValueSet(yArr, xArr, num, incIdy, 0, incIdx, 0, mulVal);
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayAxpyOffsetValueSet(float * yArr,
         float * xArr,
         uint32 num,
@@ -558,6 +562,7 @@ void YnBlasGpuArrayAxpyOffsetValueSet(float * yArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayScaleValueSet(float * xArr,
         uint32 num,
         int32 incIdx,
@@ -568,6 +573,7 @@ void YnBlasGpuArrayScaleValueSet(float * xArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayFillValueSet(float * xArr,
         uint32 num,
         int32 incIdx,
@@ -578,6 +584,7 @@ void YnBlasGpuArrayFillValueSet(float * xArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayCopyValueSet(float * yArr,
         float * xArr,
         uint32 num,
@@ -587,6 +594,7 @@ void YnBlasGpuArrayCopyValueSet(float * yArr,
     YnBlasGpuArrayCopyOffsetValueSet(yArr, xArr, num, incIdy, 0, incIdx, 0);
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayCopyOffsetValueSet(float * yArr,
         float * xArr,
         uint32 num,
@@ -600,6 +608,7 @@ void YnBlasGpuArrayCopyOffsetValueSet(float * yArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayMaskValueSet(float * xArr,
         uint32 num,
         float maskNum,
@@ -610,7 +619,7 @@ void YnBlasGpuArrayMaskValueSet(float * xArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
-
+YN_EXTERN_C
 void YnBlasGpuGradientSmoothL1(float * preArr,
         float * truthArr,
         float * deltaArr,
@@ -621,7 +630,7 @@ void YnBlasGpuGradientSmoothL1(float * preArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
-
+YN_EXTERN_C
 void YnBlasGpuShortcut(int32 batch,
         int32 widthAdd,
         int32 heightAdd,
@@ -668,7 +677,7 @@ void YnBlasGpuShortcut(int32 batch,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
-
+YN_EXTERN_C
 void YnBlasGpuArrayMeanCal(float * inArr,
         int32 batch,
         int32 filters,
@@ -680,6 +689,7 @@ void YnBlasGpuArrayMeanCal(float * inArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayMeanGradientCal(float * gradientArr,
         float * varianceArr,
         int32 batch,
@@ -692,6 +702,7 @@ void YnBlasGpuArrayMeanGradientCal(float * gradientArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayVarianceCal(float * arrayIn,
         float * meanArr,
         int32 batch,
@@ -704,7 +715,7 @@ void YnBlasGpuArrayVarianceCal(float * arrayIn,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
-
+YN_EXTERN_C
 void YnBlasGpuArrayNormalizeCal(float * arrayIn,
         float * meanArr,
         float * varianceArr,
@@ -719,6 +730,7 @@ void YnBlasGpuArrayNormalizeCal(float * arrayIn,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuArrayNormalizeGradientCal(float * arrayIn,
         float * meanArr,
         float * varianceArr,
@@ -736,6 +748,7 @@ void YnBlasGpuArrayNormalizeGradientCal(float * arrayIn,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuFastArrayMeanGradientCal(float * gradientArr,
         float * varianceArr,
         int32 batch,
@@ -748,6 +761,7 @@ void YnBlasGpuFastArrayMeanGradientCal(float * gradientArr,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnBlasGpuFastArrayVarianceGradientCal(float * arrayIn,
         float * gradientArr,
         float * meanArr,
@@ -762,7 +776,7 @@ void YnBlasGpuFastArrayVarianceGradientCal(float * arrayIn,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
-
+YN_EXTERN_C
 void YnBlasGpuFastArrayVarianceCal(float * arrayIn,
         float * meanArr,
         int32 batch,
@@ -776,6 +790,7 @@ void YnBlasGpuFastArrayVarianceCal(float * arrayIn,
 }
 
 
+YN_EXTERN_C
 void YnBlasGpuFastArrayMeanCal(float * inArr,
         int32 batch,
         int32 filters,

@@ -66,6 +66,7 @@ YN_GPU_GLOBAL void YnImageGpuCol2ImageKernel(const int n,
     }
 }
 
+YN_EXTERN_C
 void YnImageGpuCol2Image(float *data_col,
         int channels,
         int height,

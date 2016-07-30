@@ -172,7 +172,7 @@ eYnRetCode YnActivationOutputArrayCal(float * array,
 
     for (idx = 0; idx < num; idx ++)
     {
-        YnActivationGradientCal(array[idx], actType, &(array[idx]));
+        YnActivationOutputCal(array[idx], actType, &(array[idx]));
     }
 
     return eYnRetOk;
