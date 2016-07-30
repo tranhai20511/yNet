@@ -57,6 +57,16 @@ typedef struct tYnNetwork{
     float ** truthGpu;
 }tYnNetwork;
 
+typedef struct tYnNetworkState {
+    float *truth;
+    float *input;
+    float *delta;
+    int train;
+    int index;
+    tYnNetwork net;
+} tYnNetworkState;
+
+
 /**************** Local variables */
 
 /**************** Global variables */

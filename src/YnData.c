@@ -922,7 +922,7 @@ tYnData YnDataLoadDetection(int n,
 void * YnDataLoadThread(void *ptr)
 {
 
-#ifdef GPU
+#ifdef YN_GPU
     cudaError_t status = cudaSetDevice(gpu_index);
     YnCudaCheckError(status);
 #endif

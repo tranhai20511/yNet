@@ -26,7 +26,7 @@ typedef enum eYnLayerType{
     cYnLayerNormalization,
     cYnLayerAvgpool,
     cYnLayerLocal,
-    cYnLayerShorcut,
+    cYnLayerShortcut,
     cYnLayerActive,
     cYnLayerRnn
 } eYnLayerType;
