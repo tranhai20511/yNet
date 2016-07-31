@@ -21,14 +21,14 @@
 
 /**************** Implement */
 void YnLayerActivationGpuForward(tYnLayer * layer,
-        tYnNetworkState* netState)
+        tYnNetworkState netState)
 {
     YnBlasGpuArrayCopyValueSet(layer.output, netState.input, layer.outputs * layer.batch, 1, 1);
     YnActivationGpuOutputArrayCal(layer.output, layer.outputs * layer.batch, layer.activation);
 }
 
 void YnLayerActivationGpuBackward(tYnLayer * layer,
-        tYnNetworkState* netState)
+        tYnNetworkState netState)
 {
     YnActivationGpuGradientArrayCal(layer.output, layer.outputs * layer.batch, layer.activation, layer.delta);
     YnBlasGpuArrayCopyValueSet(netState.delta, layer.delta, layer.outputs * layer.batch, 1, 1);

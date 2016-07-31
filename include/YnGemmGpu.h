@@ -1,11 +1,7 @@
-#ifndef YNCUDA_H
-#define YNCUDA_H
+#ifndef YNGEMMGPU_H
+#define YNGEMMGPU_H
 
-#include "../YnStd.h"
-
-#ifdef YN_GPU
-#include "../YnCudaGpu.h"
-#endif
+#include "../YnGemm.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,15 +23,23 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-int YnCudaGpuIndexGet(void)
-YN_ALSWAY_INLINE;
-
-YN_FINAL
-void YnCudaGpuIndexSet(int index)
+void YnGemmGpu(int TA,
+        int TB,
+        int M,
+        int N,
+        int K,
+        float ALPHA,
+        float * A_gpu,
+        int lda,
+        float *B_gpu,
+        int ldb,
+        float BETA,
+        float *C_gpu,
+        int ldc)
 YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* YNCUDA_H */
+#endif /* YNGEMMGPU_H */

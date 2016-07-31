@@ -30,7 +30,7 @@ extern "C" {
  */
 YN_FINAL
 void YnLayerActivationGpuForward(tYnLayer * layer,
-        tYnNetworkState* netState)
+        tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 /*
@@ -38,7 +38,7 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 void YnLayerActivationGpuBackward(tYnLayer * layer,
-        tYnNetworkState* netState)
+        tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 

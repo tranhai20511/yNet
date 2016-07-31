@@ -3,7 +3,7 @@
 //	DD-MM_YYYY  :   30-07-2016
 //	Author      :   haittt
 
-#include "../include/YnLayerActivationGpu.h"
+#include "../include/YnLayerActivation.h"
 
 /**************** Define */
 
@@ -46,14 +46,14 @@ tYnLayer YnLayerActivationMake(int32 batchNum,
 }
 
 void YnLayerActivationForward(tYnLayer * layer,
-        tYnNetworkState* netState)
+        tYnNetworkState netState)
 {
     YnBlasArrayCopyValueSet(layer.output, netState.input, layer.outputs * layer.batch, 1, 1);
     YnActivationOutputArrayCal(layer.output, layer.outputs * layer.batch, layer.activation);
 }
 
 void YnLayerActivationBackward(tYnLayer * layer,
-        tYnNetworkState* netState)
+        tYnNetworkState netState)
 {
     YnActivationGradientArrayCal(layer.output, layer.outputs * layer.batch, layer.activation, layer.delta);
     YnBlasArrayCopyValueSet(netState.delta, layer.delta, layer.outputs * layer.batch, 1, 1);

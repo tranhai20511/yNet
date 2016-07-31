@@ -1,11 +1,7 @@
-#ifndef YNCUDA_H
-#define YNCUDA_H
+#ifndef YNLAYERAVGPOOLGPU_H
+#define YNLAYERAVGPOOLGPU_H
 
-#include "../YnStd.h"
-
-#ifdef YN_GPU
-#include "../YnCudaGpu.h"
-#endif
+#include "../YnLayerAvgPool.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,15 +23,17 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-int YnCudaGpuIndexGet(void)
+void YnLayerAvgPoolGpuForward(tYnLayer * layer,
+        tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnCudaGpuIndexSet(int index)
+void YnLayerAvgPoolGpuBackward(tYnLayer * layer,
+        tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* YNCUDA_H */
+#endif /* YNLAYERAVGPOOLGPU_H */

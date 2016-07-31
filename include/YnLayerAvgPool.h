@@ -1,10 +1,10 @@
-#ifndef YNLAYERACTIVATION_H
-#define YNLAYERACTIVATION_H
+#ifndef YNLAYERAVGPOOL_H
+#define YNLAYERAVGPOOL_H
 
-#include "../YnActivation.h"
+#include "../YnImage.h"
+#include "../YnCuda.h"
 #include "../YnLayer.h"
 #include "../YnNetwork.h"
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,28 +25,26 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-/*
- * Init layer
- */
 YN_FINAL
-tYnLayer YnLayerActivationMake(int32 batchNum,
-        int32 inputNum,
-        eYnActivationType activation)
+tYnLayer YnLayerAvgPoolMake(int32 batchNum,
+        int32 width,
+        int32 height,
+        int32 channel)
 YN_ALSWAY_INLINE;
 
-/*
- * Forward layer
- */
 YN_FINAL
-void YnLayerActivationForward(tYnLayer * layer,
+void YnLayerAvgPoolResize(tYnLayer * layer,
+        int32 width,
+        int32 height)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnLayerAvgPoolForward(tYnLayer * layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
-/*
- * Backward layer
- */
 YN_FINAL
-void YnLayerActivationBackward(tYnLayer * layer,
+void YnLayerAvgPoolBackward(tYnLayer * layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
@@ -55,4 +53,4 @@ YN_ALSWAY_INLINE;
 }
 #endif
 
-#endif /* YNLAYERACTIVATION_H */
+#endif /* YNLAYERAVGPOOL_H */
