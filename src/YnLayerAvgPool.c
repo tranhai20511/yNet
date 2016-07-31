@@ -1,6 +1,6 @@
 //	File        :   YnLayerAvgPool.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   30-07-2016
+//	DD-MM-YYYY  :   30-07-2016
 //	Author      :   haittt
 
 #include "../include/YnLayerAvgPool.h"
@@ -62,7 +62,7 @@ void YnLayerAvgPoolResize(tYnLayer * layer,
     layer->inputs = height * width * layer->c;
 }
 
-void YnLayerAvgPoolForward(tYnLayer * layer,
+void YnLayerAvgPoolForward(tYnLayer layer,
         tYnNetworkState netState)
 {
     int b,i,k;
@@ -87,7 +87,7 @@ void YnLayerAvgPoolForward(tYnLayer * layer,
     }
 }
 
-void YnLayerAvgPoolBackward(tYnLayer * layer,
+void YnLayerAvgPoolBackward(tYnLayer layer,
         tYnNetworkState netState)
 {
     int b,i,k;

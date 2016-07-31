@@ -1,6 +1,6 @@
 //	File        :   YnActivation.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   26-06-2016
+//	DD-MM-YYYY  :   26-06-2016
 //	Author      :   haittt
 
 #include "../include/YnActivation.h"

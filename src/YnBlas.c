@@ -1,6 +1,6 @@
 //	File        :   YnBlas.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   28-06-2016
+//	DD-MM-YYYY  :   28-06-2016
 //	Author      :   haittt
 
 #include "../include/YnBlas.h"

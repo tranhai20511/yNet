@@ -130,7 +130,7 @@ typedef struct tYnLayer{
     float * varianceDelta;
 
     float * rollingMean;
-    float * rollingVriance;
+    float * rollingVariance;
 
     float * x;
     float * xNorm;

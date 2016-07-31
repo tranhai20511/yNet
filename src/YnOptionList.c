@@ -1,6 +1,6 @@
 //	File        :   YnOptionList.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   04-07-2016
+//	DD-MM-YYYY  :   04-07-2016
 //	Author      :   haittt
 
 #include "../include/YnOptionList.h"

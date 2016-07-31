@@ -1,6 +1,6 @@
 //	File        :   YnGemmGpu.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   31-06-2016
+//	DD-MM-YYYY  :   31-06-2016
 //	Author      :   haittt
 
 #include "../include/YnGemmGpu.h"

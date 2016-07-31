@@ -1,6 +1,6 @@
 //	File        :   YnLayerActivation.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   30-07-2016
+//	DD-MM-YYYY  :   30-07-2016
 //	Author      :   haittt
 
 #include "../include/YnLayerActivation.h"
@@ -45,17 +45,16 @@ tYnLayer YnLayerActivationMake(int32 batchNum,
     return layer;
 }
 
-void YnLayerActivationForward(tYnLayer * layer,
+void YnLayerActivationForward(tYnLayer layer,
         tYnNetworkState netState)
 {
     YnBlasArrayCopyValueSet(layer.output, netState.input, layer.outputs * layer.batch, 1, 1);
     YnActivationOutputArrayCal(layer.output, layer.outputs * layer.batch, layer.activation);
 }
 
-void YnLayerActivationBackward(tYnLayer * layer,
+void YnLayerActivationBackward(tYnLayer layer,
         tYnNetworkState netState)
 {
     YnActivationGradientArrayCal(layer.output, layer.outputs * layer.batch, layer.activation, layer.delta);
     YnBlasArrayCopyValueSet(netState.delta, layer.delta, layer.outputs * layer.batch, 1, 1);
 }
-

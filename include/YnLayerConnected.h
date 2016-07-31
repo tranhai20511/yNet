@@ -1,10 +1,9 @@
-#ifndef YNLAYERACTIVATION_H
-#define YNLAYERACTIVATION_H
+#ifndef YNLAYERCONNECTED_H
+#define YNLAYERCONNECTED_H
 
-#include "../YnActivation.h"
 #include "../YnLayer.h"
 #include "../YnNetwork.h"
-
+#include "../YnActivation.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,34 +24,34 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-/*
- * Init layer
- */
 YN_FINAL
-tYnLayer YnLayerActivationMake(int32 batchNum,
+tYnLayer YnLayerConnectedMake(int32 batchNum,
         int32 inputNum,
-        eYnActivationType activation)
+        int32 outputNum,
+        eYnActivationType activation,
+        int32 batchNormalize)
 YN_ALSWAY_INLINE;
 
-/*
- * Forward layer
- */
 YN_FINAL
-void YnLayerActivationForward(tYnLayer layer,
+void YnLayerConnectedForward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
-/*
- * Backward layer
- */
 YN_FINAL
-void YnLayerActivationBackward(tYnLayer layer,
+void YnLayerConnectedBackward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
+YN_FINAL
+void YnLayerConnectedUpdate(tYnLayer layer,
+        int32 batch,
+        float learningRate,
+        float momentum,
+        float decay)
+YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* YNLAYERACTIVATION_H */
+#endif /* YNLAYERCONNECTED_H */

@@ -3,10 +3,11 @@
 
 #include "../YnActivation.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#ifdef YN_GPU
 
 /**************** Define */
 
@@ -23,34 +24,9 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-
-#ifdef YN_GPU
-
-/*
- *  GPU: Calculation activation output value
- */
-YN_GPU_DEVICE
-float YnActivationGpuOutputCal(const float inVal ,
-        const eYnActivationType actType)
-YN_ALSWAY_INLINE;
-
-/*
- *  GPU: Calculation gradient value
- */
-YN_GPU_DEVICE
-float YnActivationGpuGradientCal(const float inVal ,
-        const eYnActivationType actType)
-YN_ALSWAY_INLINE;
-
 /*
  *  GPU: Calculation activation output value for array
  */
-YN_GPU_GLOBAL
-void YnActivationGpuOutputArrayCal(float * array,
-        uint32 num,
-        eYnActivationType actType)
-YN_ALSWAY_INLINE;
-
 YN_FINAL
 eYnRetCode YnActivationGpuOutputArrayCal(float * array,
         const uint32 num,
@@ -60,13 +36,6 @@ YN_ALSWAY_INLINE;
 /*
  *  GPU: Calculation gradient value for array
  */
-YN_GPU_GLOBAL
-void YnActivationGpuGradientArrayCal(float * array,
-        uint32 num,
-        eYnActivationType actType,
-        float * gradientArray)
-YN_ALSWAY_INLINE;
-
 YN_FINAL
 void YnActivationGpuGradientArrayCal(const float * array,
         const uint32 num,
@@ -75,7 +44,6 @@ void YnActivationGpuGradientArrayCal(const float * array,
 YN_ALSWAY_INLINE;
 
 #endif
-
 
 #ifdef __cplusplus
 }

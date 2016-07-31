@@ -1,6 +1,6 @@
 //	File        :   YnList.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   01-07-2016
+//	DD-MM-YYYY  :   01-07-2016
 //	Author      :   haittt
 
 #include "../include/YnList.h"

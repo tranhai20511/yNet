@@ -1,6 +1,6 @@
 //	File        :   YnBlasGpu.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   28-06-2016
+//	DD-MM-YYYY  :   28-06-2016
 //	Author      :   haittt
 
 extern "C" {
@@ -546,7 +546,7 @@ void YnBlasGpuArrayAxpyValueSet(float * yArr,
         int32 incIdx,
         int32 mulVal)
 {
-    YnBlasGpuArrayAxpyValueSet(yArr, xArr, num, incIdy, 0, incIdx, 0, mulVal);
+    YnBlasGpuArrayAxpyOffsetValueSet(yArr, xArr, num, incIdy, 0, incIdx, 0, mulVal);
 }
 
 YN_EXTERN_C

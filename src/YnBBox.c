@@ -1,6 +1,6 @@
 //	File        :   YnBBox.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   03-07-2016
+//	DD-MM-YYYY  :   03-07-2016
 //	Author      :   haittt
 
 #include "../include/YnBBox.h"

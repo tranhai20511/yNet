@@ -1,6 +1,6 @@
 //	File        :   YnLayerAvgPoolGpu.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   30-07-2016
+//	DD-MM-YYYY  :   30-07-2016
 //	Author      :   haittt
 
 #include "cuda_runtime.h"

@@ -1,6 +1,6 @@
 //	File        :   YnUtil.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   03-07-2016
+//	DD-MM-YYYY  :   03-07-2016
 //	Author      :   haittt
 
 #include <time.h>

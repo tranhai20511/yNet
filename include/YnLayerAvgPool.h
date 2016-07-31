@@ -39,12 +39,12 @@ void YnLayerAvgPoolResize(tYnLayer * layer,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerAvgPoolForward(tYnLayer * layer,
+void YnLayerAvgPoolForward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerAvgPoolBackward(tYnLayer * layer,
+void YnLayerAvgPoolBackward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 

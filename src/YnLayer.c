@@ -1,6 +1,6 @@
 //	File        :   YnLayer.c
 //	Brief       :   Implement methods.
-//	DD-MM_YYYY  :   26-07-2016
+//	DD-MM-YYYY  :   26-07-2016
 //	Author      :   haittt
 
 #include "../include/YnLayer.h"
