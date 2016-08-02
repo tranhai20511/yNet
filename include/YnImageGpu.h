@@ -23,6 +23,17 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
+void YnImageGpuImage2Col(float *im,
+        int channels,
+        int height,
+        int width,
+        int ksize,
+        int stride,
+        int pad,
+        float *data_col)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
 void YnImageGpuCol2Image(float *data_col,
         int channels,
         int height,

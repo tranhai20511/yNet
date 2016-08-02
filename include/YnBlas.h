@@ -148,6 +148,71 @@ void YnBlasArrayNormalizeCal(float * arrayIn,
         int32 spatial)
 YN_ALSWAY_INLINE;
 
+YN_FINAL
+void YnBlasArrayBiasAdd(float *output,
+        float *biases,
+        int batch,
+        int num,
+        int size)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasArrayBackwardBias(float *biasUpdates,
+        float *gradient,
+        int batch,
+        int num,
+        int size)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasArrayBiasScale(float * output,
+        float * scales,
+        int batch,
+        int num,
+        int size)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasArrayBackwardScale(float * xNorm,
+        float *delta,
+        int batch,
+        int num,
+        int size,
+        float *scaleUpdates)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasArrayMeanGradient(float * gradient,
+        float * variance,
+        int batch,
+        int filters,
+        int spatial,
+        float *meanGradient)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasArrayVarianceGradient(float * arrayIn,
+        float * delta,
+        float * mean,
+        float * variance,
+        int batch,
+        int filters,
+        int spatial,
+        float *varianceDelta)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasArrayNormalizeGradient(float * arrayIn,
+        float * mean,
+        float * variance,
+        float * mean_delta,
+        float * varianceGradient,
+        int batch,
+        int filters,
+        int spatial,
+        float *delta)
+YN_ALSWAY_INLINE;
+
 #ifdef __cplusplus
 }
 #endif

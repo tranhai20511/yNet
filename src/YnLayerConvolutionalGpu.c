@@ -117,7 +117,7 @@ void YnLayerConnectedGpuForward(tYnLayer layer,
             YnBlasGpuArrayNormalizeCal(layer.outputGpu, layer.rollingMeanGpu, layer.rollingVarianceGpu, layer.batch, layer.outputs, 1);
         }
 
-        YnBlasGpuScaleBias(layer.outputGpu, layer.scalesGpu, layer.batch, layer.outputs, 1);
+        YnLayerConvolutionalGpuScaleBias(layer.outputGpu, layer.scalesGpu, layer.batch, layer.outputs, 1);
     }
 
     for(i = 0; i < layer.batch; i ++)
@@ -149,9 +149,9 @@ void YnLayerConnectedGpuBackward(tYnLayer layer,
 
     if(layer.batchNormalize)
     {
-        YnBlasGpuBackwardScale(layer.xNormGpu, layer.deltaGpu, layer.batch, layer.outputs, 1, layer.scaleUpdatesGpu);
+        YnLayerConvolutionalGpuBackwardScale(layer.xNormGpu, layer.deltaGpu, layer.batch, layer.outputs, 1, layer.scaleUpdatesGpu);
 
-        YnBlasGpuScaleBias(layer.deltaGpu, layer.scalesGpu, layer.batch, layer.outputs, 1);
+        YnLayerConvolutionalGpuScaleBias(layer.deltaGpu, layer.scalesGpu, layer.batch, layer.outputs, 1);
 
         YnBlasGpuFastArrayMeanGradientCal(layer.deltaGpu, layer.varianceGpu, layer.batch, layer.outputs, 1, layer.meanDeltaGpu);
         YnBlasGpuFastArrayVarianceGradientCal(layer.xGpu, layer.deltaGpu, layer.meanGpu, layer.varianceGpu, layer.batch, layer.outputs, 1, layer.varianceDeltaGpu);

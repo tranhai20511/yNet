@@ -1,7 +1,7 @@
 #ifndef YNIMAGE_H
 #define YNIMAGE_H
 
-#include "../YnStd.h"
+#include "../YnBBox.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -257,7 +257,7 @@ float YnImageBilinearInterpolate(tYnImage im,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-tYnImage YnImageResize(tYmImage im,
+tYnImage YnImageResize(tYnImage im,
         int w,
         int h)
 YN_ALSWAY_INLINE;
@@ -344,15 +344,14 @@ void YnImageFree(tYnImage m)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnImageCol2ImageAddPixel(float *im,
-        int height,
-        int width,
-        int channels,
-        int row,
-        int col,
-        int channel,
-        int pad,
-        float val)
+void YnImageImage2Col(float* data_col,
+         int channels,
+         int height,
+         int width,
+         int ksize,
+         int stride,
+         int pad,
+         float* data_im)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
