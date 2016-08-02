@@ -63,7 +63,7 @@ void YnLayerConvolutionalDenormalize(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerConvolutionalResize(tYnLayer layer,
+void YnLayerConvolutionalResize(tYnLayer* layer,
         int width,
         int height)
 YN_ALSWAY_INLINE;

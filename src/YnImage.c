@@ -1296,7 +1296,7 @@ tYnImage YnImageCollapseHorz(tYnImage *ims,
     return filters;
 }
 
-void YnImageShow(tYnImage *ims,
+void YnImageImagesShow(tYnImage *ims,
         int n,
         char *window)
 {

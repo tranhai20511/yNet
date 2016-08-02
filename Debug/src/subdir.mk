@@ -18,6 +18,9 @@ C_SRCS += \
 ../src/YnLayerActivationGpu.c \
 ../src/YnLayerAvgPool.c \
 ../src/YnLayerConnected.c \
+../src/YnLayerConnectedGpu.c \
+../src/YnLayerConvolutional.c \
+../src/YnLayerConvolutionalGpu.c \
 ../src/YnList.c \
 ../src/YnMatrix.c \
 ../src/YnNetwork.c \
@@ -41,6 +44,9 @@ OBJS += \
 ./src/YnLayerActivationGpu.o \
 ./src/YnLayerAvgPool.o \
 ./src/YnLayerConnected.o \
+./src/YnLayerConnectedGpu.o \
+./src/YnLayerConvolutional.o \
+./src/YnLayerConvolutionalGpu.o \
 ./src/YnList.o \
 ./src/YnMatrix.o \
 ./src/YnNetwork.o \
@@ -64,6 +70,9 @@ C_DEPS += \
 ./src/YnLayerActivationGpu.d \
 ./src/YnLayerAvgPool.d \
 ./src/YnLayerConnected.d \
+./src/YnLayerConnectedGpu.d \
+./src/YnLayerConvolutional.d \
+./src/YnLayerConvolutionalGpu.d \
 ./src/YnList.d \
 ./src/YnMatrix.d \
 ./src/YnNetwork.d \

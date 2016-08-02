@@ -340,6 +340,12 @@ void YnImageShow(tYnImage *ims,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
+void YnImageImagesShow(tYnImage *ims,
+        int n,
+        char *window)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
 void YnImageFree(tYnImage m)
 YN_ALSWAY_INLINE;
 

@@ -18,8 +18,25 @@
 /**************** Global variables */
 
 /**************** Local Implement */
+YN_STATIC
+tYnImage * _YnLayerConvolutionalFiltersGet(tYnLayer layer)
+YN_ALSWAY_INLINE;
 
 /**************** Implement */
+YN_STATIC
+tYnImage * _YnLayerConvolutionalFiltersGet(tYnLayer layer)
+{
+    tYnImage *filters = calloc(layer.n, sizeof(tYnImage));
+    int i;
+
+    for(i = 0; i < layer.n; ++i)
+    {
+        filters[i] = YnImageCopy(YnLayerConvolutionalFilterGet(layer, i));
+    }
+
+    return filters;
+}
+
 tYnLayer YnLayerConvolutionalMake(int batchNum,
         int height,
         int width,
@@ -139,15 +156,15 @@ tYnLayer YnLayerConvolutionalMake(int batchNum,
 void YnLayerConvolutionalForward(tYnLayer layer,
         tYnNetworkState netState)
 {
-    int out_h = convolutional_out_height(l);
-    int out_w = convolutional_out_width(l);
+    int outH = YnLayerConvolutionalOutHeightGet(layer);
+    int outW = YnLayerConvolutionalOutWidthGet(layer);
     int i;
 
     fill_cpu(layer.outputs*layer.batch, 0, layer.output, 1);
 
     int m = layer.n;
     int k = layer.size*layer.size*layer.c;
-    int n = out_h*out_w;
+    int n = outH*outW;
 
     float *a = layer.filters;
     float *b = layer.colImage;
@@ -158,56 +175,68 @@ void YnLayerConvolutionalForward(tYnLayer layer,
         YnImageImage2Col(netState.input, layer.c, layer.h, layer.w,
                 layer.size, layer.stride, layer.pad, b);
         YnGemm(0, 0, m, n, k, 1, a, k, b, n, 1, c, n);
-        c += n*m;
-        state.input += layer.c*layer.h*layer.w;
+
+        c += n * m;
+        netState.input += layer.c*layer.h*layer.w;
     }
 
-    if (layer.batch_normalize){
-        if (state.train){
-            mean_cpu(layer.output, layer.batch, layer.n, layer.out_h*layer.out_w, layer.mean);
-            variance_cpu(layer.output, layer.mean, layer.batch, layer.n, layer.out_h*layer.out_w, layer.variance);
-            normalize_cpu(layer.output, layer.mean, layer.variance, layer.batch, layer.n, layer.out_h*layer.out_w);
-        } else {
-            normalize_cpu(layer.output, layer.rolling_mean, layer.rolling_variance, layer.batch, layer.n, layer.out_h*layer.out_w);
+    if (layer.batchNormalize)
+    {
+        if (netState.train)
+        {
+            YnBlasArrayMeanCal(layer.output, layer.batch, layer.n, layer.outH*layer.outW, layer.mean);
+            YnBlasArrayVarianceCal(layer.output, layer.mean, layer.batch, layer.n, layer.outH*layer.outW, layer.variance);
+            YnBlasArrayNormalizeCal(layer.output, layer.mean, layer.variance, layer.batch, layer.n, layer.outH * layer.outW);
         }
-        scale_bias(layer.output, layer.scales, layer.batch, layer.n, out_h*out_w);
-    }
-    add_bias(layer.output, layer.biases, layer.batch, layer.n, out_h*out_w);
+        else
+        {
+            YnBlasArrayNormalizeCal(layer.output, layer.rollingMean, layer.rollingVariance, layer.batch, layer.n, layer.outH*layer.outW);
+        }
 
-    activate_array(layer.output, m*n*layer.batch, layer.activation);
+        YnBlasArrayBiasScale(layer.output, layer.scales, layer.batch, layer.n, outH*outW);
+    }
+
+    YnBlasArrayBiasAdd(layer.output, layer.biases, layer.batch, layer.n, outH*outW);
+
+    YnActivationOutputArrayCal(layer.output, m * n * layer.batch, layer.activation);
 }
 
 void YnLayerConvolutionalBackward(tYnLayer layer,
         tYnNetworkState netState)
 {
     int i;
+    float *a;
+    float *b;
+    float *c;
+    float *im;
     int m = layer.n;
-    int n = layer.size*layer.size*layer.c;
-    int k = convolutional_out_height(l)*
-        convolutional_out_width(l);
+    int n = layer.size * layer.size * layer.c;
+    int k = YnLayerConvolutionalOutHeightGet(layer) * YnLayerConvolutionalOutWidthGet(layer);
 
-    gradient_array(layer.output, m*k*layer.batch, layer.activation, layer.delta);
-    backward_bias(layer.bias_updates, layer.delta, layer.batch, layer.n, k);
+    YnActivationGradientArrayCal(layer.output, m * k * layer.batch, layer.activation, layer.delta);
+    YnBlasArrayBackwardBias(layer.biasUpdates, layer.delta, layer.batch, layer.n, k);
 
-    for(i = 0; i < layer.batch; ++i){
-        float *a = layer.delta + i*m*k;
-        float *b = layer.col_image;
-        float *c = layer.filter_updates;
+    for(i = 0; i < layer.batch; i ++)
+    {
+        a = layer.delta + i * m * k;
+        b = layer.colImage;
+        c = layer.filterUpdates;
 
-        float *im = state.input+i*layer.c*layer.h*layer.w;
+        im = netState.input + i * layer.c * layer.h * layer.w;
 
-        im2col_cpu(im, layer.c, layer.h, layer.w,
-                layer.size, layer.stride, layer.pad, b);
-        gemm(0,1,m,n,k,1,a,k,b,k,1,c,n);
+        YnImageImage2Col(im, layer.c, layer.h, layer.w, layer.size, layer.stride, layer.pad, b);
+        YnGemm(0, 1, m, n, k, 1, a, k, b, k, 1, c, n);
 
-        if (state.delta){
+        if (netState.delta)
+        {
             a = layer.filters;
             b = layer.delta + i*m*k;
-            c = layer.col_image;
+            c = layer.colImage;
 
-            gemm(1,0,n,k,m,1,a,n,b,k,0,c,k);
+            YnGemm(1,0,n,k,m,1,a,n,b,k,0,c,k);
 
-            col2im_cpu(layer.col_image, layer.c,  layer.h,  layer.w,  layer.size,  layer.stride, layer.pad, state.delta+i*layer.c*layer.h*layer.w);
+            YnImageCol2Image(layer.colImage, layer.c,  layer.h,  layer.w,  layer.size,
+                    layer.stride, layer.pad, netState.delta + i * layer.c * layer.h * layer.w);
         }
     }
 }
@@ -218,57 +247,65 @@ void YnLayerConvolutionalUpdate(tYnLayer layer,
         float momentum,
         float decay)
 {
-    int size = layer.size*layer.size*layer.c*layer.n;
-    axpy_cpu(layer.n, learning_rate/batch, layer.bias_updates, 1, layer.biases, 1);
-    scal_cpu(layer.n, momentum, layer.bias_updates, 1);
+    int size = layer.size * layer.size * layer.c * layer.n;
 
-    axpy_cpu(size, -decay*batch, layer.filters, 1, layer.filter_updates, 1);
-    axpy_cpu(size, learning_rate/batch, layer.filter_updates, 1, layer.filters, 1);
-    scal_cpu(size, momentum, layer.filter_updates, 1);
+    YnBlasArrayAxpyValueSet(layer.biases, layer.biasUpdates, layer.n, 1, 1, learningRate / batch);
+    YnBlasArrayScaleValueSet(layer.biasUpdates, layer.n, 1, momentum);
+
+    YnBlasArrayAxpyValueSet(layer.filterUpdates, layer.filters, size, 1, 1, -decay * batch);
+    YnBlasArrayAxpyValueSet(layer.filters, layer.filterUpdates, size, 1, 1, learningRate / batch);
+    YnBlasArrayScaleValueSet(layer.filterUpdates, size, 1, momentum);
 }
 
 void YnLayerConvolutionalDenormalize(tYnLayer layer)
 {
+    float scale;
     int i, j;
-    for(i = 0; i < layer.n; ++i){
-        float scale = layer.scales[i]/sqrt(layer.rolling_variance[i] + .00001);
-        for(j = 0; j < layer.c*layer.size*layer.size; ++j){
-            layer.filters[i*layer.c*layer.size*layer.size + j] *= scale;
+
+    for(i = 0; i < layer.n; i ++)
+    {
+        scale = layer.scales[i] / sqrt(layer.rollingVariance[i] + .00001);
+
+        for(j = 0; j < (layer.c * layer.size * layer.size); j ++)
+        {
+            layer.filters[(i * layer.c * layer.size * layer.size) + j] *= scale;
         }
-        layer.biases[i] -= layer.rolling_mean[i] * scale;
+
+        layer.biases[i] -= layer.rollingMean[i] * scale;
     }
 }
 
-void YnLayerConvolutionalResize(tYnLayer layer,
+void YnLayerConvolutionalResize(tYnLayer* layer,
         int width,
         int height)
 {
-    l->w = w;
-    l->h = h;
-    int out_w = convolutional_out_width(*l);
-    int out_h = convolutional_out_height(*l);
+    int outW;
+    int outH;
 
-    l->out_w = out_w;
-    l->out_h = out_h;
+    layer->w = width;
+    layer->h = height;
 
-    l->outputs = l->out_h * l->out_w * l->out_c;
-    l->inputs = l->w * l->h * l->c;
+    outW = YnLayerConvolutionalOutWidthGet(*layer);
+    outH = YnLayerConvolutionalOutHeightGet(*layer);
 
-    l->col_image = realloc(l->col_image,
-            out_h*out_w*l->size*l->size*l->c*sizeof(float));
-    l->output = realloc(l->output,
-            l->batch*out_h * out_w * l->n*sizeof(float));
-    l->delta  = realloc(l->delta,
-            l->batch*out_h * out_w * l->n*sizeof(float));
+    layer->outW = outW;
+    layer->outH = outH;
 
-#ifdef GPU
-    cuda_free(l->col_imageGpu);
-    cuda_free(l->deltaGpu);
-    cuda_free(l->outputGpu);
+    layer->outputs = layer->outH * layer->outW * layer->outC;
+    layer->inputs = layer->w * layer->h * layer->c;
 
-    l->col_imageGpu = YnCudaMakeArray(l->col_image, out_h*out_w*l->size*l->size*l->c);
-    l->deltaGpu =     YnCudaMakeArray(l->delta, l->batch*out_h*out_w*l->n);
-    l->outputGpu =    YnCudaMakeArray(l->output, l->batch*out_h*out_w*l->n);
+    layer->colImage = realloc(layer->colImage, outH * outW * layer->size * layer->size * layer->c * sizeof(float));
+    layer->output = realloc(layer->output, layer->batch * outH * outW * layer->n * sizeof(float));
+    layer->delta  = realloc(layer->delta, layer->batch * outH * outW * layer->n * sizeof(float));
+
+#ifdef YN_GPU
+    YnCudaFreeArray(layer->colImageGpu);
+    YnCudaFreeArray(layer->deltaGpu);
+    YnCudaFreeArray(layer->outputGpu);
+
+    layer->colImageGpu = YnCudaMakeArray(layer->colImage, outH * outW * layer->size * layer->size * layer->c);
+    layer->deltaGpu    = YnCudaMakeArray(layer->delta, layer->batch * outH * outW * layer->n);
+    layer->outputGpu   = YnCudaMakeArray(layer->output, layer->batch * outH * outW * layer->n);
 #endif
 }
 
@@ -276,63 +313,77 @@ tYnImage * YnLayerConvolutionalVisualize(tYnLayer layer,
         char * window,
         tYnImage * filters)
 {
-    image *single_filters = get_filters(l);
-    show_images(single_filters, layer.n, window);
-
-    image delta = get_convolutional_image(l);
-    image dc = collapse_image_layers(delta, 1);
     char buff[256];
+    tYnImage delta;
+    tYnImage dc;
+    tYnImage *singleFilters = _YnLayerConvolutionalFiltersGet(layer);
+
+    YnImageImagesShow(singleFilters, layer.n, window);
+
+    delta = YnLayerConvolutionalImageGet(layer);
+    dc = YnImageCollapseLayers(delta, 1);
+
     sprintf(buff, "%s: Output", window);
-    //show_image(dc, buff);
-    //save_image(dc, buff);
-    free_image(dc);
-    return single_filters;
+
+    YnImageFree(dc);
+
+    return singleFilters;
 }
 
 tYnImage YnLayerConvolutionalImageGet(tYnLayer layer)
 {
-    int h,w,c;
-    h = convolutional_out_height(l);
-    w = convolutional_out_width(l);
+    int h, w, c;
+
+    h = YnLayerConvolutionalOutHeightGet(layer);
+    w = YnLayerConvolutionalOutWidthGet(layer);
     c = layer.n;
-    return float_to_image(w,h,c,layer.output);
+
+    return YnImageFloatToImage(w, h, c, layer.output);
 }
 
 tYnImage YnLayerConvolutionalGradientGet(tYnLayer layer)
 {
-    int h,w,c;
-    h = convolutional_out_height(l);
-    w = convolutional_out_width(l);
+    int h, w, c;
+
+    h = YnLayerConvolutionalOutHeightGet(layer);
+    w = YnLayerConvolutionalOutWidthGet(layer);
     c = layer.n;
-    return float_to_image(w,h,c,layer.delta);
+
+    return YnImageFloatToImage(w,h,c,layer.delta);
 }
 
 tYnImage YnLayerConvolutionalFilterGet(tYnLayer layer,
         int i)
 {
-    image *filters = calloc(layer.n, sizeof(image));
-    int i;
-    for(i = 0; i < layer.n; ++i){
-        filters[i] = copy_image(get_convolutional_filter(l, i));
-        //normalize_image(filters[i]);
-    }
-    return filters;
+    int h = layer.size;
+    int w = layer.size;
+    int c = layer.c;
+
+    return YnImageFloatToImage(w, h, c, layer.filters + i * h * w * c);
 }
 
 int YnLayerConvolutionalOutHeightGet(tYnLayer layer)
 {
     int h = layer.h;
-    if (!layer.pad) h -= layer.size;
-    else h -= 1;
-    return h/layer.stride + 1;
+
+    if (!layer.pad)
+        h -= layer.size;
+    else
+        h -= 1;
+
+    return h / layer.stride + 1;
 }
 
 int YnLayerConvolutionalOutWidthGet(tYnLayer layer)
 {
     int w = layer.w;
-    if (!layer.pad) w -= layer.size;
-    else w -= 1;
-    return w/layer.stride + 1;
+
+    if (!layer.pad)
+        w -= layer.size;
+    else
+        w -= 1;
+
+    return w / layer.stride + 1;
 }
 
 void YnLayerConvolutionalFiltersRescale(tYnLayer layer,
@@ -340,12 +391,18 @@ void YnLayerConvolutionalFiltersRescale(tYnLayer layer,
         float trans)
 {
     int i;
-    for(i = 0; i < layer.n; ++i){
-        image im = get_convolutional_filter(l, i);
-        if (im.c == 3) {
-            scale_image(im, scale);
-            float sum = sum_array(im.data, im.w*im.h*im.c);
-            layer.biases[i] += sum*trans;
+    float sum;
+    tYnImage im;
+
+    for(i = 0; i < layer.n; i ++)
+    {
+        im = YnLayerConvolutionalFilterGet(layer, i);
+
+        if (im.channel == 3)
+        {
+            YnImgaeScale(im, scale);
+            sum = YnUtilArraySum(im.data, im.width * im.height * im.channel);
+            layer.biases[i] += sum * trans;
         }
     }
 }
@@ -353,10 +410,15 @@ void YnLayerConvolutionalFiltersRescale(tYnLayer layer,
 int YnLayerConvolutionalFiltersRgbgr(tYnLayer layer)
 {
     int i;
-    for(i = 0; i < layer.n; ++i){
-        image im = get_convolutional_filter(l, i);
-        if (im.c == 3) {
-            rgbgr_image(im);
+    tYnImage im;
+
+    for(i = 0; i < layer.n; i ++)
+    {
+        im = YnLayerConvolutionalFilterGet(layer, i);
+
+        if (im.channel == 3)
+        {
+            YnImageRgbgr(im);
         }
     }
 }
