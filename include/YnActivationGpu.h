@@ -29,17 +29,17 @@ extern "C" {
  */
 YN_FINAL
 eYnRetCode YnActivationGpuOutputArrayCal(float * array,
-        const uint32 num,
-        const eYnActivationType actType)
+        uint32 num,
+        eYnActivationType actType)
 YN_ALSWAY_INLINE;
 
 /*
  *  GPU: Calculation gradient value for array
  */
 YN_FINAL
-void YnActivationGpuGradientArrayCal(const float * array,
-        const uint32 num,
-        const eYnActivationType actType,
+void YnActivationGpuGradientArrayCal(float * array,
+        uint32 num,
+        eYnActivationType actType,
         float * gradientArray)
 YN_ALSWAY_INLINE;
 

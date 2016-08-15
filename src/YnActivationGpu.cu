@@ -207,8 +207,8 @@ YN_GPU_GLOBAL void YnActivationGpuKernelOutputArrayCal(float * array,
 
 YN_EXTERN_C
 void YnActivationGpuOutputArrayCal(float * array,
-        const uint32 num,
-        const eYnActivationType actType)
+        uint32 num,
+        eYnActivationType actType)
 {
     YnActivationGpuKernelOutputArrayCal<<<cuda_gridsize(n), BLOCK>>>(array, num, actType);
     YnCudaCheckError(cudaPeekAtLastError());
@@ -226,9 +226,9 @@ YN_GPU_GLOBAL void YnActivationGpuKernelGradientArrayCal(float * array,
 }
 
 YN_EXTERN_C
-void YnActivationGpuGradientArrayCal(const float * array,
-        const uint32 num,
-        const eYnActivationType actType,
+void YnActivationGpuGradientArrayCal(float * array,
+        uint32 num,
+        eYnActivationType actType,
         float * gradientArray)
 {
     YnActivationGpuKernelGradientArrayCal<<<cuda_gridsize(n), BLOCK>>>(array, num, actType, gradientArray);

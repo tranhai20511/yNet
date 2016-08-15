@@ -238,6 +238,39 @@ void YnBlasGpuFastArrayMeanCal(float * inArr,
         float * meanArr)
 YN_ALSWAY_INLINE;
 
+YN_FINAL
+void YnBlasGpuBiasScale(float *output,
+        float *biases,
+        int batch,
+        int num,
+        int size)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasGpuBackwardScale(float *x_norm,
+        float *delta,
+        int batch,
+        int num,
+        int size,
+        float *scale_updates)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasGpuBiasAdd(float *output,
+        float *biases,
+        int batch,
+        int num,
+        int size)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnBlasGpuBiasBackward(float *bias_updates,
+        float *delta,
+        int batch,
+        int num,
+        int size)
+YN_ALSWAY_INLINE;
+
 #ifdef __cplusplus
 }
 #endif
