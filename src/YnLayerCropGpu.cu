@@ -29,7 +29,7 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-YN_GPU_DEVICE float _YnLayerCropPixelGet(float *image,
+YN_GPU_DEVICE float _YnLayerCropGpuPixelGet(float *image,
         int w,
         int h,
         int x,
@@ -42,7 +42,7 @@ YN_GPU_DEVICE float _YnLayerCropPixelGet(float *image,
     return image[x + w * (y + c * h)];
 }
 
-YN_GPU_DEVICE float3 _YnLayerCropRgbToHsv(float3 rgb)
+YN_GPU_DEVICE float3 _YnLayerCropGpuRgbToHsv(float3 rgb)
 {
     float r = rgb.x;
     float g = rgb.y;
@@ -83,7 +83,7 @@ YN_GPU_DEVICE float3 _YnLayerCropRgbToHsv(float3 rgb)
     return make_float3(h, s, v);
 }
 
-YN_GPU_DEVICE float3 _YnLayerCropHsvToRgb(float3 hsv)
+YN_GPU_DEVICE float3 _YnLayerCropGpuHsvToRgb(float3 hsv)
 {
     float h = hsv.x;
     float s = hsv.y;
@@ -148,7 +148,7 @@ YN_GPU_DEVICE float3 _YnLayerCropHsvToRgb(float3 hsv)
     return make_float3(r, g, b);
 }
 
-YN_GPU_DEVICE float _YnLayerCropBilinearInterpolate(float *image,
+YN_GPU_DEVICE float _YnLayerCropGpuBilinearInterpolate(float *image,
         int w,
         int h,
         float x,
@@ -161,15 +161,15 @@ YN_GPU_DEVICE float _YnLayerCropBilinearInterpolate(float *image,
     float dx = x - ix;
     float dy = y - iy;
 
-    float val = (1-dy) * (1-dx) * _YnLayerCropPixelGet(image, w, h, ix,     iy,     c) +
-                dy     * (1-dx) * _YnLayerCropPixelGet(image, w, h, ix,     iy + 1, c) +
-                (1-dy) *   dx   * _YnLayerCropPixelGet(image, w, h, ix + 1, iy,     c) +
-                dy     *   dx   * _YnLayerCropPixelGet(image, w, h, ix + 1, iy+1,   c);
+    float val = (1-dy) * (1-dx) * _YnLayerCropGpuPixelGet(image, w, h, ix,     iy,     c) +
+                dy     * (1-dx) * _YnLayerCropGpuPixelGet(image, w, h, ix,     iy + 1, c) +
+                (1-dy) *   dx   * _YnLayerCropGpuPixelGet(image, w, h, ix + 1, iy,     c) +
+                dy     *   dx   * _YnLayerCropGpuPixelGet(image, w, h, ix + 1, iy+1,   c);
 
     return val;
 }
 
-YN_GPU_GLOBAL void  _YnLayerCropLevelsImage(float *image,
+YN_GPU_GLOBAL void  _YnLayerCropGpuLevelsImage(float *image,
         float *rand,
         int batch,
         int w,
@@ -182,61 +182,93 @@ YN_GPU_GLOBAL void  _YnLayerCropLevelsImage(float *image,
         float shift)
 {
     uint32 offset;
+    int x, y;
+    float rshift;
+    float gshift;
+    float bshift;
+    float r0;
+    float r1;
+    float r2;
+    float r3;
+    float3 rgb;
+    float3 hsv;
+    float r;
+    float g;
+    float b;
     int size = batch * w * h;
+
     int id = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
     if (id >= size)
         return;
-    int x = id % w;
-    id /= w;
-    int y = id % h;
-    id /= h;
-    float rshift = rand[0];
-    float gshift = rand[1];
-    float bshift = rand[2];
-    float r0 = rand[8*id + 0];
-    float r1 = rand[8*id + 1];
-    float r2 = rand[8*id + 2];
-    float r3 = rand[8*id + 3];
 
-    saturation = r0*(saturation - 1) + 1;
+    x = id % w;
+    id /= w;
+    y = id % h;
+    id /= h;
+    rshift = rand[0];
+    gshift = rand[1];
+    bshift = rand[2];
+    r0 = rand[8 * id + 0];
+    r1 = rand[8 * id + 1];
+    r2 = rand[8 * id + 2];
+    r3 = rand[8 * id + 3];
+
+    saturation = r0 * (saturation - 1) + 1;
     saturation = (r1 > .5) ? 1./saturation : saturation;
-    exposure = r2*(exposure - 1) + 1;
-    exposure = (r3 > .5) ? 1./exposure : exposure;
+    exposure = r2 * (exposure - 1) + 1;
+    exposure = (r3 > .5) ? 1. / exposure : exposure;
 
     offset = id * h * w * 3;
     image += offset;
-    float r = image[x + w*(y + h*0)];
-    float g = image[x + w*(y + h*1)];
-    float b = image[x + w*(y + h*2)];
+    r = image[x + w * (y + h * 0)];
+    g = image[x + w * (y + h * 1)];
+    b = image[x + w * (y + h * 2)];
 
-    float3 rgb = make_float3(r,g,b);
+    rgb = make_float3(r,g,b);
 
-    if (train){
-        float3 hsv = rgb_to_hsv_kernel(rgb);
+    if (train)
+    {
+        hsv = _YnLayerCropGpuRgbToHsv(rgb);
         hsv.y *= saturation;
         hsv.z *= exposure;
-        rgb = hsv_to_rgb_kernel(hsv);
-    } else {
+        rgb = _YnLayerCropGpuHsvToRgb(hsv);
+    }
+    else
+    {
         shift = 0;
     }
 
-    image[x + w*(y + h*0)] = rgb.x*scale + translate + (rshift - .5)*shift;
-    image[x + w*(y + h*1)] = rgb.y*scale + translate + (gshift - .5)*shift;
-    image[x + w*(y + h*2)] = rgb.z*scale + translate + (bshift - .5)*shift;
+    image[x + w * (y + h * 0)] = rgb.x * scale + translate + (rshift - .5) * shift;
+    image[x + w * (y + h * 1)] = rgb.y * scale + translate + (gshift - .5) * shift;
+    image[x + w * (y + h * 2)] = rgb.z * scale + translate + (bshift - .5) * shift;
 }
 
-YN_GPU_GLOBAL void forward_crop_layer_kernel(float *input, float *rand, int size, int c, int h, int w, int crop_height, int crop_width, int train, int flip, float angle, float *output)
+YN_GPU_GLOBAL void _YnLayerCropGpuForward(float *input,
+        float *rand,
+        int size,
+        int c,
+        int h,
+        int w,
+        int crop_height,
+        int crop_width,
+        int train,
+        int flip,
+        float angle,
+        float *output)
 {
+    int i, j;
+    int count;
     int id = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
-    if (id >= size) return;
+    if (id >= size)
+        return;
 
     float cx = w/2.;
     float cy = h/2.;
 
     int count = id;
-    int j = id % crop_width;
+    j = id % crop_width;
     id /= crop_width;
-    int i = id % crop_height;
+    i = id % crop_height;
     id /= crop_height;
     int k = id % c;
     id /= c;
@@ -266,7 +298,7 @@ YN_GPU_GLOBAL void forward_crop_layer_kernel(float *input, float *rand, int size
     float rx = cos(angle)*(x-cx) - sin(angle)*(y-cy) + cx;
     float ry = sin(angle)*(x-cx) + cos(angle)*(y-cy) + cy;
 
-    output[count] = bilinear_interpolate_kernel(input, w, h, rx, ry, k);
+    output[count] = _YnLayerCropBilineraInterpolate(input, w, h, rx, ry, k);
 }
 
 YN_EXTERN_C
