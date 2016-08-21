@@ -20,7 +20,10 @@ C_SRCS += \
 ../src/YnLayerConnected.c \
 ../src/YnLayerConnectedGpu.c \
 ../src/YnLayerConvolutional.c \
-../src/YnLayerConvolutionalGpu.c \
+../src/YnLayerCost.c \
+../src/YnLayerCostGpu.c \
+../src/YnLayerCrop.c \
+../src/YnLayerDeconvolutional.c \
 ../src/YnList.c \
 ../src/YnMatrix.c \
 ../src/YnNetwork.c \
@@ -46,7 +49,10 @@ OBJS += \
 ./src/YnLayerConnected.o \
 ./src/YnLayerConnectedGpu.o \
 ./src/YnLayerConvolutional.o \
-./src/YnLayerConvolutionalGpu.o \
+./src/YnLayerCost.o \
+./src/YnLayerCostGpu.o \
+./src/YnLayerCrop.o \
+./src/YnLayerDeconvolutional.o \
 ./src/YnList.o \
 ./src/YnMatrix.o \
 ./src/YnNetwork.o \
@@ -72,7 +78,10 @@ C_DEPS += \
 ./src/YnLayerConnected.d \
 ./src/YnLayerConnectedGpu.d \
 ./src/YnLayerConvolutional.d \
-./src/YnLayerConvolutionalGpu.d \
+./src/YnLayerCost.d \
+./src/YnLayerCostGpu.d \
+./src/YnLayerCrop.d \
+./src/YnLayerDeconvolutional.d \
 ./src/YnList.d \
 ./src/YnMatrix.d \
 ./src/YnNetwork.d \

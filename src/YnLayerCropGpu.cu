@@ -181,116 +181,173 @@ YN_GPU_GLOBAL void  _YnLayerCropLevelsImage(float *image,
         float scale,
         float shift)
 {
+    float3 rgb;
+    float3 hsv;
+    float rshift;
+    float gshift;
+    float bshift;
+    float r0;
+    float r1;
+    float r2;
+    float r3;
+    float r;
+    float g;
+    float b;
+    int x;
+    int y;
+    float rx;
+    float ry;
     uint32 offset;
+
     int size = batch * w * h;
-    int id = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
+    int id = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
+
     if (id >= size)
         return;
-    int x = id % w;
-    id /= w;
-    int y = id % h;
-    id /= h;
-    float rshift = rand[0];
-    float gshift = rand[1];
-    float bshift = rand[2];
-    float r0 = rand[8*id + 0];
-    float r1 = rand[8*id + 1];
-    float r2 = rand[8*id + 2];
-    float r3 = rand[8*id + 3];
 
-    saturation = r0*(saturation - 1) + 1;
-    saturation = (r1 > .5) ? 1./saturation : saturation;
-    exposure = r2*(exposure - 1) + 1;
-    exposure = (r3 > .5) ? 1./exposure : exposure;
+    x = id % w;
+    id /= w;
+    y = id % h;
+    id /= h;
+    rshift = rand[0];
+    gshift = rand[1];
+    bshift = rand[2];
+    r0 = rand[8 * id + 0];
+    r1 = rand[8 * id + 1];
+    r2 = rand[8 * id + 2];
+    r3 = rand[8 * id + 3];
+
+    saturation = r0 * (saturation - 1) + 1;
+    saturation = (r1 > .5) ? 1. / saturation : saturation;
+    exposure = r2 * (exposure - 1) + 1;
+    exposure = (r3 > .5) ? 1. / exposure : exposure;
 
     offset = id * h * w * 3;
     image += offset;
-    float r = image[x + w*(y + h*0)];
-    float g = image[x + w*(y + h*1)];
-    float b = image[x + w*(y + h*2)];
+    r = image[x + w * (y + h * 0)];
+    g = image[x + w * (y + h * 1)];
+    b = image[x + w * (y + h * 2)];
 
-    float3 rgb = make_float3(r,g,b);
+    rgb = make_float3(r, g, b);
 
-    if (train){
-        float3 hsv = rgb_to_hsv_kernel(rgb);
+    if (train)
+    {
+        hsv = _YnLayerCropRgbToHsv(rgb);
         hsv.y *= saturation;
         hsv.z *= exposure;
-        rgb = hsv_to_rgb_kernel(hsv);
-    } else {
+        rgb = _YnLayerCropHsvToRgb(hsv);
+    }
+    else
+    {
         shift = 0;
     }
 
-    image[x + w*(y + h*0)] = rgb.x*scale + translate + (rshift - .5)*shift;
-    image[x + w*(y + h*1)] = rgb.y*scale + translate + (gshift - .5)*shift;
-    image[x + w*(y + h*2)] = rgb.z*scale + translate + (bshift - .5)*shift;
+    image[x + w * (y + h * 0)] = rgb.x * scale + translate + (rshift - .5) * shift;
+    image[x + w * (y + h * 1)] = rgb.y * scale + translate + (gshift - .5) * shift;
+    image[x + w * (y + h * 2)] = rgb.z * scale + translate + (bshift - .5) * shift;
 }
 
-YN_GPU_GLOBAL void forward_crop_layer_kernel(float *input, float *rand, int size, int c, int h, int w, int crop_height, int crop_width, int train, int flip, float angle, float *output)
+YN_GPU_GLOBAL void _YnLayerCropForward(float *input,
+        float *rand,
+        int size,
+        int c,
+        int h,
+        int w,
+        int crop_height,
+        int crop_width,
+        int train,
+        int flip,
+        float angle,
+        float *output)
 {
-    int id = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
-    if (id >= size) return;
+    float cx;
+    float cy;
+    int count;
+    int i, j;
+    int k, b;
+    float r4;
+    float r5;
+    float r6;
+    float r7;
+    float dw;
+    float dh;
+    float x;
+    float y;
+    float rx;
+    float ry;
 
-    float cx = w/2.;
-    float cy = h/2.;
+    int id = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
+    if (id >= size)
+        return;
 
-    int count = id;
-    int j = id % crop_width;
+    cx = w/2.;
+    cy = h/2.;
+
+    count = id;
+    j = id % crop_width;
     id /= crop_width;
-    int i = id % crop_height;
+    i = id % crop_height;
     id /= crop_height;
-    int k = id % c;
+    k = id % c;
     id /= c;
-    int b = id;
+    b = id;
 
-    float r4 = rand[8*b + 4];
-    float r5 = rand[8*b + 5];
-    float r6 = rand[8*b + 6];
-    float r7 = rand[8*b + 7];
+    r4 = rand[8 * b + 4];
+    r5 = rand[8 * b + 5];
+    r6 = rand[8 * b + 6];
+    r7 = rand[8 * b + 7];
 
-    float dw = (w - crop_width)*r4;
-    float dh = (h - crop_height)*r5;
+    dw = (w - crop_width) * r4;
+    dh = (h - crop_height) * r5;
     flip = (flip && (r6 > .5));
-    angle = 2*angle*r7 - angle;
-    if (!train){
-        dw = (w - crop_width)/2.;
-        dh = (h - crop_height)/2.;
+    angle = 2 * angle * r7 - angle;
+
+    if (!train)
+    {
+        dw = (w - crop_width) / 2.;
+        dh = (h - crop_height) / 2.;
         flip = 0;
         angle = 0;
     }
 
-    input += w*h*c*b;
+    input += w * h * c * b;
 
-    float x = (flip) ? w - dw - j - 1 : j + dw;
-    float y = i + dh;
+    x = (flip) ? w - dw - j - 1 : j + dw;
+    y = i + dh;
 
-    float rx = cos(angle)*(x-cx) - sin(angle)*(y-cy) + cx;
-    float ry = sin(angle)*(x-cx) + cos(angle)*(y-cy) + cy;
+    rx = cos(angle) * (x - cx) - sin(angle) * (y - cy) + cx;
+    ry = sin(angle) * (x - cx) + cos(angle) * (y - cy) + cy;
 
-    output[count] = bilinear_interpolate_kernel(input, w, h, rx, ry, k);
+    output[count] = _YnLayerCropBilinearInterpolate(input, w, h, rx, ry, k);
 }
 
 YN_EXTERN_C
 void YnLayerCropGpuForward(tYnLayer * layer,
         tYnNetworkState netState)
 {
-    cuda_random(layer.rand_gpu, layer.batch*8);
+    float radians;
+    float scale;
+    float translatel;
+    int size;
 
-    float radians = layer.angle*3.14159265/180.;
+    YnCudaMakeRamdomArray(layer.randGpu, layer.batch * 8);
 
-    float scale = 2;
-    float translate = -1;
-    if (layer.noadjust){
+    radians = layer.angle * 3.14159265 / 180.;
+    scale = 2;
+    translate = -1;
+
+    if (layer.noadjust)
+    {
         scale = 1;
         translate = 0;
     }
 
-    int size = layer.batch * layer.w * layer.h;
+    size = layer.batch * layer.w * layer.h;
+    _YnLayerCropLevelsImage<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input, layer.rand_gpu, layer.batch, layer.w, layer.h, state.train, layer.saturation, layer.exposure, translate, scale, layer.shift);
+    YnCudaCheckError(cudaPeekAtLastError());
 
-    levels_image_kernel<<<cuda_gridsize(size), BLOCK>>>(state.input, layer.rand_gpu, layer.batch, layer.w, layer.h, state.train, layer.saturation, layer.exposure, translate, scale, layer.shift);
-    check_error(cudaPeekAtLastError());
+    size = layer.batch * layer.c * layer.outW * layer.outH;
 
-    size = layer.batch*layer.c*layer.out_w*layer.out_h;
-
-    forward_crop_layer_kernel<<<cuda_gridsize(size), BLOCK>>>(state.input, layer.rand_gpu, size, layer.c, layer.h, layer.w, layer.out_h, layer.out_w, state.train, layer.flip, radians, layer.output_gpu);
-    check_error(cudaPeekAtLastError());
+    _YnLayerCropForward<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input, layer.rand_gpu, size, layer.c, layer.h, layer.w, layer.outH, layer.outW, state.train, layer.flip, radians, layer.outputGpu);
+    YnCudaCheckError(cudaPeekAtLastError());
 }
