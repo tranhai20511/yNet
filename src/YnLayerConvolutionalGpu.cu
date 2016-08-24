@@ -31,7 +31,7 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-YNGpu_GLOBAL void _YnBinarizeFilters(float *filters,
+YN_GPU_GLOBAL void _YnBinarizeFilters(float *filters,
         int num,
         int size,
         float *binary)
@@ -62,7 +62,7 @@ void YnBinarizeFilters(float *filters,
         int size,
         float *mean)
 {
-    _YnBinarizeFilters<<<YnCudaGridSize(num), YNGpu_NUM_THREADS_IN_BLOCK>>>(filters, num, size, mean);
+    _YnBinarizeFilters<<<YnCudaGridSize(num), YN_GPU_NUM_THREADS_IN_BLOCK>>>(filters, num, size, mean);
     YnCudaCheckError(cudaPeekAtLastError());
 }
 

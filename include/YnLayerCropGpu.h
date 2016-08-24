@@ -23,7 +23,7 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-void YnLayerCropGpuForward(tYnLayer * layer,
+void YnLayerCropGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
