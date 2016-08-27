@@ -31,7 +31,7 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-YNGpu_GLOBAL void _YnBinarizeFilters(float *filters,
+YN_GPU_GLOBAL void _YnBinarizeFilters(float *filters,
         int num,
         int size,
         float *binary)
@@ -43,14 +43,14 @@ YNGpu_GLOBAL void _YnBinarizeFilters(float *filters,
     if (f >= num)
         return;
 
-    for(i = 0; i < size; i ++)
+    for (i = 0; i < size; i ++)
     {
         mean += abs(filters[f * size + i]);
     }
 
     mean = mean / size;
 
-    for(i = 0; i < size; i ++)
+    for (i = 0; i < size; i ++)
     {
         binary[f * size + i] = (filters[f * size + i] > 0) ? mean : (- mean);
     }
@@ -88,7 +88,7 @@ void YnLayerConvolutionalGpuForward(tYnLayer layer,
 
     YnBlasGpuArrayFillValueSet(layer.outputGpu, layer.outputs * layer.batch, 1, 0);
 
-    if(layer.binary)
+    if (layer.binary)
     {
         YnBinarizeFilters(layer.filtersGpu,
                 layer.n,
@@ -97,7 +97,7 @@ void YnLayerConvolutionalGpuForward(tYnLayer layer,
         YnBinarySwap(layer);
     }
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         YnImageGpuImage2Col(state.input + i * layer.c * layer.h * layer.w,
                 layer.c,
@@ -114,9 +114,9 @@ void YnLayerConvolutionalGpuForward(tYnLayer layer,
         YnGemmGpu(0, 0, m, n, k, 1., a, k, b, n, 1., c + i * m * n, n);
     }
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
-        if(state.train)
+        if (state.train)
         {
             YnBlasGpuFastArrayMeanCal(layer.outputGpu,
                     layer.batch,
@@ -192,7 +192,7 @@ void YnLayerConvolutionalGpuForward(tYnLayer layer,
 
     YnActivationGpuOutputArrayCal(layer.outputGpu, m * n * layer.batch, layer.activation);
 
-    if(layer.binary)
+    if (layer.binary)
         YnBinarySwap(layer);
 }
 
@@ -214,7 +214,7 @@ void YnLayerConvolutionalGpuBackward(tYnLayer layer,
 
     YnBlasGpuBiasBackward(layer.biasUpdatesGpu, layer.deltaGpu, layer.batch, layer.n, k);
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
         YnBlasGpuBackwardScale(layer.xNormGpu,
                 layer.deltaGpu,
@@ -256,7 +256,7 @@ void YnLayerConvolutionalGpuBackward(tYnLayer layer,
                 layer.deltaGpu);
     }
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         a = layer.deltaGpu;
         b = layer.colImageGpu;
@@ -273,9 +273,9 @@ void YnLayerConvolutionalGpuBackward(tYnLayer layer,
 
         YnGemmGpu(0, 1, m, n, k, 1, a + i * m * k, k, b, k, 1, c, n);
 
-        if(state.delta)
+        if (state.delta)
         {
-            if(layer.binary)
+            if (layer.binary)
                 YnBinarySwap(layer);
 
             a = layer.filtersGpu;
@@ -293,7 +293,7 @@ void YnLayerConvolutionalGpuBackward(tYnLayer layer,
                     layer.pad,
                     state.delta + i * layer.c * layer.h * layer.w);
 
-            if(layer.binary)
+            if (layer.binary)
                 YnBinarySwap(layer);
         }
     }

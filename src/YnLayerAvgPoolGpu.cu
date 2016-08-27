@@ -41,7 +41,7 @@ YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelForward(int num,
     int in_index;
     int id = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(id >= num)
+    if (id >= num)
         return;
 
     k = id % channel;
@@ -50,7 +50,7 @@ YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelForward(int num,
 
     out_index = (k + channel * b);
     output[out_index] = 0;
-    for(i = 0; i < width * height; i ++)
+    for (i = 0; i < width * height; i ++)
     {
         in_index = i + height * width * (k + b * channel);
         output[out_index] += input[in_index];
@@ -73,7 +73,7 @@ YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelBackward(int num,
     int in_index;
     int id = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(id >= num)
+    if (id >= num)
         return;
 
     k = id % channel;
@@ -81,7 +81,7 @@ YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelBackward(int num,
     b = id;
 
     out_index = (k + channel * b);
-    for(i = 0; i < width * height; i ++)
+    for (i = 0; i < width * height; i ++)
     {
         in_index = i + height * width * (k + b * channel);
         inDelta[in_index] += outDelta[out_index] / (width * height);

@@ -89,7 +89,7 @@ void YnImageGpuCol2Image(float *data_col,
     int num_kernels = channels * height * width;
 
     YnImageGpuCol2ImageKernel<<<(num_kernels+BLOCK-1)/BLOCK,
-        BLOCK>>>(num_kernels, data_col, height, width, ksize, pad,
+        YN_GPU_NUM_THREADS_IN_BLOCK>>>(num_kernels, data_col, height, width, ksize, pad,
                     stride, height_col, width_col, data_im);
 }
 
@@ -108,7 +108,7 @@ YN_GPU_GLOBAL void YnImageGpuImage2ColKernel(const int n,
     int w;
     int index = blockIdx.x * blockDim.x + threadIdx.x;
 
-    for(; index < n; index += blockDim.x * gridDim.x)
+    for (; index < n; index += blockDim.x * gridDim.x)
     {
         int w_out = index % width_col;
         int h_index = index / width_col;
@@ -160,7 +160,7 @@ void YnImageGpuImage2Col(float *im,
     int num_kernels = channels * height_col * width_col;
 
     YnImageGpuImage2ColKernel<<<(num_kernels+BLOCK-1)/BLOCK,
-        BLOCK>>>(num_kernels, im, height, width, ksize, pad,
+        YN_GPU_NUM_THREADS_IN_BLOCK>>>(num_kernels, im, height, width, ksize, pad,
                  stride, height_col, width_col, data_col);
 }
 

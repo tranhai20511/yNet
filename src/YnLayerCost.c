@@ -94,17 +94,17 @@ void YnLayerCostForward(tYnLayer layer,
     if (!netState.truth)
         return;
 
-    if(layer.costType == cYnLayerCostMasked)
+    if (layer.costType == cYnLayerCostMasked)
     {
         int i;
-        for(i = 0; i < layer.batch * layer.inputs; i ++)
+        for (i = 0; i < layer.batch * layer.inputs; i ++)
         {
-            if(netState.truth[i] == YN_CUS_NUM)
+            if (netState.truth[i] == YN_CUS_NUM)
                 netState.input[i] = YN_CUS_NUM;
         }
     }
 
-    if(layer.costType == cYnLayerCostSmooth)
+    if (layer.costType == cYnLayerCostSmooth)
     {
         YnBlasGradientSmoothL1(netState.input, netState.truth, layer.delta, layer.batch * layer.inputs);
     }

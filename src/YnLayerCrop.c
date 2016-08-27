@@ -76,28 +76,28 @@ void YnLayerCropForward(tYnLayer layer,
     float scale = 2;
     float trans = -1;
 
-    if(layer.noadjust)
+    if (layer.noadjust)
     {
         scale = 1;
         trans = 0;
     }
 
-    if(!netState.train)
+    if (!netState.train)
     {
         flip = 0;
         dh = (layer.h - layer.outH)/2;
         dw = (layer.w - layer.outW)/2;
     }
 
-    for(b = 0; b < layer.batch; b ++)
+    for (b = 0; b < layer.batch; b ++)
     {
-        for(c = 0; c < layer.c; c ++)
+        for (c = 0; c < layer.c; c ++)
         {
-            for(i = 0; i < layer.outH; i ++)
+            for (i = 0; i < layer.outH; i ++)
             {
-                for(j = 0; j < layer.outW; j ++)
+                for (j = 0; j < layer.outW; j ++)
                 {
-                    if(flip)
+                    if (flip)
                     {
                         col = layer.w - dw - j - 1;
                     }

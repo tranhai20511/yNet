@@ -64,7 +64,7 @@ void YnLayerConnectedGpuUpdate(tYnLayer layer,
     YnBlasGpuArrayAxpyValueSet(layer.biasesGpu, layer.biasUpdatesGpu, layer.outputs, 1, 1, learning_rate / batch);
     YnBlasGpuArrayScaleValueSet(layer.biasUpdatesGpu, layer.outputs, 1, momentum);
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
         YnBlasGpuArrayAxpyValueSet(layer.scalesGpu, layer.scaleUpdatesGpu, layer.outputs, 1, 1, learning_rate / batch);
         YnBlasGpuArrayScaleValueSet(layer.scaleUpdatesGpu, layer.outputs, 1, momentum);
@@ -96,9 +96,9 @@ void YnLayerConnectedGpuForward(tYnLayer layer,
     c = layer.outputGpu;
     YnGemmGpu(0, 1, m, n, k, 1, a, k, b, k, 1, c, n);
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
-        if(state.train)
+        if (state.train)
         {
             YnBlasGpuFastArrayMeanCal(layer.outputGpu, layer.batch, layer.outputs, 1, layer.meanGpu);
             YnBlasGpuFastArrayVarianceCal(layer.outputGpu, layer.meanGpu, layer.batch, layer.outputs, 1, layer.varianceGpu);
@@ -120,7 +120,7 @@ void YnLayerConnectedGpuForward(tYnLayer layer,
         YnBlasGpuScaleBias(layer.outputGpu, layer.scalesGpu, layer.batch, layer.outputs, 1);
     }
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         YnBlasGpuArrayAxpyValueSet(layer.outputGpu + i * layer.outputs, layer.biasesGpu, layer.outputs, 1, 1, 1);
     }
@@ -142,12 +142,12 @@ void YnLayerConnectedGpuBackward(tYnLayer layer,
 
     YnActivationGpuGradientArrayCal(layer.outputGpu, layer.outputs * layer.batch, layer.activation, layer.deltaGpu);
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         YnBlasGpuArrayAxpyValueSet(layer.biasUpdatesGpu, layer.deltaGpu + i * layer.outputs, layer.outputs, 1, 1, 1);
     }
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
         YnBlasGpuBackwardScale(layer.xNormGpu, layer.deltaGpu, layer.batch, layer.outputs, 1, layer.scaleUpdatesGpu);
 

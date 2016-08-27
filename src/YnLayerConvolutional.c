@@ -29,7 +29,7 @@ tYnImage * _YnLayerConvolutionalFiltersGet(tYnLayer layer)
     tYnImage *filters = calloc(layer.n, sizeof(tYnImage));
     int i;
 
-    for(i = 0; i < layer.n; ++i)
+    for (i = 0; i < layer.n; ++i)
     {
         filters[i] = YnImageCopy(YnLayerConvolutionalFilterGet(layer, i));
     }
@@ -75,7 +75,7 @@ tYnLayer YnLayerConvolutionalMake(int batchNum,
 
     scale = sqrt(2./(size * size * channel));
 
-    for(i = 0; i < channel * num * size * size; i ++)
+    for (i = 0; i < channel * num * size * size; i ++)
         layer.filters[i] = scale*rand_uniform(-1, 1);
 
     outH = YnLayerConvolutionalOutHeightGet(layer);
@@ -99,7 +99,7 @@ tYnLayer YnLayerConvolutionalMake(int batchNum,
     {
         layer.scales = calloc(num, sizeof(float));
         layer.scaleUpdates = calloc(num, sizeof(float));
-        for(i = 0; i < num; i ++)
+        for (i = 0; i < num; i ++)
         {
             layer.scales[i] = 1;
         }
@@ -170,7 +170,7 @@ void YnLayerConvolutionalForward(tYnLayer layer,
     float *b = layer.colImage;
     float *c = layer.output;
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         YnImageImage2Col(netState.input, layer.c, layer.h, layer.w,
                 layer.size, layer.stride, layer.pad, b);
@@ -216,7 +216,7 @@ void YnLayerConvolutionalBackward(tYnLayer layer,
     YnActivationGradientArrayCal(layer.output, m * k * layer.batch, layer.activation, layer.delta);
     YnBlasArrayBackwardBias(layer.biasUpdates, layer.delta, layer.batch, layer.n, k);
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         a = layer.delta + i * m * k;
         b = layer.colImage;
@@ -262,11 +262,11 @@ void YnLayerConvolutionalDenormalize(tYnLayer layer)
     float scale;
     int i, j;
 
-    for(i = 0; i < layer.n; i ++)
+    for (i = 0; i < layer.n; i ++)
     {
         scale = layer.scales[i] / sqrt(layer.rollingVariance[i] + .00001);
 
-        for(j = 0; j < (layer.c * layer.size * layer.size); j ++)
+        for (j = 0; j < (layer.c * layer.size * layer.size); j ++)
         {
             layer.filters[(i * layer.c * layer.size * layer.size) + j] *= scale;
         }
@@ -394,7 +394,7 @@ void YnLayerConvolutionalFiltersRescale(tYnLayer layer,
     float sum;
     tYnImage im;
 
-    for(i = 0; i < layer.n; i ++)
+    for (i = 0; i < layer.n; i ++)
     {
         im = YnLayerConvolutionalFilterGet(layer, i);
 
@@ -412,7 +412,7 @@ int YnLayerConvolutionalFiltersRgbgr(tYnLayer layer)
     int i;
     tYnImage im;
 
-    for(i = 0; i < layer.n; i ++)
+    for (i = 0; i < layer.n; i ++)
     {
         im = YnLayerConvolutionalFilterGet(layer, i);
 

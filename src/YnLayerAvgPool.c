@@ -69,14 +69,14 @@ void YnLayerAvgPoolForward(tYnLayer layer,
     int out_index;
     int in_index;
 
-    for(b = 0; b < layer.batch; b ++)
+    for (b = 0; b < layer.batch; b ++)
     {
-        for(k = 0; k < layer.c; k ++)
+        for (k = 0; k < layer.c; k ++)
         {
             out_index = k + b * layer.c;
             layer.output[out_index] = 0;
 
-            for(i = 0; i < layer.h * layer.w; i ++)
+            for (i = 0; i < layer.h * layer.w; i ++)
             {
                 in_index = i + layer.h * layer.w * (k + b * layer.c);
                 layer.output[out_index] += netState.input[in_index];
@@ -94,13 +94,13 @@ void YnLayerAvgPoolBackward(tYnLayer layer,
     int out_index;
     int in_index;
 
-    for(b = 0; b < layer.batch; b ++)
+    for (b = 0; b < layer.batch; b ++)
     {
-        for(k = 0; k < layer.c; k ++)
+        for (k = 0; k < layer.c; k ++)
         {
             out_index = k + b * layer.c;
 
-            for(i = 0; i < layer.h * layer.w; i ++)
+            for (i = 0; i < layer.h * layer.w; i ++)
             {
                 in_index = i + layer.h * layer.w * (k + b * layer.c);
                 netState.delta[in_index] += layer.delta[out_index] / (layer.h * layer.w);

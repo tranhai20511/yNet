@@ -88,13 +88,13 @@ void YnGemmNn(int M,
     int i, j, k;
     register float A_PART;
 
-    for(i = 0; i < M; i ++)
+    for (i = 0; i < M; i ++)
     {
-        for(k = 0; k < K; k ++)
+        for (k = 0; k < K; k ++)
         {
             A_PART = ALPHA*A[i * lda + k];
 
-            for(j = 0; j < N; j ++)
+            for (j = 0; j < N; j ++)
             {
                 C[i * ldc + j] += A_PART * B[k * ldb + j];
             }
@@ -117,12 +117,12 @@ void YnGemmNt(int M,
     int i, j, k;
     register float sum;
 
-    for(i = 0; i < M; i ++)
+    for (i = 0; i < M; i ++)
     {
-        for(j = 0; j < N; j ++)
+        for (j = 0; j < N; j ++)
         {
             sum = 0;
-            for(k = 0; k < K; k ++)
+            for (k = 0; k < K; k ++)
             {
                 sum += ALPHA * A[i * lda + k] * B[j * ldb + k];
             }
@@ -147,13 +147,13 @@ void YnGemmTn(int M,
     int i, j, k;
     register float A_PART;
 
-    for(i = 0; i < M; i ++)
+    for (i = 0; i < M; i ++)
      {
-        for(k = 0; k < K; k ++)
+        for (k = 0; k < K; k ++)
         {
             A_PART = ALPHA * A[k * lda + i];
 
-            for(j = 0; j < N; j ++)
+            for (j = 0; j < N; j ++)
             {
                 C[i * ldc + j] += A_PART * B[k * ldb + j];
             }
@@ -176,13 +176,13 @@ void YnGemmTt(int M,
     int i, j, k;
     register float sum;
 
-    for(i = 0; i < M; i ++)
+    for (i = 0; i < M; i ++)
     {
-        for(j = 0; j < N; j ++)
+        for (j = 0; j < N; j ++)
         {
             sum = 0;
 
-            for(k = 0; k < K; k ++)
+            for (k = 0; k < K; k ++)
             {
                 sum += ALPHA * A[i + k * lda] * B[k + j * ldb];
             }
@@ -198,7 +198,7 @@ float * YnGemmRandomMatrix(int rows,
     int i;
     float *m = calloc(rows*cols, sizeof(float));
 
-    for(i = 0; i < rows*cols; i ++)
+    for (i = 0; i < rows*cols; i ++)
     {
         m[i] = (float)rand()/RAND_MAX;
     }
@@ -219,13 +219,13 @@ void YnGemmTimeRandomMatrix(int TA,
     int i;
     clock_t start, end;
 
-    if(!TA)
+    if (!TA)
         a = YnGemmRandomMatrix(m, k);
     else
         a = YnGemmRandomMatrix(k, m);
 
     lda = (!TA) ? k : m;
-    if(!TB)
+    if (!TB)
         b = YnGemmRandomMatrix(k, n);
     else
         b = YnGemmRandomMatrix(n, k);
@@ -235,7 +235,7 @@ void YnGemmTimeRandomMatrix(int TA,
 
 
     start = clock();
-    for(i = 0; i<10; i ++)
+    for (i = 0; i<10; i ++)
     {
         YnGemm(TA, TB, m, n, k, 1, a, lda, b, ldb, 1, c, n);
     }
@@ -264,19 +264,19 @@ void YnGemm(int TA,
 {
     int i, j;
 
-    for(i = 0; i < M; i ++)
+    for (i = 0; i < M; i ++)
     {
-        for(j = 0; j < N; j ++)
+        for (j = 0; j < N; j ++)
         {
             C[i * ldc + j] *= BETA;
         }
     }
 
-    if(!TA && !TB)
+    if (!TA && !TB)
         YnGemmNn(M, N, K, ALPHA, A, lda, B, ldb, C, ldc);
-    else if(TA && !TB)
+    else if (TA && !TB)
         YnGemmTn(M, N, K, ALPHA, A, lda, B, ldb, C, ldc);
-    else if(!TA && TB)
+    else if (!TA && TB)
         YnGemmNt(M, N, K, ALPHA, A, lda, B, ldb, C, ldc);
     else
         YnGemmTt(M, N, K, ALPHA, A, lda, B, ldb, C, ldc);

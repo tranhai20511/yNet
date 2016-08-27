@@ -529,9 +529,9 @@ YN_GPU_GLOBAL void _YnBackwardScale(float *x_norm,
     float sum = 0;
     int index;
 
-    for(b = 0; b < batch; b ++)
+    for (b = 0; b < batch; b ++)
     {
-        for(i = 0; i < size; i += YN_GPU_NUM_THREADS_IN_BLOCK)
+        for (i = 0; i < size; i += YN_GPU_NUM_THREADS_IN_BLOCK)
         {
             index = p + i + size * (filter + num * b);
             sum += (p + i < size) ? (delta[index] * x_norm[index]) : 0;
@@ -543,7 +543,7 @@ YN_GPU_GLOBAL void _YnBackwardScale(float *x_norm,
 
     if (p == 0)
     {
-        for(i = 0; i < YN_GPU_NUM_THREADS_IN_BLOCK; i ++)
+        for (i = 0; i < YN_GPU_NUM_THREADS_IN_BLOCK; i ++)
             scale_updates[filter] += part[i];
     }
 }
@@ -561,9 +561,9 @@ YN_GPU_GLOBAL void _YnBiasBackward(float *bias_updates,
     float sum = 0;
     int index;
 
-    for(b = 0; b < batch; b ++)
+    for (b = 0; b < batch; b ++)
     {
-        for(i = 0; i < size; i += YN_GPU_NUM_THREADS_IN_BLOCK)
+        for (i = 0; i < size; i += YN_GPU_NUM_THREADS_IN_BLOCK)
         {
             index = p + i + size * (filter + num * b);
             sum += (p + i < size) ? delta[index] : 0;
@@ -575,7 +575,7 @@ YN_GPU_GLOBAL void _YnBiasBackward(float *bias_updates,
 
     if (p == 0)
     {
-        for(i = 0; i < YN_GPU_NUM_THREADS_IN_BLOCK; i ++)
+        for (i = 0; i < YN_GPU_NUM_THREADS_IN_BLOCK; i ++)
             bias_updates[filter] += part[i];
     }
 }
@@ -589,7 +589,7 @@ YN_GPU_GLOBAL void _YnBiasScale(float *output,
     int filter = blockIdx.y;
     int batch = blockIdx.z;
 
-    if(offset < size)
+    if (offset < size)
         output[(batch * num + filter) * size + offset] *= biases[filter];
 }
 

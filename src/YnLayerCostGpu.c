@@ -35,7 +35,7 @@ void YnLayerCostGpuForward(tYnLayer * layer,
     if (layer.costType == cYnLayerCostMasked)
         YnBlasGpuArrayMaskValueSet(netState.input, layer.batch * layer.inputs, YN_CUS_NUM, netState.truth);
 
-    if(layer.costType == cYnLayerCostSmooth)
+    if (layer.costType == cYnLayerCostSmooth)
         YnBlasGpuGradientSmoothL1(netState.input, netState.truth, layer.deltaGpu, layer.batch * layer.inputs);
     else
     {

@@ -279,11 +279,11 @@ void YnBlasArrayBiasAdd(float * output,
 {
     int i, j, b;
 
-    for(b = 0; b < batch; b ++)
+    for (b = 0; b < batch; b ++)
     {
-        for(i = 0; i < num; i ++)
+        for (i = 0; i < num; i ++)
         {
-            for(j = 0; j < size; j ++)
+            for (j = 0; j < size; j ++)
             {
                 output[(b * num + i) * size + j] += biases[i];
             }
@@ -299,9 +299,9 @@ void YnBlasArrayBackwardBias(float * biasUpdates,
 {
     int i, b;
 
-    for(b = 0; b < batch; b ++)
+    for (b = 0; b < batch; b ++)
     {
-        for(i = 0; i < num; i ++)
+        for (i = 0; i < num; i ++)
         {
             biasUpdates[i] += YnUtilArraySum(gradient + size * (i + b * num), size);
         }
@@ -316,11 +316,11 @@ void YnBlasArrayBiasScale(float * output,
 {
     int i, j, b;
 
-    for(b = 0; b < batch; b ++)
+    for (b = 0; b < batch; b ++)
     {
-        for(i = 0; i < num; i ++)
+        for (i = 0; i < num; i ++)
         {
-            for(j = 0; j < size; j ++)
+            for (j = 0; j < size; j ++)
             {
                 output[(b * num + i) * size + j] *= scales[i];
             }
@@ -339,12 +339,12 @@ void YnBlasArrayBackwardScale(float * xNorm,
     int index;
     float sum;
 
-    for(f = 0; f < num; f ++)
+    for (f = 0; f < num; f ++)
     {
         sum = 0;
-        for(b = 0; b < batch; b ++)
+        for (b = 0; b < batch; b ++)
         {
-            for(i = 0; i < size; i ++)
+            for (i = 0; i < size; i ++)
             {
                 index = i + size * (f + num * b);
                 sum += delta[index] * xNorm[index];
@@ -365,7 +365,7 @@ void YnBlasArrayMeanGradient(float * gradient,
     int i ,j ,k;
     int index;
 
-    for(i = 0; i < filters; i ++)
+    for (i = 0; i < filters; i ++)
     {
         variance[i] = 0;
 
@@ -394,12 +394,12 @@ void YnBlasArrayVarianceGradient(float * arrayIn,
     int index;
     int i ,j ,k;
 
-    for(i = 0; i < filters; i ++)
+    for (i = 0; i < filters; i ++)
     {
         varianceDelta[i] = 0;
-        for(j = 0; j < batch; j ++)
+        for (j = 0; j < batch; j ++)
         {
-            for(k = 0; k < spatial; k ++)
+            for (k = 0; k < spatial; k ++)
             {
                 index = j * filters * spatial + i * spatial + k;
                 varianceDelta[i] += delta[index] * (arrayIn[index] - mean[i]);
@@ -423,11 +423,11 @@ void YnBlasArrayNormalizeGradient(float * arrayIn,
     int index;
     int f, j, k;
 
-    for(j = 0; j < batch; j ++)
+    for (j = 0; j < batch; j ++)
     {
-        for(f = 0; f < filters; f ++)
+        for (f = 0; f < filters; f ++)
         {
-            for(k = 0; k < spatial; k ++)
+            for (k = 0; k < spatial; k ++)
             {
                 index = j * filters * spatial + f * spatial + k;
                 delta[index] = delta[index] * 1./(sqrt(variance[f]) + .00001f) + varianceGradient[f] * 2. * (arrayIn[index] - mean[f]) / (spatial * batch) + mean_delta[f]/(spatial*batch);

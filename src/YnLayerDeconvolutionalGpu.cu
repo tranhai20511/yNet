@@ -1,4 +1,4 @@
-//	File        :   YnLayerConvolutionalGpu.c
+//	File        :   YnLayerDeconvolutionalGpu.c
 //	Brief       :   Implement methods.
 //	DD-MM-YYYY  :   02-08-2016
 //	Author      :   haittt
@@ -8,7 +8,7 @@
 #include "cublas_v2.h"
 
 extern "C" {
-#include "../include/YnLayerConvolutionalGpu.h"
+#include "../include/YnLayerDeconvolutionalGpu.h"
 #include "../include/YnCudaGpu.h"
 #include "../include/YnGemmGpu.h"
 #include "../include/YnBlasGpu.h"
@@ -31,342 +31,118 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-YNGpu_GLOBAL void _YnBinarizeFilters(float *filters,
-        int num,
-        int size,
-        float *binary)
-{
-    int i = 0;
-    float mean = 0;
-    int f = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
-
-    if (f >= num)
-        return;
-
-    for(i = 0; i < size; i ++)
-    {
-        mean += abs(filters[f * size + i]);
-    }
-
-    mean = mean / size;
-
-    for(i = 0; i < size; i ++)
-    {
-        binary[f * size + i] = (filters[f * size + i] > 0) ? mean : (- mean);
-    }
-}
-
-YN_EXTERN_C YN_STATIC
-void YnBinarizeFilters(float *filters,
-        int num,
-        int size,
-        float *mean)
-{
-    _YnBinarizeFilters<<<YnCudaGridSize(num), YNGpu_NUM_THREADS_IN_BLOCK>>>(filters, num, size, mean);
-    YnCudaCheckError(cudaPeekAtLastError());
-}
-
-YN_EXTERN_C YN_STATIC
-void YnBinarySwap(tYnLayer layer)
-{
-    float *swap = layer.filtersGpu;
-    layer.filtersGpu = layer.binaryFiltersGpu;
-    layer.binaryFiltersGpu = swap;
-}
-
 YN_EXTERN_C
-void YnLayerConvolutionalGpuForward(tYnLayer layer,
+void YnLayerDeconvolutionalGpuForward(tYnLayer layer,
         tYnNetworkState state)
 {
     int i;
-    float * a;
-    float * b;
-    float * c;
-    int m = layer.n;
-    int k = layer.size*layer.size*layer.c;
-    int n = YnLayerConvolutionalOutHeightGet(layer) * YnLayerConvolutionalOutWidthGet(layer);
+    float *a;
+    float *b;
+    float *c;
+    int out_h = YnLayerDeconvolutionalOutHeightGet(layer);
+    int out_w = YnLayerDeconvolutionalOutWidthGet(layer);
+    int size = out_h*out_w;
+
+    int m = layer.size*layer.size*layer.n;
+    int n = layer.h*layer.w;
+    int k = layer.c;
 
     YnBlasGpuArrayFillValueSet(layer.outputGpu, layer.outputs * layer.batch, 1, 0);
 
-    if(layer.binary)
+    for (i = 0; i < layer.batch; i ++)
     {
-        YnBinarizeFilters(layer.filtersGpu,
-                layer.n,
-                layer.c * layer.size * layer.size,
-                layer.binaryFiltersGpu);
-        YnBinarySwap(layer);
-    }
-
-    for(i = 0; i < layer.batch; i ++)
-    {
-        YnImageGpuImage2Col(state.input + i * layer.c * layer.h * layer.w,
-                layer.c,
-                layer.h,
-                layer.w,
-                layer.size,
-                layer.stride,
-                layer.pad,
-                layer.colImageGpu);
-
         a = layer.filtersGpu;
-        b = layer.colImageGpu;
-        c = layer.outputGpu;
-        YnGemmGpu(0, 0, m, n, k, 1., a, k, b, n, 1., c + i * m * n, n);
+        b = state.input + i * layer.c * layer.h * layer.w;
+        c = layer.colImageGpu;
+
+        YnGemmGpu(1, 0, m, n, k, 1, a, m, b, n, 0, c, n);
+
+        YnImageGpuCol2Image(c, layer.n, out_h, out_w, layer.size, layer.stride, 0, layer.outputGpu + i * layer.n * size);
     }
 
-    if(layer.batchNormalize)
-    {
-        if(state.train)
-        {
-            YnBlasGpuFastArrayMeanCal(layer.outputGpu,
-                    layer.batch,
-                    layer.n,
-                    layer.outH*layer.outW,
-                    layer.meanGpu);
-
-            YnBlasGpuFastArrayVarianceCal(layer.outputGpu,
-                    layer.meanGpu,
-                    layer.batch,
-                    layer.n,
-                    layer.outH * layer.outW,
-                    layer.varianceGpu);
-
-            YnBlasGpuArrayScaleValueSet(layer.rollingMeanGpu,
-                    layer.n,
-                    1,
-                    .95);
-            YnBlasGpuArrayAxpyValueSet(layer.rollingMeanGpu,
-                    layer.meanGpu,
-                    layer.n,
-                    1,
-                    1,
-                    .05);
-            YnBlasGpuArrayScaleValueSet(layer.rollingVarianceGpu,
-                    layer.n,
-                    1,
-                    .95);
-            YnBlasGpuArrayAxpyValueSet(layer.rollingVarianceGpu,
-                    layer.varianceGpu,
-                    layer.n,
-                    1,
-                    1,
-                    .05);
-
-            YnBlasGpuArrayCopyValueSet(layer.xGpu,
-                    layer.outputGpu,
-                    layer.outputs * layer.batch,
-                    1,
-                    1);
-
-            YnBlasGpuArrayNormalizeCal(layer.outputGpu,
-                    layer.meanGpu,
-                    layer.varianceGpu,
-                    layer.batch,
-                    layer.n,
-                    layer.outH * layer.outW);
-
-            YnBlasGpuArrayCopyValueSet(layer.xNormGpu,
-                    layer.outputGpu,
-                    layer.outputs * layer.batch,
-                    1,
-                    1);
-        }
-        else
-        {
-            YnBlasGpuArrayNormalizeCal(layer.outputGpu,
-                    layer.rollingMeanGpu,
-                    layer.rollingVarianceGpu,
-                    layer.batch,
-                    layer.n,
-                    layer.outH * layer.outW);
-        }
-
-        YnBlasGpuBiasScale(layer.outputGpu,
-                layer.scalesGpu,
-                layer.batch,
-                layer.n,
-                layer.outH * layer.outW);
-    }
-
-    YnBlasGpuBiasAdd(layer.outputGpu, layer.biasesGpu, layer.batch, layer.n, n);
-
-    YnActivationGpuOutputArrayCal(layer.outputGpu, m * n * layer.batch, layer.activation);
-
-    if(layer.binary)
-        YnBinarySwap(layer);
+    YnBlasGpuBiasAdd(layer.outputGpu, layer.biasesGpu, layer.batch, layer.n, size);
+    YnActivationGpuOutputArrayCal(layer.outputGpu, layer.batch * layer.n * size, layer.activation);
 }
 
-void YnLayerConvolutionalGpuBackward(tYnLayer layer,
+void YnLayerDeconvolutionalGpuBackward(tYnLayer layer,
         tYnNetworkState state)
 {
+    int m;
+    int n;
+    int k;
+    float *a;
+    float *b;
+    float *c;
+    float alpha = 1. / layer.batch;
+    int out_h = YnLayerDeconvolutionalOutHeightGet(layer);
+    int out_w = YnLayerDeconvolutionalOutWidthGet(layer);
+    int size = out_h * out_w;
     int i;
-    float * a;
-    float * b;
-    float * c;
-    int m = layer.n;
-    int n = layer.size * layer.size * layer.c;
-    int k = YnLayerConvolutionalOutHeightGet(layer) * YnLayerConvolutionalOutWidthGet(layer);
 
-    YnActivationGpuGradientArrayCal(layer.outputGpu,
-            m * k * layer.batch,
-            layer.activation,
-            layer.deltaGpu);
+    YnActivationGradientArrayCal(layer.outputGpu, size*layer.n*layer.batch, layer.activation, layer.deltaGpu);
+    YnBlasArrayBackwardBias(layer.biasUpdatesGpu, layer.delta, layer.batch, layer.n, size);
 
-    YnBlasGpuBiasBackward(layer.biasUpdatesGpu, layer.deltaGpu, layer.batch, layer.n, k);
+    if (state.delta)
+        memset(state.delta, 0, layer.batch * layer.h * layer.w * layer.c * sizeof(float));
 
-    if(layer.batchNormalize)
+    for (i = 0; i < layer.batch; i ++)
     {
-        YnBlasGpuBackwardScale(layer.xNormGpu,
-                layer.deltaGpu,
-                layer.batch,
-                layer.n,
-                layer.outW * layer.outH,
-                layer.scaleUpdatesGpu);
+        m = layer.c;
+        n = layer.size*layer.size*layer.n;
+        k = layer.h*layer.w;
 
-        YnBlasGpuBiasScale(layer.deltaGpu,
-                layer.scalesGpu,
-                layer.batch,
-                layer.n,
-                layer.outH * layer.outW);
-
-        YnBlasGpuFastArrayMeanGradientCal(layer.deltaGpu,
-                layer.varianceGpu,
-                layer.batch,
-                layer.n,
-                layer.outW * layer.outH,
-                layer.meanDeltaGpu);
-
-        YnBlasGpuFastArrayVarianceGradientCal(layer.xGpu,
-                layer.deltaGpu,
-                layer.meanGpu,
-                layer.varianceGpu,
-                layer.batch,
-                layer.n,
-                layer.outW * layer.outH,
-                layer.varianceDeltaGpu);
-
-        YnBlasGpuArrayNormalizeGradientCal(layer.xGpu,
-                layer.meanGpu,
-                layer.varianceGpu,
-                layer.meanDeltaGpu,
-                layer.varianceDeltaGpu,
-                layer.batch,
-                layer.n,
-                layer.outW * layer.outH,
-                layer.deltaGpu);
-    }
-
-    for(i = 0; i < layer.batch; i ++)
-    {
-        a = layer.deltaGpu;
+        a = state.input + i*m*n;
         b = layer.colImageGpu;
         c = layer.filterUpdatesGpu;
 
-        YnImageGpuImage2Col(state.input + i * layer.c * layer.h * layer.w,
-                layer.c,
-                layer.h,
-                layer.w,
-                layer.size,
-                layer.stride,
-                layer.pad,
-                layer.colImageGpu);
+        YnImageGpuImage2Col(layer.deltaGpu + i * layer.n * size, layer.n, out_h, out_w,
+                layer.size, layer.stride, 0, b);
+        YnGemmGpu(0, 1, m, n, k, alpha, a, k ,b ,k ,1 ,c , n);
 
-        YnGemmGpu(0, 1, m, n, k, 1, a + i * m * k, k, b, k, 1, c, n);
-
-        if(state.delta)
+        if (state.delta)
         {
-            if(layer.binary)
-                YnBinarySwap(layer);
+            m = layer.c;
+            n = layer.h*layer.w;
+            k = layer.size*layer.size*layer.n;
 
             a = layer.filtersGpu;
-            b = layer.deltaGpu;
-            c = layer.colImageGpu;
+            b = layer.colImageGpu;
+            c = state.delta + i * n * m;
 
-            YnGemmGpu(1, 0, n, k, m, 1, a, n, b + i * k * m, k, 0, c, k);
-
-            YnImageGpuCol2Image(layer.colImageGpu,
-                    layer.c,
-                    layer.h,
-                    layer.w,
-                    layer.size,
-                    layer.stride,
-                    layer.pad,
-                    state.delta + i * layer.c * layer.h * layer.w);
-
-            if(layer.binary)
-                YnBinarySwap(layer);
+            YnGemm(0, 0, m, n, k, 1, a, k, b ,n ,1 ,c , n);
         }
     }
 }
 
-void YnLayerConvolutionalGpuPull(tYnLayer layer)
+void YnLayerDeconvolutionalGpuPull(tYnLayer layer)
 {
-    YnCudaArrayPullFromGpu(layer.filtersGpu,
-            layer.filters,
-            layer.c * layer.n * layer.size * layer.size);
-
-    YnCudaArrayPullFromGpu(layer.biasesGpu,
-            layer.biases,
-            layer.n);
-
-    YnCudaArrayPullFromGpu(layer.filterUpdatesGpu,
-            layer.filterUpdates,
-            layer.c * layer.n * layer.size * layer.size);
-
-    YnCudaArrayPullFromGpu(layer.biasUpdatesGpu,
-            layer.biasUpdates,
-            layer.n);
-
-    if (layer.batchNormalize)
-    {
-        YnCudaArrayPullFromGpu(layer.scalesGpu, layer.scales, layer.n);
-        YnCudaArrayPullFromGpu(layer.rollingMeanGpu, layer.rollingMean, layer.n);
-        YnCudaArrayPullFromGpu(layer.rollingVarianceGpu, layer.rollingVariance, layer.n);
-    }
+    YnCudaArrayPullFromGpu(layer.filtersGpu, layer.filters, layer.c*layer.n*layer.size*layer.size);
+    YnCudaArrayPullFromGpu(layer.biasesGpu, layer.biases, layer.n);
+    YnCudaArrayPullFromGpu(layer.filterUpdatesGpu, layer.filterUpdates, layer.c * layer.n * layer.size * layer.size);
+    YnCudaArrayPullFromGpu(layer.biasUpdatesGpu, layer.biasUpdates, layer.n);
 }
 
-void YnLayerConvolutionalGpuPush(tYnLayer layer)
+void YnLayerDeconvolutionalGpuPush(tYnLayer layer)
 {
-    YnCudaArrayPushToGpu(layer.filtersGpu,
-            layer.filters,
-            layer.c * layer.n * layer.size * layer.size);
-
-    YnCudaArrayPushToGpu(layer.biasesGpu,
-            layer.biases,
-            layer.n);
-
-    YnCudaArrayPushToGpu(layer.filterUpdatesGpu,
-            layer.filterUpdates,
-            layer.c * layer.n * layer.size * layer.size);
-
-    YnCudaArrayPushToGpu(layer.biasUpdatesGpu,
-            layer.biasUpdates,
-            layer.n);
-
-    if (layer.batchNormalize)
-    {
-        YnCudaArrayPushToGpu(layer.scalesGpu, layer.scales, layer.n);
-        YnCudaArrayPushToGpu(layer.rollingMeanGpu, layer.rollingMean, layer.n);
-        YnCudaArrayPushToGpu(layer.rollingVarianceGpu, layer.rollingVariance, layer.n);
-    }
+    YnCudaArrayPushToGpu(layer.filtersGpu, layer.filters, layer.c * layer.n * layer.size * layer.size);
+    YnCudaArrayPushToGpu(layer.biasesGpu, layer.biases, layer.n);
+    YnCudaArrayPushToGpu(layer.filterUpdatesGpu, layer.filterUpdates, layer.c * layer.n * layer.size * layer.size);
+    YnCudaArrayPushToGpu(layer.biasUpdatesGpu, layer.biasUpdates, layer.n);
 }
 
-void YnLayerConvolutionalGpuUpdate(tYnLayer layer,
+void YnLayerDeconvolutionalGpuUpdate(tYnLayer layer,
         int batch,
         float learning_rate,
         float momentum,
         float decay)
 {
-    int size = layer.size * layer.size * layer.c * layer.n;
+    int size = layer.size*layer.size*layer.c*layer.n;
 
-    YnBlasGpuArrayAxpyValueSet(layer.biasesGpu, layer.biasUpdatesGpu, layer.n, 1, 1, learning_rate / batch);
+    YnBlasGpuArrayAxpyValueSet(layer.biasesGpu, layer.biasUpdatesGpu, layer.n, 1, 1, learning_rate);
     YnBlasGpuArrayScaleValueSet(layer.biasUpdatesGpu, layer.n, 1, momentum);
 
-    YnBlasGpuArrayAxpyValueSet(layer.scalesGpu, layer.scaleUpdatesGpu, layer.n, 1, 1, learning_rate / batch);
-    YnBlasGpuArrayScaleValueSet(layer.scaleUpdatesGpu, layer.n, 1, momentum);
-
-    YnBlasGpuArrayAxpyValueSet(layer.filterUpdatesGpu, layer.filtersGpu, size, 1, 1, - decay * batch);
-    YnBlasGpuArrayAxpyValueSet(layer.filtersGpu, layer.filterUpdatesGpu, size, 1, 1, learning_rate / batch);
+    YnBlasGpuArrayAxpyValueSet(layer.filterUpdatesGpu, layer.filtersGpu, size, 1, 1, - decay);
+    YnBlasGpuArrayAxpyValueSet(layer.filtersGpu, layer.filterUpdatesGpu, size, 1, 1, learning_rate);
     YnBlasGpuArrayScaleValueSet(layer.filterUpdatesGpu, size, 1, momentum);
 }
 

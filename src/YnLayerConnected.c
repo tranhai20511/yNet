@@ -47,12 +47,12 @@ tYnLayer YnLayerConnectedMake(int32 batchNum,
 
     scale = sqrt(2. / inputNum);
 
-    for(i = 0; i < outputNum * inputNum; i ++)
+    for (i = 0; i < outputNum * inputNum; i ++)
     {
         layer.weights[i] = scale * YnUtilRandomUniformNum(-1, 1);
     }
 
-    for(i = 0; i < outputNum; i ++)
+    for (i = 0; i < outputNum; i ++)
     {
         layer.biases[i] = scale;
     }
@@ -62,7 +62,7 @@ tYnLayer YnLayerConnectedMake(int32 batchNum,
         layer.scales = calloc(outputNum, sizeof(float));
         layer.scaleUpdates = calloc(outputNum, sizeof(float));
 
-        for(i = 0; i < outputNum; ++i)
+        for (i = 0; i < outputNum; ++i)
         {
             layer.scales[i] = 1;
         }
@@ -89,7 +89,7 @@ tYnLayer YnLayerConnectedMake(int32 batchNum,
     layer.outputGpu = cuda_make_array(layer.output, outputNum * batchNum);
     layer.deltaGpu = cuda_make_array(layer.delta, outputNum * batchNum);
 
-    if(batchNormalize)
+    if (batchNormalize)
     {
         layer.scalesGpu = cuda_make_array(layer.scales, outputNum);
         layer.scaleUpdatesGpu = cuda_make_array(layer.scaleUpdates, outputNum);
@@ -123,7 +123,7 @@ void YnLayerConnectedUpdate(tYnLayer layer,
     YnBlasArrayAxpyValueSet(layer.biases, layer.biasUpdates, layer.outputs, 1, 1, learningRate / batch);
     YnBlasArrayScaleValueSet(layer.biasUpdates, layer.outputs, 1, momentum);
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
         YnBlasArrayAxpyValueSet(layer.scales, layer.scaleUpdates, layer.outputs, 1, 1, learningRate / batch);
         YnBlasArrayScaleValueSet(layer.scaleUpdates, layer.outputs, 1, momentum);
@@ -155,9 +155,9 @@ void YnLayerConnectedForward(tYnLayer layer,
     c = layer.output;
     YnGemm(0, 1, m, n, k, 1, a, k, b, k, 1, c, n);
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
-        if(netState.train)
+        if (netState.train)
         {
             YnBlasArrayMeanCal(layer.output, layer.batch, layer.outputs, 1, layer.mean);
             YnBlasArrayVarianceCal(layer.output, layer.mean, layer.batch, layer.outputs, 1, layer.variance);
@@ -180,7 +180,7 @@ void YnLayerConnectedForward(tYnLayer layer,
         YnBlasScaleBias(layer.output, layer.scales, layer.batch, layer.outputs, 1);
     }
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         YnBlasArrayAxpyValueSet(layer.output + i*layer.outputs, layer.biases, layer.outputs, 1, 1, 1);
     }
@@ -201,12 +201,12 @@ void YnLayerConnectedBackward(tYnLayer layer,
 
     YnActivationGradientArrayCal(layer.output, layer.outputs * layer.batch, layer.activation, layer.delta);
 
-    for(i = 0; i < layer.batch; i ++)
+    for (i = 0; i < layer.batch; i ++)
     {
         YnBlasArrayAxpyValueSet(layer.biasUpdates, layer.delta + i*layer.outputs, layer.outputs, 1, 1, 1);
     }
 
-    if(layer.batchNormalize)
+    if (layer.batchNormalize)
     {
         YnBlasBackwardScale(layer.xNorm, layer.delta, layer.batch, layer.outputs, 1, layer.scaleUpdates);
         YnBlasScaleBias(layer.delta, layer.scales, layer.batch, layer.outputs, 1);

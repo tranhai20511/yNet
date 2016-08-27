@@ -199,9 +199,9 @@ YN_GPU_GLOBAL void YnActivationGpuKernelOutputArrayCal(float * array,
         uint32 num,
         eYnActivationType actType)
 {
-    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
+    int i = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(i < num)
+    if (i < num)
         array[i] = YnActivationGpuKernelCal(array[i], actType);
 }
 
@@ -210,7 +210,7 @@ void YnActivationGpuOutputArrayCal(float * array,
         uint32 num,
         eYnActivationType actType)
 {
-    YnActivationGpuKernelOutputArrayCal<<<cuda_gridsize(n), BLOCK>>>(array, num, actType);
+    YnActivationGpuKernelOutputArrayCal<<<YnCudaGridSize(n), YN_GPU_NUM_THREADS_IN_BLOCK>>>(array, num, actType);
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
@@ -219,9 +219,9 @@ YN_GPU_GLOBAL void YnActivationGpuKernelGradientArrayCal(float * array,
         eYnActivationType actType,
         float * gradientArray)
 {
-    int i = (blockIdx.x + blockIdx.y*gridDim.x) * blockDim.x + threadIdx.x;
+    int i = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(i < num)
+    if (i < num)
         gradientArray[i] *= YnActivationGpuGradientCal(array[i], actType);
 }
 
@@ -231,6 +231,6 @@ void YnActivationGpuGradientArrayCal(float * array,
         eYnActivationType actType,
         float * gradientArray)
 {
-    YnActivationGpuKernelGradientArrayCal<<<cuda_gridsize(n), BLOCK>>>(array, num, actType, gradientArray);
+    YnActivationGpuKernelGradientArrayCal<<<YnCudaGridSize(n), YN_GPU_NUM_THREADS_IN_BLOCK>>>(array, num, actType, gradientArray);
     YnCudaCheckError(cudaPeekAtLastError());
 }

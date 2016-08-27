@@ -69,11 +69,6 @@ tYnImage YnLayerDeconvolutionalGradientGet(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-tYnImage YnLayerDeconvolutionalFilterGet(tYnLayer layer,
-        int i)
-YN_ALSWAY_INLINE;
-
-YN_FINAL
 int YnLayerDeconvolutionalOutHeightGet(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
