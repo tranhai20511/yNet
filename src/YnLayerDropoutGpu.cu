@@ -35,27 +35,26 @@ YN_GPU_GLOBAL void _YnDropout(float *input,
 void YnLayerDropoutGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 {
-    if (!state.train) return;
-    int size = layer.inputs*layer.batch;
-    cuda_random(layer.rand_gpu, size);
-    /*
-    int i;
-    for(i = 0; i < size; ++i){
-        layer.rand[i] = rand_uniform();
-    }
-    cuda_push_array(layer.rand_gpu, layer.rand, size);
-    */
+    int size;
+    if (!netState.train)
+        return;
 
-    yoloswag420blazeit360noscope<<<cuda_gridsize(size), BLOCK>>>(state.input, size, layer.rand_gpu, layer.probability, layer.scale);
-    check_error(cudaPeekAtLastError());
+    size = layer.inputs * layer.batch;
+    YnCudaRandomArray(layer.randGpu, size);
+
+    _YnDropout<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input, size, layer.randGpu, layer.probability, layer.scale);
+    YnCudaCheckError(cudaPeekAtLastError());
 }
 
 void YnLayerDropoutGpuBackward(tYnLayer layer,
         tYnNetworkState netState)
 {
-    if(!state.delta) return;
-    int size = layer.inputs*layer.batch;
+    int size;
+    if (!netState.delta)
+        return;
 
-    yoloswag420blazeit360noscope<<<cuda_gridsize(size), BLOCK>>>(state.delta, size, layer.rand_gpu, layer.probability, layer.scale);
-    check_error(cudaPeekAtLastError());
+    size = layer.inputs * layer.batch;
+
+    _YnDropout<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.delta, size, layer.randGpu, layer.probability, layer.scale);
+    YnCudaCheckError(cudaPeekAtLastError());
 }
