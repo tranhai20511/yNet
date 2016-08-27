@@ -19,7 +19,7 @@
 
 /**************** Local Implement */
 
-/**************** Implement */YN_FINAL
+/**************** Implement */
 void YnLayerDetectionGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 {
