@@ -23,12 +23,12 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-void YnLayerConvolutionalGpuForward(tYnLayer * layer,
+void YnLayerConvolutionalGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerConvolutionalGpuBackward(tYnLayer * layer,
+void YnLayerConvolutionalGpuBackward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
@@ -41,11 +41,11 @@ void YnLayerConvolutionalGpuUpdate(tYnLayer layer,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerConvolutionalGpuPush(tYnLayer * layer)
+void YnLayerConvolutionalGpuPush(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerConvolutionalGpuPull(tYnLayer * layer)
+void YnLayerConvolutionalGpuPull(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 YN_FINAL

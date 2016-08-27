@@ -298,31 +298,59 @@ YN_GPU_GLOBAL void _YnLayerCropGpuForward(float *input,
     float rx = cos(angle)*(x-cx) - sin(angle)*(y-cy) + cx;
     float ry = sin(angle)*(x-cx) + cos(angle)*(y-cy) + cy;
 
-    output[count] = _YnLayerCropBilineraInterpolate(input, w, h, rx, ry, k);
+    output[count] = _YnLayerCropGpuBilinearInterpolate(input, w, h, rx, ry, k);
 }
 
 YN_EXTERN_C
-void YnLayerCropGpuForward(tYnLayer * layer,
+void YnLayerCropGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 {
-    cuda_random(layer.rand_gpu, layer.batch*8);
+    float radians;
+    float scale;
+    float translate;
+    int size;
 
-    float radians = layer.angle*3.14159265/180.;
+    YnCudaRandomArray(layer.randGpu, layer.batch * 8);
 
-    float scale = 2;
-    float translate = -1;
-    if (layer.noadjust){
+    radians = layer.angle * 3.14159265 / 180.;
+
+    scale = 2;
+    translate = -1;
+
+    if (layer.noadjust)
+    {
         scale = 1;
         translate = 0;
     }
 
-    int size = layer.batch * layer.w * layer.h;
+    size = layer.batch * layer.w * layer.h;
 
-    levels_image_kernel<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input, layer.rand_gpu, layer.batch, layer.w, layer.h, state.train, layer.saturation, layer.exposure, translate, scale, layer.shift);
-    check_error(cudaPeekAtLastError());
+    _YnLayerCropGpuLevelsImage<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input,
+            layer.randGpu,
+            layer.batch,
+            layer.w,
+            layer.h,
+            state.train,
+            layer.saturation,
+            layer.exposure,
+            translate,
+            scale,
+            layer.shift);
+    YnCudaCheckError(cudaPeekAtLastError());
 
-    size = layer.batch*layer.c*layer.out_w*layer.out_h;
+    size = layer.batch * layer.c * layer.outW * layer.outH;
 
-    forward_crop_layer_kernel<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input, layer.rand_gpu, size, layer.c, layer.h, layer.w, layer.out_h, layer.out_w, state.train, layer.flip, radians, layer.output_gpu);
-    check_error(cudaPeekAtLastError());
+    _YnLayerCropGpuForward<<<YnCudaGridSize(size), YN_GPU_NUM_THREADS_IN_BLOCK>>>(state.input,
+            layer.randGpu,
+            size,
+            layer.c,
+            layer.h,
+            layer.w,
+            layer.outH,
+            layer.outW,
+            state.train,
+            layer.flip,
+            radians,
+            layer.outputGpu);
+    YnCudaCheckError(cudaPeekAtLastError());
 }

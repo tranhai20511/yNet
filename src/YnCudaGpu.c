@@ -193,5 +193,22 @@ void YnCudaArrayPullFromGpu(float * gpuArr,
 
     cudaError_t status = cudaMemcpy(cpuArr, gpuArr, size, cudaMemcpyDeviceToHost);
 
-    check_YnUtilError(status);
+    YnCudaCheckError(status);
+}
+
+void YnCudaRandomArray(float * gpuArr,
+        uint32 num)
+{
+    static curandGenerator_t gen;
+    static int init = 0;
+
+    if( !init )
+    {
+        curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
+        curandSetPseudoRandomGeneratorSeed(gen, time(0));
+        init = 1;
+    }
+
+    curandGenerateUniform(gen, gpuArr, num);
+    YnCudaCheckError(cudaPeekAtLastError());
 }

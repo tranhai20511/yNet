@@ -62,7 +62,7 @@ void YnBinarizeFilters(float *filters,
         int size,
         float *mean)
 {
-    _YnBinarizeFilters<<<YnCudaGridSize(num), YNGpu_NUM_THREADS_IN_BLOCK>>>(filters, num, size, mean);
+    _YnBinarizeFilters<<<YnCudaGridSize(num), YN_GPU_NUM_THREADS_IN_BLOCK>>>(filters, num, size, mean);
     YnCudaCheckError(cudaPeekAtLastError());
 }
 

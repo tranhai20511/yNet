@@ -115,6 +115,11 @@ void YnCudaArrayPullFromGpu(float * gpuArr,
         uint32 num)
 YN_ALSWAY_INLINE;
 
+YN_FINAL
+void YnCudaRandomArray(float * gpuArr,
+        uint32 num)
+YN_ALSWAY_INLINE;
+
 
 #ifdef __cplusplus
 }
