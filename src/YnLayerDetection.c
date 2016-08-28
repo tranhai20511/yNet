@@ -202,9 +202,9 @@ void YnLayerDetectionForward(tYnLayer layer,
                     }
                 }
 
-                if(layer.forced)
+                if (layer.forced)
                 {
-                    if(truth.width * truth.height < .1)
+                    if (truth.width * truth.height < .1)
                     {
                         best_index = 1;
                     }
@@ -234,7 +234,7 @@ void YnLayerDetectionForward(tYnLayer layer,
                 avg_obj += layer.output[p_index];
                 layer.delta[p_index] = layer.objectScale * (1.-layer.output[p_index]);
 
-                if(layer.rescore)
+                if (layer.rescore)
                 {
                     layer.delta[p_index] = layer.objectScale * (iou - layer.output[p_index]);
                 }
@@ -244,7 +244,7 @@ void YnLayerDetectionForward(tYnLayer layer,
                 layer.delta[box_index+2] = layer.coordScale*(netState.truth[tbox_index + 2] - layer.output[box_index + 2]);
                 layer.delta[box_index+3] = layer.coordScale*(netState.truth[tbox_index + 3] - layer.output[box_index + 3]);
 
-                if(layer.sqrt)
+                if (layer.sqrt)
                 {
                     layer.delta[box_index+2] = layer.coordScale*(sqrt(netState.truth[tbox_index + 2]) - layer.output[box_index + 2]);
                     layer.delta[box_index+3] = layer.coordScale*(sqrt(netState.truth[tbox_index + 3]) - layer.output[box_index + 3]);
@@ -256,7 +256,7 @@ void YnLayerDetectionForward(tYnLayer layer,
                 ++count;
             }
 
-            if(layer.softmax)
+            if (layer.softmax)
             {
                 YnActivationGradientArrayCal(layer.output + index + locations * layer.classes, locations * layer.n * (1 + layer.coords),
                         cYnActivationLogistic, layer.delta + index + locations * layer.classes);

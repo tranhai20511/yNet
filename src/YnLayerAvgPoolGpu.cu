@@ -1,4 +1,4 @@
-//	File        :   YnLayerAvgPoolGpu.c
+//	File        :   YnLayerAvgpoolGpu.c
 //	Brief       :   Implement methods.
 //	DD-MM-YYYY  :   30-07-2016
 //	Author      :   haittt
@@ -8,7 +8,7 @@
 #include "cublas_v2.h"
 
 extern "C" {
-#include "../include/YnLayerAvgPoolGpu.h"
+#include "../include/YnLayerAvgpoolGpu.h"
 #include "../include/YnCudaGpu.h"
 }
 
@@ -27,7 +27,7 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelForward(int num,
+YN_GPU_GLOBAL void YnLayerAvgpoolGpuKernelForward(int num,
         int width,
         int height,
         int channel,
@@ -59,7 +59,7 @@ YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelForward(int num,
     output[out_index] /= width * height;
 }
 
-YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelBackward(int num,
+YN_GPU_GLOBAL void YnLayerAvgpoolGpuKernelBackward(int num,
         int width,
         int height,
         int channel,
@@ -89,7 +89,7 @@ YN_GPU_GLOBAL void YnLayerAvgPoolGpuKernelBackward(int num,
 }
 
 YN_EXTERN_C
-void YnLayerAvgPoolGpuForward(tYnLayer * layer,
+void YnLayerAvgpoolGpuForward(tYnLayer * layer,
         tYnNetworkState netState)
 {
     YnBlasGpuArrayCopyValueSet(layer.output, netState.input, layer.outputs * layer.batch, 1, 1);
@@ -97,7 +97,7 @@ void YnLayerAvgPoolGpuForward(tYnLayer * layer,
 }
 
 YN_EXTERN_C
-void YnLayerAvgPoolGpuBackward(tYnLayer * layer,
+void YnLayerAvgpoolGpuBackward(tYnLayer * layer,
         tYnNetworkState netState)
 {
     YnActivationGpuGradientArrayCal(layer.output, layer.outputs * layer.batch, layer.activation, layer.delta);

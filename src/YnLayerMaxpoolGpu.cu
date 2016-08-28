@@ -117,7 +117,7 @@ YN_GPU_GLOBAL void _YnLayerMaxpoolGpuBackward(int n,
     int area = (size - 1) / stride;
 
     int id = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
-    if(id >= n)
+    if (id >= n)
         return;
 
     index = id;

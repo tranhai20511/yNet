@@ -3,10 +3,6 @@
 //	DD-MM-YYYY  :   28-06-2016
 //	Author      :   haittt
 
-#include "assert.h"
-#include <stdlib.h>
-#include <time.h>
-
 #include "../include/YnCudaGpu.h"
 #include "../include/YnUtil.h"
 #include "../include/YnBlas.h"
@@ -202,7 +198,7 @@ void YnCudaRandomArray(float * gpuArr,
     static curandGenerator_t gen;
     static int init = 0;
 
-    if( !init )
+    if ( !init )
     {
         curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
         curandSetPseudoRandomGeneratorSeed(gen, time(0));

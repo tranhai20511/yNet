@@ -26,25 +26,25 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-tYnLayer YnLayerAvgPoolMake(int32 batchNum,
+tYnLayer YnLayerAvgpoolMake(int32 batchNum,
         int32 width,
         int32 height,
         int32 channel)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerAvgPoolResize(tYnLayer * layer,
+void YnLayerAvgpoolResize(tYnLayer * layer,
         int32 width,
         int32 height)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerAvgPoolForward(tYnLayer layer,
+void YnLayerAvgpoolForward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerAvgPoolBackward(tYnLayer layer,
+void YnLayerAvgpoolBackward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 

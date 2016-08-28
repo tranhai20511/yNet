@@ -11,6 +11,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
+#include <time.h>
+#include <assert.h>
 
 #ifdef __cplusplus
 extern "C" {

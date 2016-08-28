@@ -67,7 +67,7 @@ void YnLayerSoftmaxArray(float * input,
         sum += exp((input[i] / temp) - (largest / temp));
     }
 
-    if(sum)
+    if (sum)
         sum = largest / temp + log(sum);
     else
         sum = largest - 100;

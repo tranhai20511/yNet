@@ -58,7 +58,7 @@ void YnLayerDropoutForward(tYnLayer layer,
         r = YnUtilRandomUniformNum(0, 1);
         layer.rand[i] = r;
 
-        if(r < layer.probability)
+        if (r < layer.probability)
             netState.input[i] = 0;
         else
             netState.input[i] *= layer.scale;
@@ -78,7 +78,7 @@ void YnLayerDropoutBackward(tYnLayer layer,
     {
         r = layer.rand[i];
 
-        if(r < layer.probability)
+        if (r < layer.probability)
             netState.delta[i] = 0;
         else
             netState.delta[i] *= layer.scale;

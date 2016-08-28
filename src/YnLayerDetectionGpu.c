@@ -54,7 +54,7 @@ void YnLayerDetectionGpuForward(tYnLayer layer,
     YnCudaArrayPushToGpu(layer.deltaGpu, layer.delta, layer.batch * layer.inputs);
     YnUtilFree(cpu_netState.input);
 
-    if(cpu_netState.truth)
+    if (cpu_netState.truth)
         YnUtilFree(cpu_netState.truth);
 }
 

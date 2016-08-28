@@ -4,22 +4,6 @@
 //	Author      :   haittt
 
 #include "../include/YnNetwork.h"
-#include "../include/YnLayerCrop.h"
-#include "../include/YnLayerConnected.h"
-#include "../include/YnLayerRnn.h"
-#include "../include/YnLayerLocal.h"
-#include "../include/YnLayerConvolutional.h"
-#include "../include/YnLayerActivation.h"
-#include "../include/YnLayerAvgPool.h"
-#include "../include/YnLayerDeconvolutional.h"
-#include "../include/YnLayerDetection.h"
-#include "../include/YnLayerNormalization.h"
-#include "../include/YnLayerMaxpool.h"
-#include "../include/YnLayerCost.h"
-#include "../include/YnLayerSoftmax.h"
-#include "../include/YnLayerDropout.h"
-#include "../include/YnLayerRoute.h"
-#include "../include/YnLayerShortcut.h"
 
 /**************** Define */
 
@@ -175,10 +159,10 @@ void YnNetworkForward(tYnNetwork net,
                 YnLayerConvolutionalForward(layer, state);
                 break;
             case cYnLayerActive:
-                YnLayerActiveForward(layer, state);
+                YnLayerActivationForward(layer, state);
                 break;
             case cYnLayerLocal:
-                YnLayerLocalForward(layer, state);
+                /*YnLayerLocalForward(layer, state);*/
                 break;
             case cYnLayerDeconvolutional:
                 YnLayerDeconvolutionalForward(layer, state);
@@ -187,7 +171,7 @@ void YnNetworkForward(tYnNetwork net,
                 YnLayerConnectedForward(layer, state);
                 break;
             case cYnLayerRnn:
-                YnLayerRnnForward(layer, state);
+                /*YnLayerRnnForward(layer, state);*/
                 break;
             case cYnLayerMaxpool:
                 YnLayerMaxpoolForward(layer, state);
@@ -211,13 +195,13 @@ void YnNetworkForward(tYnNetwork net,
                 YnLayerCostForward(layer, state);
                 break;
             case cYnLayerRoute:
-                YnLayerRouteForward(layer, state);
+                /*YnLayerRouteForward(layer, state);*/
                 break;
             case cYnLayerShortcut:
-                YnLayerShortcutForward(layer, state);
+                /*YnLayerShortcutForward(layer, state);*/
                 break;
             case cYnLayerNormalization:
-                YnLayerNormalizationForward(layer, state);
+                /*YnLayerNormalizationForward(layer, state);*/
                 break;
             default:
                 break;
@@ -232,7 +216,7 @@ void YnNetworkUpdate(tYnNetwork net)
     int i;
     tYnLayer layer;
     int updateBatch = net.batch * net.subdivisions;
-    float rate = get_current_rate(net);
+    float rate = YnNetworkCurrentRateget(net);
 
     for (i = 0; i < net.n; i ++)
     {
@@ -251,11 +235,11 @@ void YnNetworkUpdate(tYnNetwork net)
         }
         else if (layer.type == cYnLayerRnn)
         {
-            YnLayerRnnUpdate(layer, updateBatch, rate, net.momentum, net.decay);
+            /*YnLayerRnnUpdate(layer, updateBatch, rate, net.momentum, net.decay);*/
         }
         else if (layer.type == cYnLayerLocal)
         {
-            YnLayerLocalUpdate(layer, updateBatch, rate, net.momentum, net.decay);
+            /*YnLayerLocalUpdate(layer, updateBatch, rate, net.momentum, net.decay);*/
         }
     }
 }
@@ -302,7 +286,8 @@ int YnNnetworkPredictedClassNetworkGet(tYnNetwork net)
     return YnUtilArrayMaxIndex(out, k);
 }
 
-void backward_network(tYnNetwork net, tYnNetworkState state)
+void YnNetworkBackward(tYnNetwork net,
+        tYnNetworkState state)
 {
     int i;
     tYnLayer layer;
@@ -334,7 +319,7 @@ void backward_network(tYnNetwork net, tYnNetworkState state)
                 YnLayerConvolutionalBackward(layer, state);
                 break;
             case cYnLayerActive:
-                YnLayerActiveBackward(layer, state);
+                YnLayerActivationBackward(layer, state);
                 break;
             case cYnLayerLocal:
                 YnLayerLocalBackward(layer, state);
@@ -346,7 +331,7 @@ void backward_network(tYnNetwork net, tYnNetworkState state)
                 YnLayerConnectedBackward(layer, state);
                 break;
             case cYnLayerRnn:
-                YnLayerRnnBackward(layer, state);
+                /*YnLayerRnnBackward(layer, state);*/
                 break;
             case cYnLayerMaxpool:
                 YnLayerMaxpoolBackward(layer, state);
@@ -367,13 +352,13 @@ void backward_network(tYnNetwork net, tYnNetworkState state)
                 YnLayerCostBackward(layer, state);
                 break;
             case cYnLayerRoute:
-                YnLayerRouteBackward(layer, state);
+                /*YnLayerRouteBackward(layer, state);*/
                 break;
             case cYnLayerShortcut:
-                YnLayerShortcutBackward(layer, state);
+                /*YnLayerShortcutBackward(layer, state);*/
                 break;
             case cYnLayerNormalization:
-                YnLayerNormalizationBackward(layer, state);
+                /*YnLayerNormalizationBackward(layer, state);*/
                 break;
             default:
                 break;
@@ -392,7 +377,7 @@ float YnNetworkTrainDatum(tYnNetwork net,
 
 #ifdef YN_GPU
     if (YnCudaGpuIndexGet() >= 0)
-        return YnNwteorkGpuTrainDatum(net, x, y);
+        return YnNetworkGpuTrainDatum(net, x, y);
 #endif
 
     state.index = 0;
@@ -538,7 +523,7 @@ int YnNetworkResize(tYnNetwork * net,
         }
         else if (layer.type == cYnLayerNormalization)
         {
-            YnLayerNormalizationResize(&layer, w, h);
+            /*YnLayerNormalizationResize(&layer, w, h);*/
         }
         else if (layer.type == cYnLayerCost)
         {
@@ -577,208 +562,325 @@ int YnNetworkInputSizeGet(tYnNetwork net)
     return net.layers[0].inputs;
 }
 
-tYnLayerDetection get_network_detection_layer(network net)
+tYnLayer YnNetworkDetectionLayerGet(tYnNetwork net)
 {
     int i;
-    for (i = 0; i < net.n; i ++){
-        if (net.layers[i].type == DETECTION){
+
+    for (i = 0; i < net.n; i ++)
+    {
+        if (net.layers[i].type == cYnLayerDetection)
+        {
             return net.layers[i];
         }
     }
+
     fprintf(stderr, "Detection layer not found!!\n");
-    detection_layer l = {0};
-    return l;
+    tYnLayer layer = {0};
+
+    return layer;
 }
 
-image get_network_image_layer(network net, int i)
+tYnImage YnNetworkImageLayerGet(tYnNetwork net,
+        int i)
 {
-    layer l = net.layers[i];
-    if (l.out_w && l.out_h && l.out_c){
-        return float_to_image(l.out_w, l.out_h, l.out_c, l.output);
+    tYnLayer layer = net.layers[i];
+
+    if (layer.outW && layer.outH && layer.outC)
+    {
+        return YnImageFloatToImage(layer.outW, layer.outH, layer.outC, layer.output);
     }
-    image def = {0};
+
+    tYnImage def = {0};
+
     return def;
 }
 
-image get_network_image(network net)
+tYnImage YnNetworkImageGet(tYnNetwork net)
 {
     int i;
-    for (i = net.n-1; i >= 0; i --){
-        image m = get_network_image_layer(net, i);
-        if (m.h != 0) return m;
+    tYnImage m;
+
+    for (i = net.n - 1; i >= 0; i --)
+    {
+        m = YnNetworkImageLayerGet(net, i);
+        if (m.height != 0)
+            return m;
     }
-    image def = {0};
+
+    tYnImage def = {0};
+
     return def;
 }
 
-void visualize_network(network net)
+void YnNetworkVisualize(tYnNetwork net)
 {
-    image *prev = 0;
+    tYnImage *prev = 0;
+
     int i;
     char buff[256];
-    for (i = 0; i < net.n; i ++){
+    tYnLayer layer;
+
+    for (i = 0; i < net.n; i ++)
+    {
         sprintf(buff, "Layer %d", i);
-        layer l = net.layers[i];
-        if (l.type == CONVOLUTIONAL){
-            prev = visualize_convolutional_layer(l, buff, prev);
+        layer = net.layers[i];
+
+        if (layer.type == cYnLayerConvolutional)
+        {
+            prev = YnLayerConvolutionalVisualize(layer, buff, prev);
         }
     }
 }
 
-void top_predictions(network net, int k, int *index)
+void YnNetworkTopPredictions(tYnNetwork net,
+        int k,
+        int *index)
 {
-    int size = get_network_output_size(net);
-    float *out = get_network_output(net);
-    top_k(out, size, k, index);
+    int size = YnNetworkOutputSizeGet(net);
+    float *out = YnNetworkOutputGet(net);
+
+    YnUtilTop(out, size, k, index);
 }
 
-
-float *network_predict(network net, float *input)
+float * YnNetworkPredict(tYnNetwork net,
+        float *input)
 {
+
 #ifdef YN_GPU
-    if (gpu_index >= 0)  return network_predict_gpu(net, input);
+    if (YnCudaGpuIndexGet() >= 0)  return YnNetworkGpuPredict(net, input);
 #endif
 
-    network_state state;
+    float *out;
+    tYnNetworkState state;
+
     state.net = net;
     state.index = 0;
     state.input = input;
     state.truth = 0;
     state.train = 0;
     state.delta = 0;
-    forward_network(net, state);
-    float *out = get_network_output(net);
+
+    YnNetworkForward(net, state);
+    out = get_network_output(net);
+
     return out;
 }
 
-matrix network_predict_data_multi(network net, data test, int n)
+tYnMatrix YnNetworkPredictDataMulti(tYnNetwork net,
+        tYnData test,
+        int n)
 {
-    int i,j,b,m;
+    tYnMatrix pred;
+    float *X;
+    float *out;
+    int i, j, b, m;
     int k = get_network_output_size(net);
-    matrix pred = make_matrix(test.X.rows, k);
-    float *X = calloc(net.batch*test.X.rows, sizeof(float));
-    for (i = 0; i < test.X.rows; i += net.batch){
-        for (b = 0; b < net.batch; ++b){
-            if (i+b == test.X.rows) break;
-            memcpy(X+b*test.X.cols, test.X.vals[i+b], test.X.cols*sizeof(float));
+
+    pred = YnMatrixMake(test.x.rows, k);
+    X = calloc(net.batch*test.x.rows, sizeof(float));
+
+    for (i = 0; i < test.x.rows; i += net.batch)
+    {
+        for (b = 0; b < net.batch; b ++)
+        {
+            if (i + b == test.x.rows)
+                break;
+
+            memcpy(X + b * test.x.cols, test.x.vals[i + b], test.x.cols * sizeof(float));
         }
-        for (m = 0; m < n; ++m){
-            float *out = network_predict(net, X);
-            for (b = 0; b < net.batch; ++b){
-                if (i+b == test.X.rows) break;
-                for (j = 0; j < k; ++j){
-                    pred.vals[i+b][j] += out[j+b*k]/n;
+
+        for (m = 0; m < n; m ++)
+        {
+            out = YnNetworkPredict(net, X);
+
+            for (b = 0; b < net.batch; b ++)
+            {
+                if (i + b == test.x.rows)
+                    break;
+
+                for (j = 0; j < k; j ++)
+                {
+                    pred.vals[i + b][j] += out[j + b * k] / n;
                 }
             }
         }
     }
-    free(X);
+
+    YnUtilFree(X);
+
     return pred;
 }
 
-matrix network_predict_data(network net, data test)
+tYnMatrix YnNetworkPredictData(tYnNetwork net,
+        tYnData test)
 {
-    int i,j,b;
-    int k = get_network_output_size(net);
-    matrix pred = make_matrix(test.X.rows, k);
-    float *X = calloc(net.batch*test.X.cols, sizeof(float));
-    for (i = 0; i < test.X.rows; i += net.batch){
-        for (b = 0; b < net.batch; ++b){
-            if (i+b == test.X.rows) break;
-            memcpy(X+b*test.X.cols, test.X.vals[i+b], test.X.cols*sizeof(float));
+    tYnMatrix pred;
+    int i, j, b;
+    float *X;
+    float *out;
+    int k = YnNetworkOutputSizeGet(net);
+
+    pred = YnMatrixMake(test.x.rows, k);
+    X = calloc(net.batch * test.x.cols, sizeof(float));
+
+    for (i = 0; i < test.x.rows; i += net.batch)
+    {
+        for (b = 0; b < net.batch; b ++)
+        {
+            if (i + b == test.x.rows)
+                break;
+
+            memcpy(X + b * test.x.cols, test.x.vals[i+b], test.x.cols * sizeof(float));
         }
-        float *out = network_predict(net, X);
-        for (b = 0; b < net.batch; ++b){
-            if (i+b == test.X.rows) break;
-            for (j = 0; j < k; ++j){
-                pred.vals[i+b][j] = out[j+b*k];
+
+        out = YnNetworkPredict(net, X);
+
+        for (b = 0; b < net.batch; b ++)
+        {
+            if (i + b == test.x.rows)
+                break;
+
+            for (j = 0; j < k; j ++)
+            {
+                pred.vals[i + b][j] = out[j + b * k];
             }
         }
     }
-    free(X);
+
+    YnUtilFree(X);
+
     return pred;
 }
 
-void print_network(network net)
+void YnNetworkPrint(tYnNetwork net)
 {
     int i,j;
-    for (i = 0; i < net.n; i ++){
-        layer l = net.layers[i];
-        float *output = l.output;
-        int n = l.outputs;
-        float mean = mean_array(output, n);
-        float vari = variance_array(output, n);
-        fprintf(stderr, "Layer %d - Mean: %f, Variance: %f\n",i,mean, vari);
-        if (n > 100) n = 100;
-        for (j = 0; j < n; ++j) fprintf(stderr, "%f, ", output[j]);
-        if (n == 100)fprintf(stderr,".....\n");
+    tYnLayer layer;
+    float *output;
+    float mean;
+    float vari;
+    int n;
+
+    for (i = 0; i < net.n; i ++)
+    {
+        layer = net.layers[i];
+        output = layer.output;
+        n = layer.outputs;
+        mean = YnUtilArrayMean(output, n);
+        vari = YnUtilArrayVariance(output, n);
+
+        fprintf(stderr, "Layer %d - Mean: %f, Variance: %f\n", i, mean, vari);
+
+        if (n > 100)
+            n = 100;
+
+        for (j = 0; j < n; j ++)
+            fprintf(stderr, "%f, ", output[j]);
+
+        if (n == 100)
+            fprintf(stderr,".....\n");
+
         fprintf(stderr, "\n");
     }
 }
 
-void compare_networks(network n1, network n2, data test)
+void YnNetworkCompare(tYnNetwork n1,
+        tYnNetwork n2,
+        tYnData test)
 {
-    matrix g1 = network_predict_data(n1, test);
-    matrix g2 = network_predict_data(n2, test);
     int i;
     int a,b,c,d;
+    int truth;
+    int p1;
+    int p2;
+    float num;
+    float den;
+
+    tYnMatrix g1 = YnNetworkPredictData(n1, test);
+    tYnMatrix g2 = YnNetworkPredictData(n2, test);
+
     a = b = c = d = 0;
-    for (i = 0; i < g1.rows; i ++){
-        int truth = max_index(test.y.vals[i], test.y.cols);
-        int p1 = max_index(g1.vals[i], g1.cols);
-        int p2 = max_index(g2.vals[i], g2.cols);
-        if (p1 == truth){
-            if (p2 == truth) ++d;
-            else ++c;
-        }else{
-            if (p2 == truth) ++b;
-            else ++a;
+
+    for (i = 0; i < g1.rows; i ++)
+    {
+        truth = YnUtilArrayMaxIndex(test.y.vals[i], test.y.cols);
+        p1 = YnUtilArrayMaxIndex(g1.vals[i], g1.cols);
+        p2 = YnUtilArrayMaxIndex(g2.vals[i], g2.cols);
+
+        if (p1 == truth)
+        {
+            if (p2 == truth)
+                d ++;
+            else
+                c ++;
+
+        }
+        else
+        {
+            if (p2 == truth)
+                b ++;
+            else
+                a ++;
         }
     }
+
     printf("%5d %5d\n%5d %5d\n", a, b, c, d);
-    float num = pow((abs(b - c) - 1.), 2.);
-    float den = b + c;
+
+    num = pow((abs(b - c) - 1.), 2.);
+    den = b + c;
+
     printf("%f\n", num/den);
 }
 
-float network_accuracy(network net, data d)
+float YnNetworkAccuracy(tYnNetwork net,
+        tYnData d)
 {
-    matrix guess = network_predict_data(net, d);
-    float acc = matrix_topk_accuracy(d.y, guess,1);
-    free_matrix(guess);
+    tYnMatrix guess = YnNetworkPredictData(net, d);
+    float acc = YnMatrixTopAccuracy(d.y, guess, 1);
+    YnMatrixFree(guess);
     return acc;
 }
 
-float *network_accuracies(network net, data d, int n)
+float * YnnNetworkAccuracies(tYnNetwork net,
+        tYnData d,
+        int n)
 {
     static float acc[2];
-    matrix guess = network_predict_data(net, d);
-    acc[0] = matrix_topk_accuracy(d.y, guess, 1);
-    acc[1] = matrix_topk_accuracy(d.y, guess, n);
-    free_matrix(guess);
+    tYnMatrix guess = YnNetworkPredictData(net, d);
+
+    acc[0] = YnMatrixTopAccuracy(d.y, guess, 1);
+    acc[1] = YnMatrixTopAccuracy(d.y, guess, n);
+
+    YnMatrixFree(guess);
+
     return acc;
 }
 
-
-float network_accuracy_multi(network net, data d, int n)
+float YnNetworkAccuracyMulti(tYnNetwork net,
+        tYnData d,
+        int n)
 {
-    matrix guess = network_predict_data_multi(net, d, n);
-    float acc = matrix_topk_accuracy(d.y, guess,1);
-    free_matrix(guess);
+    tYnMatrix guess = YnNetworkPredictDataMulti(net, d, n);
+    float acc = YnMatrixTopAccuracy(d.y, guess,1);
+    YnMatrixFree(guess);
     return acc;
 }
 
-void free_network(network net)
+void YnNetworkFree(tYnNetwork net)
 {
     int i;
-    for (i = 0; i < net.n; i ++){
-        free_layer(net.layers[i]);
+
+    for (i = 0; i < net.n; i ++)
+    {
+        YnLayerFree(net.layers[i]);
     }
-    free(net.layers);
-    #ifdef YN_GPU
-    if (*net.input_gpu) cuda_free(*net.input_gpu);
-    if (*net.truth_gpu) cuda_free(*net.truth_gpu);
-    if (net.input_gpu) free(net.input_gpu);
-    if (net.truth_gpu) free(net.truth_gpu);
-    #endif
+
+    YnUtilFree(net.layers);
+
+#ifdef YN_GPU
+    if (*net.inputGpu) YnCudaFreeArray(*net.inputGpu);
+    if (*net.truthGpu) YnCudaFreeArray(*net.truthGpu);
+    if (net.inputGpu) YnUtilFree(net.inputGpu);
+    if (net.truthGpu) YnUtilFree(net.truthGpu);
+#endif
 }

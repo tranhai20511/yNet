@@ -1,9 +1,9 @@
-//	File        :   YnLayerAvgPool.c
+//	File        :   YnLayerAvgpool.c
 //	Brief       :   Implement methods.
 //	DD-MM-YYYY  :   30-07-2016
 //	Author      :   haittt
 
-#include "../include/YnLayerAvgPool.h"
+#include "../include/YnLayerAvgpool.h"
 
 /**************** Define */
 
@@ -20,7 +20,7 @@
 /**************** Local Implement */
 
 /**************** Implement */
-tYnLayer YnLayerAvgPoolMake(int32 batchNum,
+tYnLayer YnLayerAvgpoolMake(int32 batchNum,
         int32 width,
         int32 height,
         int32 channel)
@@ -53,7 +53,7 @@ tYnLayer YnLayerAvgPoolMake(int32 batchNum,
     return layer;
 }
 
-void YnLayerAvgPoolResize(tYnLayer * layer,
+void YnLayerAvgpoolResize(tYnLayer * layer,
         int32 width,
         int32 height)
 {
@@ -62,7 +62,7 @@ void YnLayerAvgPoolResize(tYnLayer * layer,
     layer->inputs = height * width * layer->c;
 }
 
-void YnLayerAvgPoolForward(tYnLayer layer,
+void YnLayerAvgpoolForward(tYnLayer layer,
         tYnNetworkState netState)
 {
     int b,i,k;
@@ -87,7 +87,7 @@ void YnLayerAvgPoolForward(tYnLayer layer,
     }
 }
 
-void YnLayerAvgPoolBackward(tYnLayer layer,
+void YnLayerAvgpoolBackward(tYnLayer layer,
         tYnNetworkState netState)
 {
     int b,i,k;

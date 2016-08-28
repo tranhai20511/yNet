@@ -34,7 +34,7 @@ YN_GPU_GLOBAL void _YnDropout(float *input,
 {
     int id = (blockIdx.x + blockIdx.y * gridDim.x) * blockDim.x + threadIdx.x;
 
-    if(id < size)
+    if (id < size)
         input[id] = (rand[id] < prob) ? 0 : input[id] * scale;
 }
 

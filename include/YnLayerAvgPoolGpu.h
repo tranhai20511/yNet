@@ -1,7 +1,7 @@
 #ifndef YNLAYERAVGPOOLGPU_H
 #define YNLAYERAVGPOOLGPU_H
 
-#include "../YnLayerAvgPool.h"
+#include "../YnLayerAvgpool.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,12 +23,12 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-void YnLayerAvgPoolGpuForward(tYnLayer * layer,
+void YnLayerAvgpoolGpuForward(tYnLayer * layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerAvgPoolGpuBackward(tYnLayer * layer,
+void YnLayerAvgpoolGpuBackward(tYnLayer * layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
