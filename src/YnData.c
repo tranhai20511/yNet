@@ -967,7 +967,7 @@ pthread_t YnDataLoadInThread(tYnDataLoadArgs args)
 
     *ptr = args;
     if (pthread_create(&thread, 0, YnDataLoadThread, ptr))
-        error("Thread creation failed");
+        YnUtilError("Thread creation failed");
 
     return thread;
 }

@@ -399,7 +399,7 @@ void YnUtilFileWrite(int fd,
         next = write(fd, buffer + num, size - num);
 
         if (next <= 0)
-            error("write failed");
+            YnUtilError("write failed");
 
         num += next;
     }

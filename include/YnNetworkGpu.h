@@ -2,6 +2,7 @@
 #define YNNETWORKGPU_H
 
 #include "../YnNetwork.h"
+#include "../YnBlasGpu.h"
 #include "../YnLayerCropGpu.h"
 #include "../YnLayerConnectedGpu.h"
 #include "../YnLayerConvolutionalGpu.h"

@@ -531,7 +531,7 @@ int YnNetworkResize(tYnNetwork * net,
         }
         else
         {
-            error("Cannot resize this type of layer");
+            YnUtilError("Cannot resize this type of layer");
         }
 
         inputs = layer.outputs;

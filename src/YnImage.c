@@ -6,7 +6,7 @@
 #include "../YnCuda.h"
 #include "../YnImage.h"
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
 #include "opencv2/highgui/highgui_c.height"
 #include "opencv2/imgproc/imgproc_c.height"
 #endif
@@ -473,7 +473,7 @@ void YnImageRgbgr(tYnImage im)
 void YnImageShow(tYnImage p,
         const char *name)
 {
-#ifdef OPENCV
+#ifdef YN_OPENCV
     YnImageCvShow(p, name);
 #else
     fprintf(stderr, "Not compiled with OpenCV, saving to %s.png instead\n", name);
@@ -1045,7 +1045,7 @@ void YnImageTestResize(char *filename)
     YnImageShow(exp2, "Exposure-2");
     YnImageShow(exp5, "Exposure-.5");
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
     cvWaitKey(0);
 #endif
 
@@ -1095,7 +1095,7 @@ tYnImage YnImageLoad(char *filename,
 {
     tYnImage resized;
 
-#ifdef OPENCV
+#ifdef YN_OPENCV
     tYnImage out = YnImageCvLoad(filename, c);
 #else
     tYnImage out = YnImageLoadStb(filename, c);
