@@ -3,7 +3,13 @@
 //	DD-MM-YYYY  :   28-08-2016
 //	Author      :   haittt
 
+#include "cuda_runtime.h"
+#include "curand.h"
+#include "cublas_v2.h"
+
+extern "C" {
 #include "../include/YnLayerDropoutGpu.h"
+}
 
 /**************** Define */
 
@@ -32,6 +38,7 @@ YN_GPU_GLOBAL void _YnDropout(float *input,
         input[id] = (rand[id] < prob) ? 0 : input[id] * scale;
 }
 
+YN_EXTERN_C
 void YnLayerDropoutGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 {
@@ -46,6 +53,7 @@ void YnLayerDropoutGpuForward(tYnLayer layer,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
+YN_EXTERN_C
 void YnLayerDropoutGpuBackward(tYnLayer layer,
         tYnNetworkState netState)
 {

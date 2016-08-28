@@ -64,6 +64,7 @@ void YnLayerDeconvolutionalGpuForward(tYnLayer layer,
     YnActivationGpuOutputArrayCal(layer.outputGpu, layer.batch * layer.n * size, layer.activation);
 }
 
+YN_EXTERN_C
 void YnLayerDeconvolutionalGpuBackward(tYnLayer layer,
         tYnNetworkState state)
 {
@@ -114,6 +115,7 @@ void YnLayerDeconvolutionalGpuBackward(tYnLayer layer,
     }
 }
 
+YN_EXTERN_C
 void YnLayerDeconvolutionalGpuPull(tYnLayer layer)
 {
     YnCudaArrayPullFromGpu(layer.filtersGpu, layer.filters, layer.c*layer.n*layer.size*layer.size);
@@ -122,6 +124,7 @@ void YnLayerDeconvolutionalGpuPull(tYnLayer layer)
     YnCudaArrayPullFromGpu(layer.biasUpdatesGpu, layer.biasUpdates, layer.n);
 }
 
+YN_EXTERN_C
 void YnLayerDeconvolutionalGpuPush(tYnLayer layer)
 {
     YnCudaArrayPushToGpu(layer.filtersGpu, layer.filters, layer.c * layer.n * layer.size * layer.size);
@@ -130,6 +133,7 @@ void YnLayerDeconvolutionalGpuPush(tYnLayer layer)
     YnCudaArrayPushToGpu(layer.biasUpdatesGpu, layer.biasUpdates, layer.n);
 }
 
+YN_EXTERN_C
 void YnLayerDeconvolutionalGpuUpdate(tYnLayer layer,
         int batch,
         float learning_rate,

@@ -1,10 +1,10 @@
-#ifndef YNLAYERDROPOUTGPU_H
-#define YNLAYERDROPOUTGPU_H
+#ifndef YNLAYERMAXPOOLGPU_H
+#define YNLAYERMAXPOOLGPU_H
 
-#include "../YnLayerDropout.h"
+#include "../YnLayerMaxpool.h"
 #include "../YnCudaGpu.h"
-#include "../YnActivationGpu.h"
 #include "../YnBlasGpu.h"
+#include "../YnImageGpu.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,12 +26,12 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-void YnLayerDropoutGpuForward(tYnLayer layer,
+void YnLayerMaxpoolGpuForward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerDropoutGpuBackward(tYnLayer layer,
+void YnLayerMaxpoolGpuBackward(tYnLayer layer,
         tYnNetworkState netState)
 YN_ALSWAY_INLINE;
 
@@ -39,4 +39,4 @@ YN_ALSWAY_INLINE;
 }
 #endif
 
-#endif /* YNLAYERDROPOUTGPU_H */
+#endif /* YNLAYERMAXPOOLGPU_H */

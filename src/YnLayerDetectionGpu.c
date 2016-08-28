@@ -1,4 +1,4 @@
-//	File        :   YnLayerDetectionayerGpu.cu
+//	File        :   YnLayerDetectionayerGpu.c
 //	Brief       :   Implement methods.
 //	DD-MM-YYYY  :   28-08-2016
 //	Author      :   haittt

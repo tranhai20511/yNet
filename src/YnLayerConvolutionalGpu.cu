@@ -196,6 +196,7 @@ void YnLayerConvolutionalGpuForward(tYnLayer layer,
         YnBinarySwap(layer);
 }
 
+YN_EXTERN_C
 void YnLayerConvolutionalGpuBackward(tYnLayer layer,
         tYnNetworkState state)
 {
@@ -299,6 +300,7 @@ void YnLayerConvolutionalGpuBackward(tYnLayer layer,
     }
 }
 
+YN_EXTERN_C
 void YnLayerConvolutionalGpuPull(tYnLayer layer)
 {
     YnCudaArrayPullFromGpu(layer.filtersGpu,
@@ -325,6 +327,7 @@ void YnLayerConvolutionalGpuPull(tYnLayer layer)
     }
 }
 
+YN_EXTERN_C
 void YnLayerConvolutionalGpuPush(tYnLayer layer)
 {
     YnCudaArrayPushToGpu(layer.filtersGpu,
@@ -351,6 +354,7 @@ void YnLayerConvolutionalGpuPush(tYnLayer layer)
     }
 }
 
+YN_EXTERN_C
 void YnLayerConvolutionalGpuUpdate(tYnLayer layer,
         int batch,
         float learning_rate,

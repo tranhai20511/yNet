@@ -363,9 +363,6 @@ void backward_network(tYnNetwork net, tYnNetworkState state)
             case cYnLayerDropout:
                 YnLayerDropoutBackward(layer, state);
                 break;
-            case cYnLayerCrop:
-                YnLayerCropBackward(layer, state);
-                break;
             case cYnLayerCost:
                 YnLayerCostBackward(layer, state);
                 break;
