@@ -26,7 +26,7 @@ typedef struct tYnParserSizeParams{
     int w;
     int c;
     int index;
-    int time_steps;
+    int timeSteps;
 } tYnParserSizeParams;
 
 /**************** Local variables */

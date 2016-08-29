@@ -5,19 +5,19 @@
 
 #include "../include/YnList.h"
 #include "../include/YnOptionList.h"
-#include "../include/YnUtil.h"
+#include "../include/YnUtilayer.h"
 #include "../include/YnActivation.h"
 #include "../include/YnLayerCrop.h"
 #include "../include/YnLayerCost.h"
-#include "../include/YnLayerConvolutional.h"
+#include "../include/YnLayerConvolutionalayer.h"
 #include "../include/YnLayerActivation.h"
-#include "../include/YnLayerDeconvolutional.h"
+#include "../include/YnLayerDeconvolutionalayer.h"
 #include "../include/YnLayerConnected.h"
-#include "../include/YnLayerMaxpool.h"
+#include "../include/YnLayerMaxpoolayer.h"
 #include "../include/YnLayerSoftmax.h"
 #include "../include/YnLayerDropout.h"
 #include "../include/YnLayerDetection.h"
-#include "../include/YnLayerAvgpool.h"
+#include "../include/YnLayerAvgpoolayer.h"
 
 #include "../include/YnParser.h"
 
@@ -103,7 +103,7 @@ int YnParserIsRoute(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
 YN_STATIC
-tYnList * YnParserReadConfig(char *filename)
+tYnList * YnParserReadCfg(char *filename)
 YN_ALSWAY_INLINE;
 
 YN_STATIC
@@ -111,7 +111,7 @@ tYnList * YnParserFreeSection(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
 YN_STATIC
-eYnNetworkLearnRatePolicy * YnParserGetPolicy(char *s)
+eYnNetworkLearnRatePolicy * YnParserPolicyGet(char *s)
 YN_ALSWAY_INLINE;
 
 YN_STATIC
@@ -305,7 +305,7 @@ tYnList * YnParserFreeSection(tYnParserSection *s)
 }
 
 YN_STATIC
-eYnNetworkLearnRatePolicy * YnParserGetPolicy(char *s)
+eYnNetworkLearnRatePolicy * YnParserPolicyGet(char *s)
 {
     if (strcmp(s, "poly") == 0)       return eYnNetworkLearnRatePoly;
     if (strcmp(s, "constant") == 0)   return eYnNetworkLearnRateConstant;
@@ -386,7 +386,7 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
 
     if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
     {
-        YnUtilError("Get deconvolutional type failed\n");
+        YnUtilError("Get deconvolutional type failed");
         return NULL;
     }
 
@@ -395,8 +395,8 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
     c = params.c;
     batch = params.batch;
 
-    if(!(h && w && c))
-        YnUtilError("Layer before deconvolutional layer must output image.");
+    if (!(h && w && c))
+        YnUtilError("Layer before deconvolutional layer must output image");
 
     layer = YnLayerDeconvolutionalMake(batch, h, w, c, n, size ,stride ,activation);
 
@@ -406,7 +406,7 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
     YnParserData(biases, layer.biases, n);
 
 #ifdef YN_GPU
-    if(weights || biases)
+    if (weights || biases)
         YnLayerDeconvolutionalGpuPush(layer);
 #endif
 
@@ -414,519 +414,727 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
 }
 
 YN_STATIC
-tYnLayer YnParserDeconvolutional(tYnList *options,
+tYnLayer YnParserConvolutional(tYnList *options,
         tYnParserSizeParams params)
 {
     tYnLayer layer;
     eYnActivationType activation;
     int batch, h, w, c;
+    int batch_normalize;
+    int binary;
     char *weights;
     char *biases;
 
     int n = YnOptionFindInt(options, "filters",1);
     int size = YnOptionFindInt(options, "size",1);
     int stride = YnOptionFindInt(options, "stride",1);
-    int pad = YnOptionFindInt(options, "pad",0);
-    char *activation_s = option_find_str(options, "activation", "logistic");
-    ACTIVATION activation = get_activation(activation_s);
+    int pad = YnOptionFindInt(options, "pad", 0);
+    char *activation_s = YnOptionFindStr(options, "activation", "logistic");
 
-    int batch,h,w,c;
+    if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
+    {
+        YnUtilError("Get convolutional type failed");
+        return NULL;
+    }
+
     h = params.h;
     w = params.w;
     c = params.c;
-    batch=params.batch;
-    if(!(h && w && c)) error("Layer before convolutional layer must output image.");
-    int batch_normalize = option_find_int_quiet(options, "batch_normalize", 0);
-    int binary = option_find_int_quiet(options, "binary", 0);
+    batch = params.batch;
+    if (!(h && w && c))
+        YnUtilError("Layer before convolutional layer must output image");
 
-    convolutional_layer layer = make_convolutional_layer(batch,h,w,c,n,size,stride,pad,activation, batch_normalize, binary);
-    layer.flipped = option_find_int_quiet(options, "flipped", 0);
+    batch_normalize = YnOptionFindIntQuiet(options, "batch_normalize", 0);
+    binary = YnOptionFindIntQuiet(options, "binary", 0);
 
-    char *weights = option_find_str(options, "weights", 0);
-    char *biases = option_find_str(options, "biases", 0);
-    parse_data(weights, layer.filters, c*n*size*size);
-    parse_data(biases, layer.biases, n);
-    #ifdef GPU
-    if(weights || biases) push_convolutional_layer(layer);
-    #endif
+    layer = YnLayerConvolutionalMake(batch, h, w, c, n, size, stride, pad, activation, batch_normalize, binary);
+    layer.flipped = YnOptionFindIntQuiet(options, "flipped", 0);
+
+    weights = YnOptionFindStr(options, "weights", 0);
+    biases = YnOptionFindStr(options, "biases", 0);
+    YnParserData(weights, layer.filters, c * n * size * size);
+    YnParserData(biases, layer.biases, n);
+
+#ifdef YN_GPU
+    if (weights || biases)
+        YnLayerConvolutionalGpuPush(layer);
+#endif
+
     return layer;
 }
 
 YN_STATIC
-void save_connected_weights(layer l, FILE *fp)
+void YnParserConnectedWeightsSave(tYnLayer layer,
+                                  FILE *fp)
 {
-#ifdef GPU
-    if(gpu_index >= 0){
-        pull_connected_layer(l);
+#ifdef YN_GPU
+    if (YnCudaGpuIndexGet() >= 0)
+    {
+        YnLayerConnectedGpuPull(layer);
     }
 #endif
-    fwrite(l.biases, sizeof(float), l.outputs, fp);
-    fwrite(l.weights, sizeof(float), l.outputs*l.inputs, fp);
-    if (l.batch_normalize){
-        fwrite(l.scales, sizeof(float), l.outputs, fp);
-        fwrite(l.rolling_mean, sizeof(float), l.outputs, fp);
-        fwrite(l.rolling_variance, sizeof(float), l.outputs, fp);
+    fwrite(layer.biases, sizeof(float), layer.outputs, fp);
+    fwrite(layer.weights, sizeof(float), layer.outputs * layer.inputs, fp);
+
+    if (layer.batchNormalize)
+    {
+        fwrite(layer.scales, sizeof(float), layer.outputs, fp);
+        fwrite(layer.rollingMean, sizeof(float), layer.outputs, fp);
+        fwrite(layer.rollingVariance, sizeof(float), layer.outputs, fp);
     }
 }
 
-connected_layer parse_connected(list *options, size_params params)
+tYnLayer YnParserConnected(tYnList *options,
+                           tYnParserSizeParams params)
 {
-    int output = option_find_int(options, "output",1);
-    char *activation_s = option_find_str(options, "activation", "logistic");
-    ACTIVATION activation = get_activation(activation_s);
-    int batch_normalize = option_find_int_quiet(options, "batch_normalize", 0);
+    tYnLayer layer;
+    eYnActivationType activation;
+    char *weights;
+    char *biases;
 
-    connected_layer layer = make_connected_layer(params.batch, params.inputs, output, activation, batch_normalize);
+    int output = YnOptionFindInt(options, "output",1);
+    char *activation_s = YnOptionFindStr(options, "activation", "logistic");
+    int batch_normalize = YnOptionFindIntQuiet(options, "batch_normalize", 0);
 
-    char *weights = option_find_str(options, "weights", 0);
-    char *biases = option_find_str(options, "biases", 0);
-    parse_data(biases, layer.biases, output);
-    parse_data(weights, layer.weights, params.inputs*output);
-    #ifdef GPU
-    if(weights || biases) push_connected_layer(layer);
-    #endif
+    if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
+    {
+        YnUtilError("Get connected type failed");
+        return NULL;
+    }
+
+    layer = YnLayerConnectedMake(params.batch, params.inputs, output, activation, batch_normalize);
+
+    weights = YnOptionFindStr(options, "weights", 0);
+    biases = YnOptionFindStr(options, "biases", 0);
+    YnParserData(biases, layer.biases, output);
+    YnParserData(weights, layer.weights, params.inputs * output);
+
+#ifdef YN_GPU
+    if (weights || biases)
+        YnLayerConnectedGpuPush(layer);
+#endif
+
     return layer;
 }
 
-softmax_layer parse_softmax(list *options, size_params params)
+tYnLayer YnParserSoftmax(tYnList *options,
+                         tYnParserSizeParams params)
 {
-    int groups = option_find_int_quiet(options, "groups",1);
-    softmax_layer layer = make_softmax_layer(params.batch, params.inputs, groups);
-    layer.temperature = option_find_float_quiet(options, "temperature", 1);
+    int groups = YnOptionFindIntQuiet(options, "groups",1);
+    tYnLayer layer = YnLayerSoftmaxMake(params.batch, params.inputs, groups);
+    layer.temperature = YnOptionFindFloatQuiet(options, "temperature", 1);
     return layer;
 }
 
-detection_layer parse_detection(list *options, size_params params)
+tYnLayer YnParserDetection(tYnList *options,
+                           tYnParserSizeParams params)
 {
-    int coords = option_find_int(options, "coords", 1);
-    int classes = option_find_int(options, "classes", 1);
-    int rescore = option_find_int(options, "rescore", 0);
-    int num = option_find_int(options, "num", 1);
-    int side = option_find_int(options, "side", 7);
-    detection_layer layer = make_detection_layer(params.batch, params.inputs, num, side, classes, coords, rescore);
+    int coords = YnOptionFindInt(options, "coords", 1);
+    int classes = YnOptionFindInt(options, "classes", 1);
+    int rescore = YnOptionFindInt(options, "rescore", 0);
+    int num = YnOptionFindInt(options, "num", 1);
+    int side = YnOptionFindInt(options, "side", 7);
+    tYnLayer layer = YnLayerDetectionMake(params.batch, params.inputs, num, side, classes, coords, rescore);
 
-    layer.softmax = option_find_int(options, "softmax", 0);
-    layer.sqrt = option_find_int(options, "sqrt", 0);
+    layer.softmax = YnOptionFindInt(options, "softmax", 0);
+    layer.sqrt = YnOptionFindInt(options, "sqrt", 0);
 
-    layer.coord_scale = option_find_float(options, "coord_scale", 1);
-    layer.forced = option_find_int(options, "forced", 0);
-    layer.object_scale = option_find_float(options, "object_scale", 1);
-    layer.noobject_scale = option_find_float(options, "noobject_scale", 1);
-    layer.class_scale = option_find_float(options, "class_scale", 1);
-    layer.jitter = option_find_float(options, "jitter", .2);
+    layer.coordScale = YnOptionFindFloat(options, "coordScale", 1);
+    layer.forced = YnOptionFindInt(options, "forced", 0);
+    layer.objectScale = YnOptionFindFloat(options, "objectScale", 1);
+    layer.noobjectScale = YnOptionFindFloat(options, "noobjectScale", 1);
+    layer.classScale = YnOptionFindFloat(options, "classScale", 1);
+    layer.jitter = YnOptionFindFloat(options, "jitter", .2);
+
     return layer;
 }
 
-cost_layer parse_cost(list *options, size_params params)
+tYnLayer YnParserCost(tYnList *options,
+                      tYnParserSizeParams params)
 {
-    char *type_s = option_find_str(options, "type", "sse");
-    COST_TYPE type = get_cost_type(type_s);
-    float scale = option_find_float_quiet(options, "scale",1);
-    cost_layer layer = make_cost_layer(params.batch, params.inputs, type, scale);
+    char *type_s = YnOptionFindStr(options, "type", "sse");
+    eYnLayerCostType type = YnLayerCostStringToType(type_s);
+    float scale = YnOptionFindFloatQuiet(options, "scale",1);
+    tYnLayer layer = YnLayerCostMake(params.batch, params.inputs, type, scale);
     return layer;
 }
 
-crop_layer parse_crop(list *options, size_params params)
+tYnLayer YnPareserCrop(tYnList *options,
+                       tYnParserSizeParams params)
 {
-    int crop_height = option_find_int(options, "crop_height",1);
-    int crop_width = option_find_int(options, "crop_width",1);
-    int flip = option_find_int(options, "flip",0);
-    float angle = option_find_float(options, "angle",0);
-    float saturation = option_find_float(options, "saturation",1);
-    float exposure = option_find_float(options, "exposure",1);
+    tYnLayer layer;
+    int batch, h, w, c;
+    int noadjust;
+    int crop_height = YnOptionFindInt(options, "crop_height",1);
+    int crop_width = YnOptionFindInt(options, "crop_width",1);
+    int flip = YnOptionFindInt(options, "flip",0);
+    float angle = YnOptionFindFloat(options, "angle",0);
+    float saturation = YnOptionFindFloat(options, "saturation",1);
+    float exposure = YnOptionFindFloat(options, "exposure",1);
 
-    int batch,h,w,c;
     h = params.h;
     w = params.w;
     c = params.c;
-    batch=params.batch;
-    if(!(h && w && c)) error("Layer before crop layer must output image.");
+    batch = params.batch;
 
-    int noadjust = option_find_int_quiet(options, "noadjust",0);
+    if (!(h && w && c))
+        YnUtilError("Layer before crop layer must output image");
 
-    crop_layer l = make_crop_layer(batch,h,w,c,crop_height,crop_width,flip, angle, saturation, exposure);
-    l.shift = option_find_float(options, "shift", 0);
-    l.noadjust = noadjust;
-    return l;
+    noadjust = YnOptionFindIntQuiet(options, "noadjust",0);
+
+    layer = YnLayerCropMake(batch, h, w, c, crop_height,crop_width,flip, angle, saturation, exposure);
+    layer.shift = YnOptionFindFloat(options, "shift", 0);
+    layer.noadjust = noadjust;
+
+    return layer;
 }
 
-maxpool_layer parse_maxpool(list *options, size_params params)
+tYnLayer YnParserMaxpool(tYnList *options,
+                         tYnParserSizeParams params)
 {
-    int stride = option_find_int(options, "stride",1);
-    int size = option_find_int(options, "size",stride);
+    tYnLayer layer;
+    int batch, h, w, c;
+    int stride = YnOptionFindInt(options, "stride",1);
+    int size = YnOptionFindInt(options, "size",stride);
 
-    int batch,h,w,c;
     h = params.h;
     w = params.w;
     c = params.c;
-    batch=params.batch;
-    if(!(h && w && c)) error("Layer before maxpool layer must output image.");
+    batch = params.batch;
 
-    maxpool_layer layer = make_maxpool_layer(batch,h,w,c,size,stride);
+    if (!(h && w && c))
+        YnUtilError("Layer before maxpool layer must output image");
+
+    layer = YnLayerMaxpoolMake(batch, h, w, c, size, stride);
+
     return layer;
 }
 
-avgpool_layer parse_avgpool(list *options, size_params params)
+tYnLayer YnParserAvgpool(tYnList *options,
+                         tYnParserSizeParams params)
 {
-    int batch,w,h,c;
+    tYnLayer layer;
+    int batch, w, h, c;
+
     w = params.w;
     h = params.h;
     c = params.c;
-    batch=params.batch;
-    if(!(h && w && c)) error("Layer before avgpool layer must output image.");
+    batch = params.batch;
 
-    avgpool_layer layer = make_avgpool_layer(batch,w,h,c);
+    if (!(h && w && c))
+        YnUtilError("Layer before avgpool layer must output image.");
+
+    layer = YnLayerAvgpoolMake(batch, w, h, c);
+
     return layer;
 }
 
-dropout_layer parse_dropout(list *options, size_params params)
+tYnLayer YnParserDropout(tYnList *options,
+                         tYnParserSizeParams params)
 {
-    float probability = option_find_float(options, "probability", .5);
-    dropout_layer layer = make_dropout_layer(params.batch, params.inputs, probability);
-    layer.out_w = params.w;
-    layer.out_h = params.h;
-    layer.out_c = params.c;
+    float probability = YnOptionFindFloat(options, "probability", .5);
+    tYnLayer layer = YnLayerDropoutMake(params.batch, params.inputs, probability);
+    layer.outW = params.w;
+    layer.outH = params.h;
+    layer.outC = params.c;
     return layer;
 }
 
-layer parse_activation(list *options, size_params params)
+tYnLayer YnParserActivation(tYnList *options,
+                            tYnParserSizeParams params)
 {
-    char *activation_s = option_find_str(options, "activation", "linear");
-    ACTIVATION activation = get_activation(activation_s);
+    tYnLayer layer;
+    char *activation_s = YnOptionFindStr(options, "activation", "linear");
+    eYnActivationType activation;
 
-    layer l = make_activation_layer(params.batch, params.inputs, activation);
+    if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
+    {
+        YnUtilError("Get activation type failed");
+        return NULL;
+    }
 
-    l.out_h = params.h;
-    l.out_w = params.w;
-    l.out_c = params.c;
-    l.h = params.h;
-    l.w = params.w;
-    l.c = params.c;
+    layer = YnLayerActivationMake(params.batch, params.inputs, activation);
 
-    return l;
+    layer.outH = params.h;
+    layer.outW = params.w;
+    layer.outC = params.c;
+    layer.h = params.h;
+    layer.w = params.w;
+    layer.c = params.c;
+
+    return layer;
 }
 
 
-void parse_net_options(list *options, network *net)
+void YnParserNetOptions(tYnList *options,
+                             tYnNetwork *net)
 {
-    net->batch = option_find_int(options, "batch",1);
-    net->learning_rate = option_find_float(options, "learning_rate", .001);
-    net->momentum = option_find_float(options, "momentum", .9);
-    net->decay = option_find_float(options, "decay", .0001);
-    int subdivs = option_find_int(options, "subdivisions",1);
-    net->time_steps = option_find_int_quiet(options, "time_steps",1);
+    char *policy_s;
+    char *l;
+    char *p;
+    int len;
+    int n;
+    int i;
+    int *steps;
+    float *scales;
+    int step;
+    float scale;
+
+    net->batch = YnOptionFindInt(options, "batch",1);
+    net->learningRate = YnOptionFindFloat(options, "learningRate", .001);
+    net->momentum = YnOptionFindFloat(options, "momentum", .9);
+    net->decay = YnOptionFindFloat(options, "decay", .0001);
+    int subdivs = YnOptionFindInt(options, "subdivisions",1);
+    net->timeSteps = YnOptionFindIntQuiet(options, "timeSteps",1);
     net->batch /= subdivs;
-    net->batch *= net->time_steps;
+    net->batch *= net->timeSteps;
     net->subdivisions = subdivs;
 
-    net->h = option_find_int_quiet(options, "height",0);
-    net->w = option_find_int_quiet(options, "width",0);
-    net->c = option_find_int_quiet(options, "channels",0);
-    net->inputs = option_find_int_quiet(options, "inputs", net->h * net->w * net->c);
+    net->h = YnOptionFindIntQuiet(options, "height",0);
+    net->w = YnOptionFindIntQuiet(options, "width",0);
+    net->c = YnOptionFindIntQuiet(options, "channels",0);
+    net->inputs = YnOptionFindIntQuiet(options, "inputs", net->h * net->w * net->c);
 
-    if(!net->inputs && !(net->h && net->w && net->c)) error("No input parameters supplied");
+    if (!net->inputs && !(net->h && net->w && net->c))
+        YnUtilError("No input parameters supplied");
 
-    char *policy_s = option_find_str(options, "policy", "constant");
-    net->policy = get_policy(policy_s);
-    if(net->policy == STEP){
-        net->step = option_find_int(options, "step", 1);
-        net->scale = option_find_float(options, "scale", 1);
-    } else if (net->policy == STEPS){
-        char *l = option_find(options, "steps");
-        char *p = option_find(options, "scales");
-        if(!l || !p) error("STEPS policy must have steps and scales in cfg file");
+    policy_s = YnOptionFindStr(options, "policy", "constant");
 
-        int len = strlen(l);
-        int n = 1;
-        int i;
-        for(i = 0; i < len; ++i){
-            if (l[i] == ',') ++n;
-        }
-        int *steps = calloc(n, sizeof(int));
-        float *scales = calloc(n, sizeof(float));
-        for(i = 0; i < n; ++i){
-            int step    = atoi(l);
-            float scale = atof(p);
-            l = strchr(l, ',')+1;
-            p = strchr(p, ',')+1;
+    net->policy = YnParserPolicyGet(policy_s);
+    if (net->policy == eYnNetworkLearnRateStep)
+    {
+        net->step = YnOptionFindInt(options, "step", 1);
+        net->scale = YnOptionFindFloat(options, "scale", 1);
+    }
+    else if (net->policy == eYnNetworkLearnRateSteps)
+    {
+        l = YnOptionFind(options, "steps");
+        p = YnOptionFind(options, "scales");
+
+        if (!l || !p)
+            YbUtilError("STEPS policy must have steps and scales in cfg file");
+
+        /* TODO */
+        len = strlen(l);
+        n = 1;
+
+        for(i = 0; i < len; i ++)
+            if (l[i] == ',')
+                n ++;
+
+        steps = calloc(n, sizeof(int));
+        scales = calloc(n, sizeof(float));
+
+        for (i = 0; i < n; i ++)
+        {
+            step = atoi(l);
+            scale = atof(p);
+            l = strchr(l, ',') + 1;
+            p = strchr(p, ',') + 1;
             steps[i] = step;
             scales[i] = scale;
         }
+
         net->scales = scales;
         net->steps = steps;
         net->num_steps = n;
-    } else if (net->policy == EXP){
-        net->gamma = option_find_float(options, "gamma", 1);
-    } else if (net->policy == SIG){
-        net->gamma = option_find_float(options, "gamma", 1);
-        net->step = option_find_int(options, "step", 1);
-    } else if (net->policy == POLY){
-        net->power = option_find_float(options, "power", 1);
+
     }
-    net->max_batches = option_find_int(options, "max_batches", 0);
+    else if (net->policy == eYnNetworkLearnRateExp)
+    {
+        net->gamma = YnOptionFindFloat(options, "gamma", 1);
+    }
+    else if (net->policy == eYnNetworkLearnRateSig)
+    {
+        net->gamma = YnOptionFindFloat(options, "gamma", 1);
+        net->step = YnOptionFindInt(options, "step", 1);
+    }
+    else if (net->policy == eYnNetworkLearnRatePoly)
+    {
+        net->power = YnOptionFindFloat(options, "power", 1);
+    }
+
+    net->max_batches = YnOptionFindInt(options, "max_batches", 0);
 }
 
-network parse_network_cfg(char *filename)
+tYnNetwork YnParserNetworkCfg(char *filename)
 {
-    list *sections = read_cfg(filename);
-    node *n = sections->front;
-    if(!n) error("Config file has no sections");
-    network net = make_network(sections->size - 1);
-    size_params params;
+    tYnLayer layer;
+    tYnNetwork net;
+    tYnParserSizeParams params;
+    tYnParserSection *s;
+    tYnList *options;
+    int count;
 
-    section *s = (section *)n->val;
-    list *options = s->options;
-    if(!is_network(s)) error("First section must be [net] or [network]");
-    parse_net_options(options, &net);
+    tYnList *sections = YnParserReadCfg(filename);
+    tYnListNode *n = sections->front;
+
+    if (!n)
+        YnUtilError("Config file has no sections");
+
+    net = YnNetworkMake(sections->size - 1);
+
+    s = (tYnParserSection *)n->val;
+    options = s->options;
+
+    if (!YnParserIsNetwork(s))
+        YnutilError("First section must be [net] or [network]");
+
+    YnParserNetOptions(options, &net);
 
     params.h = net.h;
     params.w = net.w;
     params.c = net.c;
     params.inputs = net.inputs;
     params.batch = net.batch;
-    params.time_steps = net.time_steps;
+    params.timeSteps = net.timeSteps;
 
     n = n->next;
-    int count = 0;
-    free_section(s);
-    while(n){
+    count = 0;
+    YnParserFreeSection(s);
+
+    while (n)
+    {
         params.index = count;
         fprintf(stderr, "%d: ", count);
-        s = (section *)n->val;
+        s = (tYnParserSection *)n->val;
         options = s->options;
-        layer l = {0};
-        if(is_convolutional(s)){
-            l = parse_convolutional(options, params);
-        }else if(is_local(s)){
-            l = parse_local(options, params);
-        }else if(is_activation(s)){
-            l = parse_activation(options, params);
-        }else if(is_deconvolutional(s)){
-            l = parse_deconvolutional(options, params);
-        }else if(is_rnn(s)){
-            l = parse_rnn(options, params);
-        }else if(is_connected(s)){
-            l = parse_connected(options, params);
-        }else if(is_crop(s)){
-            l = parse_crop(options, params);
-        }else if(is_cost(s)){
-            l = parse_cost(options, params);
-        }else if(is_detection(s)){
-            l = parse_detection(options, params);
-        }else if(is_softmax(s)){
-            l = parse_softmax(options, params);
-        }else if(is_normalization(s)){
-            l = parse_normalization(options, params);
-        }else if(is_maxpool(s)){
-            l = parse_maxpool(options, params);
-        }else if(is_avgpool(s)){
-            l = parse_avgpool(options, params);
-        }else if(is_route(s)){
-            l = parse_route(options, params, net);
-        }else if(is_shortcut(s)){
-            l = parse_shortcut(options, params, net);
-        }else if(is_dropout(s)){
-            l = parse_dropout(options, params);
-            l.output = net.layers[count-1].output;
-            l.delta = net.layers[count-1].delta;
-#ifdef GPU
-            l.output_gpu = net.layers[count-1].output_gpu;
-            l.delta_gpu = net.layers[count-1].delta_gpu;
+        layer = {0};
+
+        if (YnParserIsConvolutional(s))
+            layer = YnParserConvolutional(options, params);
+        /*else if (YnParserIsLocal(s))
+            layer = YnParserLocal(options, params);*/
+        else if (YnParserIsActivation(s))
+            layer = YnParserActivation(options, params);
+        else if (YnParserIsDeconvolutional(s))
+            layer = YnParserDeconvolutional(options, params);
+        /*else if (YnParserIsRnn(s))
+            layer = YnParserRnn(options, params);*/
+        else if (YnParserIsConnected(s))
+            layer = YnParserConnected(options, params);
+        else if (YnParserIsCrop(s))
+            layer = YnParserCrop(options, params);
+        else if (YnParserIsCost(s))
+            layer = YnParserCost(options, params);
+        else if (YnParserIsDetection(s))
+            layer = YnParserDetection(options, params);
+        else if (YnParserIsSoftmax(s))
+            layer = YnParserSoftmax(options, params);
+        /*else if (YnParserIsNormalization(s))
+            layer = YnParserNormalization(options, params);*/
+        else if (YnParserIsMaxpool(s))
+            layer = YnParserMaxpool(options, params);
+        else if (YnParserIsAvgpool(s))
+            layer = YnParserAvgpool(options, params);
+        /*else if (YnParserIsRoute(s))
+            layer = YnParserRoute(options, params, net);*/
+        /*else if (YnParserIsShortcut(s))
+            layer = YnParserShortcut(options, params, net);*/
+        else if (YnParserIsDropout(s))
+        {
+            layer = YnParserDropout(options, params);
+            layer.output = net.layers[count - 1].output;
+            layer.delta = net.layers[count - 1].delta;
+
+#ifdef YN_GPU
+            layer.outputGpu = net.layers[count - 1].outputGpu;
+            layer.deltaGpu = net.layers[count - 1].deltaGpu;
 #endif
-        }else{
+        }
+        else
+        {
             fprintf(stderr, "Type not recognized: %s\n", s->type);
         }
-        l.dontload = option_find_int_quiet(options, "dontload", 0);
-        l.dontloadscales = option_find_int_quiet(options, "dontloadscales", 0);
-        option_unused(options);
-        net.layers[count] = l;
-        free_section(s);
+
+        layer.dontload = YnOptionFindIntQuiet(options, "dontload", 0);
+        layer.dontloadscales = YnOptionFindIntQuiet(options, "dontloadscales", 0);
+        YnOptionUnused(options);
+        net.layers[count] = layer;
+        YnParserFreeSection(s);
         n = n->next;
-        ++count;
-        if(n){
-            params.h = l.out_h;
-            params.w = l.out_w;
-            params.c = l.out_c;
-            params.inputs = l.outputs;
+        count ++;
+
+        if (n)
+        {
+            params.h = layer.outH;
+            params.w = layer.outW;
+            params.c = layer.outC;
+            params.inputs = layer.outputs;
         }
     }
-    free_list(sections);
-    net.outputs = get_network_output_size(net);
-    net.output = get_network_output(net);
+
+    YnListFree(sections);
+    net.outputs = YnNetworkOutputSizeGet(net);
+    net.output = YnNetworkOutputGet(net);
     return net;
 }
 
-void save_weights_upto(network net, char *filename, int cutoff)
+void YnParserWeightsUptoSave(tYnNetwork net,
+                             char *filename,
+                             int cutoff)
 {
     fprintf(stderr, "Saving weights to %s\n", filename);
-    FILE *fp = fopen(filename, "w");
-    if(!fp) file_error(filename);
 
+    int i;
+    int num;
+    tYnLayer layer;
     int major = 0;
     int minor = 1;
     int revision = 0;
+    FILE *fp = fopen(filename, "w");
+
+    if (!fp)
+        YnUtilErrorOpenFile(filename);
+
     fwrite(&major, sizeof(int), 1, fp);
     fwrite(&minor, sizeof(int), 1, fp);
     fwrite(&revision, sizeof(int), 1, fp);
     fwrite(net.seen, sizeof(int), 1, fp);
 
-    int i;
-    for(i = 0; i < net.n && i < cutoff; ++i){
-        layer l = net.layers[i];
-        if(l.type == CONVOLUTIONAL){
-#ifdef GPU
-            if(gpu_index >= 0){
-                pull_convolutional_layer(l);
-            }
+    for(i = 0; i < net.n && i < cutoff; i ++)
+    {
+        layer = net.layers[i];
+        if (layer.type == cYnLayerConvolutional)
+        {
+#ifdef YN_GPU
+            if (YnCudaGpuIndexGet() >= 0)
+                YnLayerConvolutionalGpuPull(layer);
 #endif
-            int num = l.n*l.c*l.size*l.size;
-            fwrite(l.biases, sizeof(float), l.n, fp);
-            if (l.batch_normalize){
-                fwrite(l.scales, sizeof(float), l.n, fp);
-                fwrite(l.rolling_mean, sizeof(float), l.n, fp);
-                fwrite(l.rolling_variance, sizeof(float), l.n, fp);
+            num = layer.n * layer.c * layer.size * layer.size;
+            fwrite(layer.biases, sizeof(float), layer.n, fp);
+
+            if (layer.batchNormalize)
+            {
+                fwrite(layer.scales, sizeof(float), layer.n, fp);
+                fwrite(layer.rollingMean, sizeof(float), layer.n, fp);
+                fwrite(layer.rollingVariance, sizeof(float), layer.n, fp);
             }
-            fwrite(l.filters, sizeof(float), num, fp);
-        } if(l.type == CONNECTED){
-            save_connected_weights(l, fp);
-        } if(l.type == RNN){
-            save_connected_weights(*(l.input_layer), fp);
-            save_connected_weights(*(l.self_layer), fp);
-            save_connected_weights(*(l.output_layer), fp);
-        } if(l.type == LOCAL){
-#ifdef GPU
-            if(gpu_index >= 0){
-                pull_local_layer(l);
-            }
-#endif
-            int locations = l.out_w*l.out_h;
-            int size = l.size*l.size*l.c*l.n*locations;
-            fwrite(l.biases, sizeof(float), l.outputs, fp);
-            fwrite(l.filters, sizeof(float), size, fp);
+
+            fwrite(layer.filters, sizeof(float), num, fp);
+
+        }
+        if (layer.type == cYnLayerConnected)
+        {
+            YnParserConnectedWeightsSave(layer, fp);
+        }
+        if (layer.type == cYnLayerRnn)
+        {
+            /*
+            YnParserConnectedWeightsSave(*(layer.inputLayer), fp);
+            YnParserConnectedWeightsSave(*(layer.selfLayer), fp);
+            YnParserConnectedWeightsSave(*(layer.outputLayer), fp);
+            */
+        }
+        if (layer.type == cYnLayerLocal)
+        {
+            /*
+            #ifdef YN_GPU
+            if (YnCudaGpuIndexGet() >= 0)
+                YnLayerLocalGpuPull(layer);
+            #endif
+
+            int locations = layer.outW * layer.outH;
+            int size = layer.size * layer.size * layer.c * layer.n * locations;
+            fwrite(layer.biases, sizeof(float), layer.outputs, fp);
+            fwrite(layer.filters, sizeof(float), size, fp);
+             */
         }
     }
+
     fclose(fp);
 }
-void save_weights(network net, char *filename)
+
+void YnParserWeightsSave(tYnNetwork net,
+                         char *filename)
 {
-    save_weights_upto(net, filename, net.n);
+    YnParserWeightsUptoSave(net, filename, net.n);
 }
 
 
-void save_weights_double(network net, char *filename)
+void YnPareserWeightsDoubleSave(tYnNetwork net,
+                                char *filename)
 {
     fprintf(stderr, "Saving doubled weights to %s\n", filename);
+    int i, j, k;
+    float zero;
+    int index;
+    tYnLayer layer;
     FILE *fp = fopen(filename, "w");
-    if(!fp) file_error(filename);
 
-    fwrite(&net.learning_rate, sizeof(float), 1, fp);
+    if (!fp)
+        YnUtilErrorOpenFile(filename);
+
+    fwrite(&net.learningRate, sizeof(float), 1, fp);
     fwrite(&net.momentum, sizeof(float), 1, fp);
     fwrite(&net.decay, sizeof(float), 1, fp);
     fwrite(net.seen, sizeof(int), 1, fp);
 
-    int i,j,k;
-    for(i = 0; i < net.n; ++i){
-        layer l = net.layers[i];
-        if(l.type == CONVOLUTIONAL){
-#ifdef GPU
-            if(gpu_index >= 0){
-                pull_convolutional_layer(l);
-            }
-#endif
-            float zero = 0;
-            fwrite(l.biases, sizeof(float), l.n, fp);
-            fwrite(l.biases, sizeof(float), l.n, fp);
+    for(i = 0; i < net.n; i ++)
+    {
+        layer = net.layers[i];
+        if (layer.type == cYnLayerConvolutional)
+        {
 
-            for (j = 0; j < l.n; ++j){
-                int index = j*l.c*l.size*l.size;
-                fwrite(l.filters+index, sizeof(float), l.c*l.size*l.size, fp);
-                for (k = 0; k < l.c*l.size*l.size; ++k) fwrite(&zero, sizeof(float), 1, fp);
+#ifdef YN_GPU
+            if (YnCudaGpuIndexGet() >= 0)
+                YnLayerConvolutionalGpuPull(layer);
+#endif
+            zero = 0;
+            fwrite(layer.biases, sizeof(float), layer.n, fp);
+            fwrite(layer.biases, sizeof(float), layer.n, fp);
+
+            for (j = 0; j < layer.n; j ++)
+            {
+                index = j * layer.c * layer.size * layer.size;
+                fwrite(layer.filters + index, sizeof(float), layer.c * layer.size * layer.size, fp);
+
+                for (k = 0; k < layer.c * layer.size * layer.size; k ++)
+                    fwrite(&zero, sizeof(float), 1, fp);
             }
-            for (j = 0; j < l.n; ++j){
-                int index = j*l.c*l.size*l.size;
-                for (k = 0; k < l.c*l.size*l.size; ++k) fwrite(&zero, sizeof(float), 1, fp);
-                fwrite(l.filters+index, sizeof(float), l.c*l.size*l.size, fp);
+            for (j = 0; j < layer.n; j ++)
+            {
+                index = j * layer.c * layer.size * layer.size;
+                for (k = 0; k < layer.c * layer.size * layer.size; k ++)
+                    fwrite(&zero, sizeof(float), 1, fp);
+
+                fwrite(layer.filters + index, sizeof(float), layer.c * layer.size * layer.size, fp);
             }
         }
     }
+
     fclose(fp);
 }
 
-void load_weights(network *net, char *filename)
+void YnPareserConnectedWeightsLoad(tYnLayer layer,
+                                   FILE *fp,
+                                   int transpose)
 {
-    load_weights_upto(net, filename, net->n);
+    fread(layer.biases, sizeof(float), layer.outputs, fp);
+    fread(layer.weights, sizeof(float), layer.outputs * layer.inputs, fp);
+
+    if (transpose)
+    {
+        YnParserTransposeMatrix(layer.weights, layer.inputs, layer.outputs);
+    }
+
+    if (layer.batchNormalize && (!layer.dontloadscales))
+    {
+        fread(layer.scales, sizeof(float), layer.outputs, fp);
+        fread(layer.rollingMean, sizeof(float), layer.outputs, fp);
+        fread(layer.rollingVariance, sizeof(float), layer.outputs, fp);
+    }
+
+#ifdef YN_GPU
+    if (YnCudaGpuIndexGet() >= 0)
+        YnLayerConnectedGpuPush(layer);
+#endif
+
 }
 
-
-void load_weights_upto(network *net, char *filename, int cutoff)
+void YnParserWeightsUptoLoad(tYnNetwork *net,
+                             char *filename,
+                             int cutoff)
 {
-    fprintf(stderr, "Loading weights from %s...", filename);
-    fflush(stdout);
-    FILE *fp = fopen(filename, "rb");
-    if(!fp) file_error(filename);
-
+    tYnLayer layer;
     int major;
     int minor;
     int revision;
+    int transpose;
+    int i;
+    int num;
+    int locations;
+    int size;
+
+    FILE *fp = fopen(filename, "rb");
+    if (!fp)
+        YnUtilErrorOpenFile(filename);
+
+    fprintf(stderr, "Loading weights from %s...", filename);
+    fflush(stdout);
+
     fread(&major, sizeof(int), 1, fp);
     fread(&minor, sizeof(int), 1, fp);
     fread(&revision, sizeof(int), 1, fp);
     fread(net->seen, sizeof(int), 1, fp);
-    int transpose = (major > 1000) || (minor > 1000);
+    transpose = (major > 1000) || (minor > 1000);
 
-    int i;
-    for(i = 0; i < net->n && i < cutoff; ++i){
-        layer l = net->layers[i];
-        if (l.dontload) continue;
-        if(l.type == CONVOLUTIONAL){
-            int num = l.n*l.c*l.size*l.size;
-            fread(l.biases, sizeof(float), l.n, fp);
-            if (l.batch_normalize && (!l.dontloadscales)){
-                fread(l.scales, sizeof(float), l.n, fp);
-                fread(l.rolling_mean, sizeof(float), l.n, fp);
-                fread(l.rolling_variance, sizeof(float), l.n, fp);
+    for(i = 0; i < net->n && i < cutoff; i ++)
+    {
+        layer = net->layers[i];
+
+        if (layer.dontload)
+            continue;
+
+        if (layer.type == cYnLayerConvolutional)
+        {
+            num = layer.n * layer.c * layer.size * layer.size;
+            fread(layer.biases, sizeof(float), layer.n, fp);
+
+            if (layer.batchNormalize && (!layer.dontloadscales))
+            {
+                fread(layer.scales, sizeof(float), layer.n, fp);
+                fread(layer.rollingMean, sizeof(float), layer.n, fp);
+                fread(layer.rollingVariance, sizeof(float), layer.n, fp);
             }
-            fread(l.filters, sizeof(float), num, fp);
-            if (l.flipped) {
-                transpose_matrix(l.filters, l.c*l.size*l.size, l.n);
+
+            fread(layer.filters, sizeof(float), num, fp);
+            if (layer.flipped)
+            {
+                YnParserTransposeMatrix(layer.filters, layer.c * layer.size * layer.size, layer.n);
             }
-#ifdef GPU
-            if(gpu_index >= 0){
-                push_convolutional_layer(l);
-            }
+#ifdef YN_GPU
+            if (YnCudaGpuIndexGet() >= 0)
+                YnLayerConvolutionalGpuPush(layer);
 #endif
         }
-        if(l.type == DECONVOLUTIONAL){
-            int num = l.n*l.c*l.size*l.size;
-            fread(l.biases, sizeof(float), l.n, fp);
-            fread(l.filters, sizeof(float), num, fp);
-#ifdef GPU
-            if(gpu_index >= 0){
-                push_deconvolutional_layer(l);
-            }
+
+        if (layer.type == cYnLayerDeconvolutional)
+        {
+            num = layer.n * layer.c * layer.size * layer.size;
+            fread(layer.biases, sizeof(float), layer.n, fp);
+            fread(layer.filters, sizeof(float), num, fp);
+
+#ifdef YN_GPU
+            if (YnCudaGpuIndexGet() >= 0)
+                YnLayerConvolutionalGpuPush(layer);
 #endif
         }
-        if(l.type == CONNECTED){
-            load_connected_weights(l, fp, transpose);
+        if (layer.type == cYnLayerConnected)
+        {
+            YnLayerConnectedWeightsLoad(layer, fp, transpose);
         }
-        if(l.type == RNN){
-            load_connected_weights(*(l.input_layer), fp, transpose);
-            load_connected_weights(*(l.self_layer), fp, transpose);
-            load_connected_weights(*(l.output_layer), fp, transpose);
+        if (layer.type == cYnLayerRnn)
+        {
+            /*
+            load_connected_weights(*(layer.inputLayer), fp, transpose);
+            load_connected_weights(*(layer.selfLayer), fp, transpose);
+            load_connected_weights(*(layer.outputLayer), fp, transpose);
+            */
         }
-        if(l.type == LOCAL){
-            int locations = l.out_w*l.out_h;
-            int size = l.size*l.size*l.c*l.n*locations;
-            fread(l.biases, sizeof(float), l.outputs, fp);
-            fread(l.filters, sizeof(float), size, fp);
-#ifdef GPU
-            if(gpu_index >= 0){
-                push_local_layer(l);
-            }
-#endif
+        if (layer.type == cYnLayerLocal)
+        {
+            /*
+            locations = layer.outW * layer.outH;
+            size = layer.size * layer.size * layer.c * layer.n * locations;
+            fread(layer.biases, sizeof(float), layer.outputs, fp);
+            fread(layer.filters, sizeof(float), size, fp);
+
+            #ifdef YN_GPU
+            if (YnCudaGpuIndexGet() >= 0)
+                YnLayerLocalGpuPush(layer);
+            #endif
+             */
+
         }
     }
     fprintf(stderr, "Done!\n");
     fclose(fp);
+}
+
+void YnParserWeightsLoad(tYnNetwork *net,
+                         char *filename)
+{
+    YnParserWeightsUptoLoad(net, filename, net->n);
 }
 
