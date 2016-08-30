@@ -37,8 +37,19 @@ typedef struct tYnParserSizeParams{
 
 /**************** Implement */
 YN_FINAL
-tYnNetwork YnParserNetworkConfig(char *filename)
+tYnNetwork YnParserNetworkCfg(char *filename)
 YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnParserNetOptions(tYnList *options,
+        tYnNetwork *net)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnParserConnectedWeightsSave(tYnList *options,
+        tYnNetwork *net)
+YN_ALSWAY_INLINE;
+
 
 YN_FINAL
 void YnParserSaveNetwork(tYnNetwork net,
@@ -46,30 +57,37 @@ void YnParserSaveNetwork(tYnNetwork net,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnParserSaveWeights(tYnNetwork net,
+void YnParserWeightsUptoSave(tYnNetwork net,
+         char *filename,
+         int cutoff)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnPareserWeightsDoubleSave(tYnNetwork net,
         char *filename)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnParserSaveWeightsUpto(tYnNetwork net,
-        char *filename,
-        int cutoff)
+void YnParserWeightsSave(tYnNetwork net,
+         char *filename)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnParserSaveWeightsDouble(tYnNetwork net,
-        char *filename)
+void YnParserWeightsLoad(tYnNetwork *net,
+         char *filename)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnParserLoadWeights(tYnNetwork *net,
-        char *filename)
+void YnParserWeightsUptoLoad(tYnNetwork *net,
+         char *filename,
+         int cutoff)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnParserLoadWeightsUpto(tYnNetwork *net,
-        char *filename,
-        int cutoff)
+void YnPareserConnectedWeightsLoad(tYnLayer layer,
+       FILE *fp,
+       int transpose)
 YN_ALSWAY_INLINE;
 
 #endif /* YNPARSER_H */
+

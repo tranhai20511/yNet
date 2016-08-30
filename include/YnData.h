@@ -10,12 +10,6 @@ extern "C" {
 /**************** Define */
 
 /**************** Typedef */
-typedef struct YnData{
-    int w, h;
-    matrix X;
-    matrix y;
-    int shallow;
-} YnData;
 
 /**************** Macro */
 
@@ -82,11 +76,286 @@ typedef struct tYnDataBoxLabel{
 
 /**************** Implement */
 YN_FINAL
-uint32 YndataSeedGet(void)
+uint32 YnDataSeedGet(void)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YndataSeedSet(uint32 seed)
+void YnDataSeedSet(uint32 seed)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnList * YnDataPathsGet(char *filename)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+char ** YnDataRandomPathsGet(char ** paths,
+        int n,
+        int m)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+char ** YnDataFindReplacePaths(char **paths,
+        int n,
+        char *find,
+        char *replace)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnMatrix YnDataLoadImagePathsGray(char **paths,
+        int n,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnMatrix YnDataLoadImagePaths(char **paths,
+        int n,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnDataBoxLabel * YnDataReadBoxes(char *filename,
+        int *n)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataRandomizeBoxes(tYnDataBoxLabel *boxes,
+        int n)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataCorrectBoxes(tYnDataBoxLabel *boxes,
+        int n,
+        float dx,
+        float dy,
+        float sx,
+        float sy,
+        int flip)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataFillTruthSwag(char *path,
+        float *truth,
+        int classes,
+        int flip,
+        float dx,
+        float dy,
+        float sx,
+        float sy)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataFillTruthRegion(char *path,
+        float *truth,
+        int classes,
+        int numBoxes,
+        int flip,
+        float dx,
+        float dy,
+        float sx,
+        float sy)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataFillTruthDetection(char *path,
+        float *truth,
+        int classes,
+        int numBoxes,
+        int flip,
+        int background,
+        float dx,
+        float dy,
+        float sx,
+        float sy)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataPrintLetters(float *pred,
+        int n)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataFillTruthCaptcha(char *path,
+        int n,
+        float *truth)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadCaptcha(char **paths,
+        int n,
+        int m,
+        int k,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadCaptchaEncode(char **paths,
+        int n,
+        int m,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataFillTruth(char *path,
+        char **labels,
+        int k,
+        float *truth)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnMatrix YnDataLoadLabelsPaths(char **paths,
+        int n,
+        char **labels,
+        int k)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+char ** YnDataLabelsGet(char *filename)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataFree(tYnData data)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDaraLoadRegion(int n,
+        char **paths,
+        int m,
+        int w,
+        int h,
+        int size,
+        int classes,
+        float jitter)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadCompare(int n,
+        char **paths,
+        int m,
+        int classes,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadCompare(int n,
+        char **paths,
+        int m,
+        int classes,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadSwag(char **paths,
+        int n,
+        int classes,
+        float jitter)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadDetection(int n,
+        char **paths,
+        int m,
+        int classes,
+        int w,
+        int h,
+        int numBoxes,
+        int background)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void * YnDataLoadThread(void *ptr)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+pthread_t YnDataLoadInThread(tYnDataLoadArgs args)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDAtaLoadWriting(char **paths,
+        int n,
+        int m,
+        int w,
+        int h,
+        int out_w,
+        int out_h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoad(char **paths,
+        int n,
+        int m,
+        char **labels,
+        int k,
+        int w,
+        int h)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnMatrix YnDataConcatMatrix(tYnMatrix m1,
+        tYnMatrix m2)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataConcat(tYnData d1,
+        tYnData d2)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadCategoricalCsv(char *filename,
+        int target,
+        int k)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadCifar10(char *filename)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataRandomBatchGet(tYnData d,
+        int n,
+        float * X,
+        float * y)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataNextBatchGet(tYnData d,
+        int n,
+        int offset,
+        float *X,
+        float *y)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData YnDataLoadAllCifar10()
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataRandomize(tYnData d)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataScaleRows(tYnData d,
+        float s)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataTranslateRows(tYnData d,
+        float s)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+void YnDataNormalizeRows(tYnData d)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnData * YnDataSplit(tYnData d,
+        int part,
+        int total)
 YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus

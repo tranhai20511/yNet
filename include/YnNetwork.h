@@ -82,7 +82,6 @@ typedef struct tYnNetworkState {
     tYnNetwork net;
 } tYnNetworkState;
 
-
 /**************** Local variables */
 
 /**************** Global variables */

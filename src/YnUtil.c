@@ -290,7 +290,7 @@ void YnUtilStripString(char * str)
     uint32 offset = 0;
     char c;
 
-    for (i = 0; i < len; ++i)
+    for (i = 0; i < len; i ++)
     {
         c = str[i];
         if (c == ' ' || c == '\t' || c == '\n')
@@ -310,7 +310,7 @@ void YnUtilStripStringSpec(char * str,
     uint32 offset = 0;
     char c;
 
-    for (i = 0; i < len; ++i)
+    for (i = 0; i < len; i ++)
     {
         c = str[i];
         if (c == specChar)
@@ -394,7 +394,7 @@ void YnUtilFileWrite(int fd,
     uint32 num = 0;
     int32 next = 0;
 
-    while(num < size)
+    while (num < size)
     {
         next = write(fd, buffer + num, size - num);
 
@@ -502,7 +502,7 @@ float YnUtilArrayMean(char * array,
 float YnUtilArrayVariance(float * array,
         uint32 num)
 {
-    uint i = 0;
+    int i = 0;
     float sum = 0;
     float mean = 0;
     float variance = 0;
@@ -522,10 +522,10 @@ float YnUtilArrayVariance(float * array,
 float YnUtilArrayMse(float * arrayErr,
         uint32 num)
 {
-    uint i = 0;
+    int i = 0;
     float sum = 0;
 
-    for (i = 0; i < num; ++i)
+    for (i = 0; i < num; i ++)
         sum += arrayErr[i] * arrayErr[i];
 
     return sqrt(sum / num);
@@ -556,7 +556,7 @@ float YnUtilArrayMag(float * arrayErr,
     uint32 i = 0;
     float sum = 0;
 
-    for (i = 0; i < num; ++i)
+    for (i = 0; i < num; i ++)
     {
         sum += arrayErr[i] * arrayErr[i];
     }
@@ -570,7 +570,7 @@ void YnUtilArrayScale(float * array,
 {
     uint32 i = 0;
 
-    for (i = 0; i < num; ++i)
+    for (i = 0; i < num; i ++)
     {
         array[i] *= scale;
     }
@@ -597,7 +597,7 @@ float YnUtilArrayMaxIndex(float * array,
     if (num <= 0)
         return -1;
 
-    for (i = 1; i < num; ++i)
+    for (i = 1; i < num; i ++)
     {
         if (array[i] > max)
         {

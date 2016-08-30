@@ -20,7 +20,7 @@ typedef struct tYnBBox{
     float height;
 } tYnBBox;
 
-typedef struct{
+typedef struct tYnBBoxSend{
     float x, y;
     float width;
     float height;

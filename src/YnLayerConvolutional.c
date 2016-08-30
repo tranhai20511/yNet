@@ -29,7 +29,7 @@ tYnImage * _YnLayerConvolutionalFiltersGet(tYnLayer layer)
     tYnImage *filters = calloc(layer.n, sizeof(tYnImage));
     int i;
 
-    for (i = 0; i < layer.n; ++i)
+    for (i = 0; i < layer.n; i ++)
     {
         filters[i] = YnImageCopy(YnLayerConvolutionalFilterGet(layer, i));
     }

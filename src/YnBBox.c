@@ -310,7 +310,7 @@ void YnBBoxNms(tYnBBox * boxes,
         /* Sort all boxes by prob value */
         qsort(sortBoxes, totalBox, sizeof(tYnBBoxSortable), _YnBBoxNmsComparator);
 
-        for (i = 0; i < totalBox; ++i)
+        for (i = 0; i < totalBox; i ++)
         {
             if (probs[sortBoxes[i].index][k] == 0)
                 continue;
@@ -339,7 +339,7 @@ void YnBBoxNmsSort(tYnBBox * boxes,
         uint32 classes,
         float thresh)
 {
-    uint i, j, k;
+    int i, j, k;
     int any = 0;
 
     for (i = 0; i < totalBox; i ++)

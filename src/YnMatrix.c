@@ -145,12 +145,12 @@ tYnMatrix YnMatrixCsvToMatrix(char *filename)
     int size = 1024;
 
     if (!fp)
-        file_error(filename);
+        YnUtilErrorOpenFile(filename);
 
     matrix.cols = -1;
     matrix.vals = calloc(size, sizeof(float*));\
 
-    while((line = fgetl(fp)))
+    while ((line = fgetl(fp)))
     {
         if (matrix.cols == -1)
             matrix.cols = count_fields(line);

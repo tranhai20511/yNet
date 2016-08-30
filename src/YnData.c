@@ -22,12 +22,12 @@ static uint32 seed;
 /**************** Local Implement */
 
 /**************** Implement */
-int YndataSeedGet(void)
+int YnDataSeedGet(void)
 {
     return seed;
 }
 
-void YndataSeedSet(int seedVal)
+void YnDataSeedSet(int seedVal)
 {
     seed = seedVal;
 }
@@ -42,7 +42,7 @@ tYnList * YnDataPathsGet(char *filename)
         YnUtilErrorOpenFile(filename);
 
     lines = YnListMake();
-    while((path = fgetl(file)))
+    while ((path = fgetl(file)))
     {
         YnLisyInsert(lines, path);
     }
@@ -149,7 +149,7 @@ tYnDataBoxLabel * YnDataReadBoxes(char *filename,
     if (!file)
         YnUtilErrorOpenFile(filename);
 
-    while(fscanf(file, "%d %f %f %f %f", &id, &x, &y, &w, &h) == 5)
+    while (fscanf(file, "%d %f %f %f %f", &id, &x, &y, &w, &h) == 5)
     {
         boxes = realloc(boxes, (count + 1) * sizeof(tYnDataBoxLabel));
         boxes[count].id = id;
@@ -720,7 +720,7 @@ tYnData YnDataLoadCompare(int n,
         imlabel1 = YnUtilReplaceChar(imlabel1, "jpg", "txt");
         fp1 = fopen(imlabel1, "r");
 
-        while(fscanf(fp1, "%d %f", &id, &iou) == 2)
+        while (fscanf(fp1, "%d %f", &id, &iou) == 2)
         {
             if (d.y.vals[i][2 * id] < iou)
                 d.y.vals[i][2 * id] = iou;
@@ -730,7 +730,7 @@ tYnData YnDataLoadCompare(int n,
         imlabel2 = YnUtilReplaceChar(imlabel2, "jpg", "txt");
         fp2 = fopen(imlabel2, "r");
 
-        while(fscanf(fp2, "%d %f", &id, &iou) == 2)
+        while (fscanf(fp2, "%d %f", &id, &iou) == 2)
         {
             if (d.y.vals[i][2 * id + 1] < iou) d.y.vals[i][2 * id + 1] = iou;
         }
@@ -1085,14 +1085,15 @@ tYnData YnDataLoadCategoricalCsv(char *filename,
     return d;
 }
 
-tYnData YnDataLoadCifar10_data(char *filename)
+tYnData YnDataLoadCifar10(char *filename)
 {
     int class;
-    long i,j;
+    long i, j;
     tYnData d;
     tYnMatrix X;
     tYnMatrix y;
     unsigned char bytes[3073];
+
     FILE *fp = fopen(filename, "rb");
 
     X = YnMatrixMake(10000, 3072);
@@ -1102,10 +1103,10 @@ tYnData YnDataLoadCifar10_data(char *filename)
     d.y = y;
 
     if (!fp)
-        file_error(filename);
+        YnUtilErrorOpenFile(filename);
 
     for (i = 0; i < 10000; i ++)
-
+    {
         fread(bytes, 1, 3073, fp);
         class = bytes[0];
         y.vals[i][class] = 1;
@@ -1181,7 +1182,7 @@ tYnData YnDataLoadAllCifar10()
         fp = fopen(buff, "rb");
 
         if (!fp)
-            file_error(buff);
+            YnUtilErrorOpenFile(buff);
 
         for (i = 0; i < 10000; i ++)
         {
@@ -1235,7 +1236,7 @@ void YnDataScaleRows(tYnData d,
     }
 }
 
-void YnDataTranslateRows(tYnData d, \
+void YnDataTranslateRows(tYnData d,
         float s)
 {
     int i;

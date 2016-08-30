@@ -178,7 +178,7 @@ void YnBlasShortcut(int32 batch,
         {
             for (j = 0; j < minh; ++j)
             {
-                for (i = 0; i < minw; ++i)
+                for (i = 0; i < minw; i ++)
                 {
                     outIndex = i * sample + widthOut * (j * sample + heightOut * (k + channelOut * b));
                     addIndex = i * stride  + widthAdd * (j * stride  + heightAdd * (k + channelAdd * b));
@@ -202,7 +202,7 @@ void YnBlasArrayMeanCal(float * inArr,
     int32 i, j, k;
     int32 index;
 
-    for (i = 0; i < filters; ++i)
+    for (i = 0; i < filters; i ++)
     {
         meanArr[i] = 0;
         for (j = 0; j < batch; ++j)
@@ -231,7 +231,7 @@ void YnBlasArrayVarianceCal(float * inArr,
     int32 i, j, k;
     int32 index;
 
-    for (i = 0; i < filters; ++i)
+    for (i = 0; i < filters; i ++)
     {
         varianceArr[i] = 0;
         for (j = 0; j < batch; ++j)
@@ -262,7 +262,7 @@ void YnBlasArrayNormalizeCal(float * inArr,
     {
         for (f = 0; f < filters; ++f)
         {
-            for (i = 0; i < spatial; ++i)
+            for (i = 0; i < spatial; i ++)
             {
                 int32 index = b * filters * spatial + f * spatial + i;
                 inArr[index] = (inArr[index] - meanArr[f]) / (sqrt(varianceArr[f]) + .00001f);

@@ -64,7 +64,7 @@ void YnOptionUnused(tYnList *l)
 {
     tYnListNode *n = l->front;
 
-    while(n)
+    while (n)
     {
         tYnOptionKeyVal *p = (tYnOptionKeyVal *)n->val;
 
@@ -82,7 +82,7 @@ char * YnOptionFind(tYnList *l,
 {
     tYnListNode *n = l->front;
 
-    while(n)
+    while (n)
     {
         tYnOptionKeyVal *p = (tYnOptionKeyVal *)n->val;
 

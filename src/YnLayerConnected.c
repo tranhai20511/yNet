@@ -62,7 +62,7 @@ tYnLayer YnLayerConnectedMake(int32 batchNum,
         layer.scales = calloc(outputNum, sizeof(float));
         layer.scaleUpdates = calloc(outputNum, sizeof(float));
 
-        for (i = 0; i < outputNum; ++i)
+        for (i = 0; i < outputNum; i ++)
         {
             layer.scales[i] = 1;
         }

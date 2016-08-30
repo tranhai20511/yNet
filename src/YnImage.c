@@ -101,13 +101,13 @@ float YnImageColorGet(int c,
         int x,
         int max)
 {
-    float ratio = ((float)x/max)*5;
+    float ratio = ((float)x / max) * 5;
     int i = floor(ratio);
     int j = ceil(ratio);
     float r = 0;
 
     ratio -= i;
-    r = (1-ratio) * colors[i][c] + ratio*colors[j][c];
+    r = (1 - ratio) * colors[i][c] + ratio * colors[j][c];
 
     return r;
 }
@@ -130,7 +130,7 @@ void YnImageDrawLabel(tYnImage a,
 
     for (j = 0; j < h && j + r < a.height; ++j)
     {
-        for (i = 0; i < w && i + c < a.width; ++i)
+        for (i = 0; i < w && i + c < a.width; i ++)
         {
             for (k = 0; k < label.channel; ++k)
             {
@@ -259,7 +259,7 @@ void YnImageDrawDetections(tYnImage im,
 
     for (i = 0; i < num; i ++)
     {
-        int class = max_index(probs[i], classes);
+        int class = YnUtilArrayMaxIndex(probs[i], classes);
         float prob = probs[i][class];
 
         if (prob > thresh)
@@ -299,6 +299,90 @@ void YnImageDrawDetections(tYnImage im,
     }
 }
 
+void YnImageDrawDetections1(tYnImage im,
+        int num,
+        float thresh,
+        tYnBBox *boxes,
+        float **probs,
+        char **names,
+        tYnImage *labels,
+        int classes,
+        tYnBBoxSend * boxSend,
+        unsigned char *numBox)
+{
+    int countBox = 0;
+    int i;
+    int sameClass = 0;
+    int class;
+    float prob;
+    int width;
+    int offset;
+    float red;
+    float green;
+    float blue;
+    float rgb[3];
+    tYnBBox b;
+    int left;
+    int right;
+    int top;
+    int bot;
+
+    for (i = 0; i < num; i ++)
+    {
+        class = YnUtilArrayMaxIndex(probs[i], classes);
+
+        if ((class != class_test_car)
+            && (class != class_test_person)
+            && (class != class_test_bike)
+            && (class != class_test_motor)
+            && (class != class_test_bus))
+            continue;
+
+        prob = probs[i][class];
+        if(prob > thresh)
+        {
+            width = pow(prob, 1./2.) * 10 + 1;
+            printf("%s: %.2f\n", names[class], prob);
+            offset = class * 17 % classes;
+
+            red = YnImageColorGet(0, offset, classes);
+            green = YnImageColorGet(1, offset, classes);
+            blue = YnImageColorGet(2, offset, classes);
+            rgb[0] = red;
+            rgb[1] = green;
+            rgb[2] = blue;
+            b = boxes[i];
+
+            left  = (b.x - b.width) * im.width;
+            right = (b.x + b.width) * im.width;
+            top   = (b.y - b.height) * im.height;
+            bot   = (b.y + b.height) * im.height;
+
+            if(left < 0)
+                left = 0;
+            if(right > im.width - 1)
+                right = im.width - 1;
+            if(top < 0)
+                top = 0;
+            if(bot > im.height - 1)
+                bot = im.height - 1;
+
+            YnImageDrawBoxWidth(im, left, top, right, bot, width, red, green, blue);
+
+            boxSend[countBox].x = b.x;
+            boxSend[countBox].y = b.y;
+            boxSend[countBox].height = b.height;
+            boxSend[countBox].width = b.width;
+            boxSend[countBox].classId = class;
+            countBox ++;
+
+            if (labels)
+                YnImgeDrawLabel(im, top + width, left, labels[class], rgb);
+        }
+    }
+
+    *numBox = countBox;
+}
 void YnImageFlip(tYnImage a)
 {
     float swap;
@@ -312,8 +396,9 @@ void YnImageFlip(tYnImage a)
         {
             for (j = 0; j < a.width/2; j ++)
             {
-                index = j + a.width*(i + a.height*(k));
+                index = j + a.width * (i + a.height*(k));
                 flip = (a.width - j - 1) + a.width*(i + a.height*(k));
+
                 swap = a.data[flip];
                 a.data[flip] = a.data[index];
                 a.data[index] = swap;

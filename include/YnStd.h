@@ -13,6 +13,9 @@
 #include <limits.h>
 #include <time.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,9 +37,13 @@ extern "C" {
 
 #define YN_CHAR_BUFF        (1024)
 #define YN_CUS_NUM          (-1234)
+#define YN_RANDPSEUDO       (12345678)
+#define YN_VOC_NUMCLASS     (20)
+
+#define cYnTrue             (1)
+#define cYnFalse            (0)
 
 /**************** Typedef */
-
 typedef unsigned char       byte;
 typedef unsigned char       uint8;
 typedef signed short int    int16;
@@ -63,7 +70,7 @@ typedef enum eYnRetCode {
 #define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
 #define mYnNullRetNull(_val)  if ((_val) == NULL) return NULL
 #define mYnNullRetRet(_val, _ret)  if ((_val) == NULL) return _ret
-#define mYnNullRet(_val, _ret)  if ((_val) == NULL) return
+#define mYnNullRet(_val)  if ((_val) == NULL) return
 /*#define mYnErrorCheck(_ret)*/
 
 /**************** Struct */

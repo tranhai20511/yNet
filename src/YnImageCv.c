@@ -151,4 +151,18 @@ tYnImage YnImageCvLoad(char *filename,
     return out;
 }
 
+tYnImage YnImageFromStreamGet(CvCapture *cap)
+{
+    tYnImage im;
+    IplImage* src = cvQueryFrame(cap);
+
+    if (!src)
+        return YnImageMakeEmpty(0, 0, 0);
+
+    im = YnImageCvIplToimage(src);
+    YnImageRgbgr(im);
+
+    return im;
+}
+
 #endif

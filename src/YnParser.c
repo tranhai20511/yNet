@@ -126,6 +126,66 @@ void YnParserData(char *data,
         int n)
 YN_ALSWAY_INLINE;
 
+YN_STATIC
+tYnLayer YnParserDeconvolutional(tYnList *options,
+        tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserConvolutional(tYnList *options,
+        tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+void YnParserConnectedWeightsSave(tYnLayer layer,
+                                  FILE *fp)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserConnected(tYnList *options,
+                           tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserSoftmax(tYnList *options,
+                         tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserDetection(tYnList *options,
+                           tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserCost(tYnList *options,
+                      tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserCrop(tYnList *options,
+                       tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserMaxpool(tYnList *options,
+                         tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserAvgpool(tYnList *options,
+                         tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserDropout(tYnList *options,
+                         tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
+YN_STATIC
+tYnLayer YnParserActivation(tYnList *options,
+                            tYnParserSizeParams params)
+YN_ALSWAY_INLINE;
+
 /**************** Implement */
 YN_STATIC
 int YnParserIsShortcut(tYnParserSection *s)
@@ -247,11 +307,11 @@ tYnList * YnParserReadCfg(char *filename)
     FILE *file = fopen(filename, "r");
 
     if (file == 0)
-        file_error(filename);
+        YnUtilErrorOpenFile(filename);
 
     sections = YnListNew();
 
-    while((line = fgetl(file)) != 0)
+    while ((line = fgetl(file)) != 0)
     {
         ++ nu;
         YnUtilStripString(line);
@@ -290,7 +350,7 @@ tYnList * YnParserFreeSection(tYnParserSection *s)
     YnUtilFree(s->type);
     tYnListNode *n = s->options->front;
 
-    while(n)
+    while (n)
     {
         tYnOptionKeyVal *pair = (tYnOptionKeyVal *)n->val;
         YnUtilFree(pair->key);
@@ -358,7 +418,7 @@ void YnParserData(char *data,
 
     for (i = 0; (i < n) && (!done); i ++)
     {
-        while((*++next !='\0') && (*next != ','));
+        while ((*++next !='\0') && (*next != ','));
 
         if (*next == '\0')
             done = 1;
@@ -484,6 +544,7 @@ void YnParserConnectedWeightsSave(tYnLayer layer,
     }
 }
 
+YN_STATIC
 tYnLayer YnParserConnected(tYnList *options,
                            tYnParserSizeParams params)
 {
@@ -517,6 +578,7 @@ tYnLayer YnParserConnected(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserSoftmax(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -526,6 +588,7 @@ tYnLayer YnParserSoftmax(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserDetection(tYnList *options,
                            tYnParserSizeParams params)
 {
@@ -549,6 +612,7 @@ tYnLayer YnParserDetection(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserCost(tYnList *options,
                       tYnParserSizeParams params)
 {
@@ -559,7 +623,8 @@ tYnLayer YnParserCost(tYnList *options,
     return layer;
 }
 
-tYnLayer YnPareserCrop(tYnList *options,
+YN_STATIC
+tYnLayer YnParserCrop(tYnList *options,
                        tYnParserSizeParams params)
 {
     tYnLayer layer;
@@ -589,6 +654,7 @@ tYnLayer YnPareserCrop(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserMaxpool(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -610,6 +676,7 @@ tYnLayer YnParserMaxpool(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserAvgpool(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -629,6 +696,7 @@ tYnLayer YnParserAvgpool(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserDropout(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -640,6 +708,7 @@ tYnLayer YnParserDropout(tYnList *options,
     return layer;
 }
 
+YN_STATIC
 tYnLayer YnParserActivation(tYnList *options,
                             tYnParserSizeParams params)
 {
@@ -665,9 +734,8 @@ tYnLayer YnParserActivation(tYnList *options,
     return layer;
 }
 
-
 void YnParserNetOptions(tYnList *options,
-                             tYnNetwork *net)
+        tYnNetwork *net)
 {
     char *policy_s;
     char *l;

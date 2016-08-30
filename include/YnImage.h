@@ -88,6 +88,19 @@ void YnImageDrawDetections(tYnImage im,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
+void YnImageDrawDetections1(tYnImage im,
+        int num,
+        float thresh,
+        tYnBBox *boxes,
+        float **probs,
+        char **names,
+        tYnImage *labels,
+        int classes,
+        tYnBBoxSend * boxSend,
+        unsigned char *numBox)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
 void YnImageFlip(tYnImage a)
 YN_ALSWAY_INLINE;
 
@@ -391,6 +404,10 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 tYnImage YnImageCvLoad(char *filename,
         int channels)
+YN_ALSWAY_INLINE;
+
+YN_FINAL
+tYnImage YnImageFromStreamGet(CvCapture *cap)
 YN_ALSWAY_INLINE;
 
 #endif
