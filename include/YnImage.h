@@ -1,7 +1,12 @@
 #ifndef YNIMAGE_H
 #define YNIMAGE_H
 
-#include "../YnBBox.h"
+#include "YnBBox.h"
+
+#ifdef YN_OPENCV
+#include "opencv2/highgui/highgui_c.h"
+#include "opencv2/imgproc/imgproc_c.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,25 +28,26 @@ typedef struct tYnImage{
 
 /**************** Local variables */
 
-
 /**************** Global variables */
 
 /**************** Local Implement */
 
 /**************** Implement */
-
 /*
  * Get color value
  */
 YN_FINAL
-float YnImageColorGet(uint32 channel,
+float YnImageColorGet(int channel,
         int x,
         int max)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnImageDrawLabel(tYnImage image,
-        int x, int max)
+void YnImageDrawLabel(tYnImage a,
+        int r,
+        int c,
+        tYnImage label,
+        const float *rgb)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
@@ -303,21 +309,21 @@ tYnImage YnImageGetLayer(tYnImage m,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-float YnImageGetPixel(tYnImage m,
+float YnImagePixelGet(tYnImage m,
         int x,
         int y,
         int c)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-float YnImageGetPixelExtend(tYnImage m,
+float YnImagePixelGetExtend(tYnImage m,
         int x,
         int y,
         int c)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnImageSetPixel(tYnImage m,
+void YnImagePixelSet(tYnImage m,
         int x,
         int y,
         int c,
@@ -344,12 +350,6 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 tYnImage YnImageCollapseHorz(tYnImage *ims,
         int n)
-YN_ALSWAY_INLINE;
-
-YN_FINAL
-void YnImageShow(tYnImage *ims,
-        int n,
-        char *window)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
@@ -384,9 +384,6 @@ void YnImageCol2Image(float* data_col,
          float* data_im)
 YN_ALSWAY_INLINE;
 
-/* OPENCV Image */
-#ifdef YN_OPENCV
-
 YN_FINAL
 void YnImageCvShow(tYnImage p,
         const char *name)
@@ -409,8 +406,6 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 tYnImage YnImageFromStreamGet(CvCapture *cap)
 YN_ALSWAY_INLINE;
-
-#endif
 
 #ifdef __cplusplus
 }

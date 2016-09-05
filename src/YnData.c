@@ -41,10 +41,10 @@ tYnList * YnDataPathsGet(char *filename)
     if (!file)
         YnUtilErrorOpenFile(filename);
 
-    lines = YnListMake();
-    while ((path = fgetl(file)))
+    lines = YnListMake(NULL);
+    while ((path = YnUtilFileGetLine(file)))
     {
-        YnLisyInsert(lines, path);
+        YnListInsert(lines, path);
     }
 
     fclose(file);
@@ -211,18 +211,18 @@ void YnDataCorrectBoxes(tYnDataBoxLabel *boxes,
             boxes[i].right = 1. - swap;
         }
 
-        boxes[i].left =  constrain(0, 1, boxes[i].left);
-        boxes[i].right = constrain(0, 1, boxes[i].right);
-        boxes[i].top =   constrain(0, 1, boxes[i].top);
-        boxes[i].bottom =   constrain(0, 1, boxes[i].bottom);
+        boxes[i].left =  YnUtilConstrain(0, 1, boxes[i].left);
+        boxes[i].right = YnUtilConstrain(0, 1, boxes[i].right);
+        boxes[i].top =   YnUtilConstrain(0, 1, boxes[i].top);
+        boxes[i].bottom =   YnUtilConstrain(0, 1, boxes[i].bottom);
 
         boxes[i].x = (boxes[i].left+boxes[i].right)/2;
         boxes[i].y = (boxes[i].top+boxes[i].bottom)/2;
         boxes[i].w = (boxes[i].right - boxes[i].left);
         boxes[i].h = (boxes[i].bottom - boxes[i].top);
 
-        boxes[i].w = constrain(0, 1, boxes[i].w);
-        boxes[i].h = constrain(0, 1, boxes[i].h);
+        boxes[i].w = YnUtilConstrain(0, 1, boxes[i].w);
+        boxes[i].h = YnUtilConstrain(0, 1, boxes[i].h);
     }
 }
 
@@ -274,7 +274,7 @@ void YnDataFillTruthSwag(char *path,
             truth[index+id] = 1;
     }
 
-    YnDataFree(boxes);
+    YnUtilFree(boxes);
 }
 
 void YnDataFillTruthRegion(char *path,
@@ -337,7 +337,7 @@ void YnDataFillTruthRegion(char *path,
         truth[index ++] = h;
     }
 
-    YnDataFree(boxes);
+    YnUtilFree(boxes);
 }
 
 void YnDataFillTruthDetection(char *path,
@@ -488,7 +488,7 @@ tYnData YnDataLoadCaptcha(char **paths,
     int i;
 
     if (m)
-        paths = YnDataRandomPaths(paths, n, m);
+        paths = YnDataRandomPathsGet(paths, n, m);
 
     d.shallow = 0;
     d.x = YnDataLoadImagePaths(paths, n, w, h);
@@ -514,7 +514,7 @@ tYnData YnDataLoadCaptchaEncode(char **paths,
     tYnData d;
 
     if (m)
-        paths = YnDataRandomPaths(paths, n, m);
+        paths = YnDataRandomPathsGet(paths, n, m);
 
     d.shallow = 0;
     d.x = YnDataLoadImagePaths(paths, n, w, h);
@@ -590,7 +590,7 @@ void YnDataFree(tYnData data)
     }
 }
 
-tYnData YnDaraLoadRegion(int n,
+tYnData YnDataLoadRegion(int n,
         char **paths,
         int m,
         int w,
@@ -645,10 +645,10 @@ tYnData YnDaraLoadRegion(int n,
         dw = (ow * jitter);
         dh = (oh * jitter);
 
-        pleft  = YnUtilRandUniform(-dw, dw);
-        pright = YnUtilRandUniform(-dw, dw);
-        ptop   = YnUtilRandUniform(-dh, dh);
-        pbot   = YnUtilRandUniform(-dh, dh);
+        pleft  = YnUtilRandomUniformNum(-dw, dw);
+        pright = YnUtilRandomUniformNum(-dw, dw);
+        ptop   = YnUtilRandomUniformNum(-dh, dh);
+        pbot   = YnUtilRandomUniformNum(-dh, dh);
 
         swidth =  ow - pleft - pright;
         sheight = oh - ptop - pbot;
@@ -808,10 +808,10 @@ tYnData YnDataLoadSwag(char **paths,
     dw = w * jitter;
     dh = h * jitter;
 
-    pleft  = rand_uniform(-dw, dw);
-    pright = rand_uniform(-dw, dw);
-    ptop   = rand_uniform(-dh, dh);
-    pbot   = rand_uniform(-dh, dh);
+    pleft  = YnUtilRandomUniformNum(-dw, dw);
+    pright = YnUtilRandomUniformNum(-dw, dw);
+    ptop   = YnUtilRandomUniformNum(-dh, dh);
+    pbot   = YnUtilRandomUniformNum(-dh, dh);
 
     swidth =  w - pleft - pright;
     sheight = h - ptop - pbot;
@@ -904,18 +904,20 @@ tYnData YnDataLoadDetection(int n,
         dx = ((float)pleft/ow)/sx;
         dy = ((float)ptop /oh)/sy;
 
-        sized = YnIMageResize(cropped, w, h);
+        sized = YnImageResize(cropped, w, h);
         if (flip)
             YnImageFlip(sized);
 
         d.x.vals[i] = sized.data;
 
-        fill_truth_detection(random_paths[i], d.y.vals[i], classes, numBoxes, flip, background, dx, dy, 1./sx, 1./sy);
+        YnDataFillTruthDetection(random_paths[i], d.y.vals[i], classes, numBoxes, flip, background, dx, dy, 1./sx, 1./sy);
 
-        free_image(orig);
-        free_image(cropped);
+        YnImageFree(orig);
+        YnImageFree(cropped);
     }
-    free(random_paths);
+
+    YnUtilFree(random_paths);
+
     return d;
 }
 
@@ -927,7 +929,7 @@ void * YnDataLoadThread(void *ptr)
     YnCudaCheckError(status);
 #endif
 
-    tYnDataLoadArgs a = *(struct load_args*)ptr;
+    tYnDataLoadArgs a = *(tYnDataLoadArgs*)ptr;
     switch (a.type)
     {
     case cYnDataClassification:
@@ -944,13 +946,13 @@ void * YnDataLoadThread(void *ptr)
         *(a.resized) = YnImageResize(*(a.im), a.w, a.h);
         break;
     case cYnDataCompare:
-        *a.d = YnImageLoadCompare(a.n, a.paths, a.m, a.classes, a.w, a.h);
+        *a.d = YnDataLoadCompare(a.n, a.paths, a.m, a.classes, a.w, a.h);
         break;
     case cYnDataWriting:
-        *a.d = YnImageLoadWriting(a.paths, a.n, a.m, a.w, a.h, a.outW, a.outH);
+        *a.d = YnDataLoadWriting(a.paths, a.n, a.m, a.w, a.h, a.outW, a.outH);
         break;
     case cYnDataSwag:
-        *a.d = YnImageLoadSwag(a.paths, a.n, a.classes, a.jitter);
+        *a.d = YnDataLoadSwag(a.paths, a.n, a.classes, a.jitter);
         break;
     default:
         break;
@@ -972,7 +974,7 @@ pthread_t YnDataLoadInThread(tYnDataLoadArgs args)
     return thread;
 }
 
-tYnData YnDAtaLoadWriting(char **paths,
+tYnData YnDataLoadWriting(char **paths,
         int n,
         int m,
         int w,
@@ -981,11 +983,11 @@ tYnData YnDAtaLoadWriting(char **paths,
         int out_h)
 {
     int i;
-    char **replace_paths = YnUtilReplaceChar(paths, n, ".png", "-label.png");
-    tYnData d;
+    char **replace_paths = YnDataFindReplacePaths(paths, n, ".png", "-label.png");
+    tYnData d = {0};
 
     if (m)
-        paths = YnDAteRandomPathsGet(paths, n, m);
+        paths = YnDataRandomPathsGet(paths, n, m);
 
     d.shallow = 0;
     d.x = YnDataLoadImagePaths(paths, n, w, h);
@@ -1009,10 +1011,10 @@ tYnData YnDataLoad(char **paths,
         int w,
         int h)
 {
-    tYnData d;
+    tYnData d = {0};
 
     if (m)
-        paths = YnDAteRandomPathsGet(paths, n, m);
+        paths = YnDataRandomPathsGet(paths, n, m);
 
     d.shallow = 0;
     d.x = YnDataLoadImagePaths(paths, n, w, h);
@@ -1059,71 +1061,6 @@ tYnData YnDataConcat(tYnData d1,
     return d;
 }
 
-tYnData YnDataLoadCategoricalCsv(char *filename,
-        int target,
-        int k)
-{
-    tYnData d;
-    tYnMatrix X;
-    tYnMatrix y;
-    float *truth_1d;
-    float **truth;
-
-    d.shallow = 0;
-    X = YnDataCsvToMatrix(filename);
-    truth_1d = YnDataPopColumn(&X, target);
-    truth = YnDataOneHotEncode(truth_1d, X.rows, k);
-
-    y.rows = X.rows;
-    y.cols = k;
-    y.vals = truth;
-    d.x = X;
-    d.y = y;
-
-    YnUtilFree(truth_1d);
-
-    return d;
-}
-
-tYnData YnDataLoadCifar10(char *filename)
-{
-    int class;
-    long i, j;
-    tYnData d;
-    tYnMatrix X;
-    tYnMatrix y;
-    unsigned char bytes[3073];
-
-    FILE *fp = fopen(filename, "rb");
-
-    X = YnMatrixMake(10000, 3072);
-    y = YnMatrixMake(10000, 10);
-    d.shallow = 0;
-    d.x = X;
-    d.y = y;
-
-    if (!fp)
-        YnUtilErrorOpenFile(filename);
-
-    for (i = 0; i < 10000; i ++)
-    {
-        fread(bytes, 1, 3073, fp);
-        class = bytes[0];
-        y.vals[i][class] = 1;
-
-        for (j = 0; j < X.cols; j ++)
-        {
-            X.vals[i][j] = (double)bytes[j + 1];
-        }
-    }
-
-    YnDataTranslateRows(d, -128);
-    YnDataScaleRows(d, 1./128);
-
-    fclose(fp);
-    return d;
-}
-
 void YnDataRandomBatchGet(tYnData d,
         int n,
         float * X,
@@ -1155,54 +1092,6 @@ void YnDataNextBatchGet(tYnData d,
         memcpy(X + j * d.x.cols, d.x.vals[index], d.x.cols*sizeof(float));
         memcpy(y + j * d.y.cols, d.y.vals[index], d.y.cols*sizeof(float));
     }
-}
-
-
-tYnData YnDataLoadAllCifar10()
-{
-    int i, j, b;
-    int class;
-    tYnData d;
-    tYnMatrix X;
-    tYnMatrix y;
-    char buff[256];
-    unsigned char bytes[3073];
-    FILE *fp;
-
-    X = YnMatrixMake(50000, 3072);
-    y = YnMatrixMake(50000, 10);
-
-    d.shallow = 0;
-    d.x = X;
-    d.y = y;
-
-    for (b = 0; b < 5; b ++)
-    {
-        sprintf(buff, "data/cifar10/data_batch_%d.bin", b + 1);
-        fp = fopen(buff, "rb");
-
-        if (!fp)
-            YnUtilErrorOpenFile(buff);
-
-        for (i = 0; i < 10000; i ++)
-        {
-            fread(bytes, 1, 3073, fp);
-            class = bytes[0];
-            y.vals[i + b * 10000][class] = 1;
-
-            for (j = 0; j < X.cols; j ++)
-            {
-                X.vals[i + b * 10000][j] = (double)bytes[j + 1];
-            }
-        }
-
-        fclose(fp);
-    }
-
-    YnDataTranslateRows(d, -128);
-    YnDataScaleRows(d, 1./128);
-
-    return d;
 }
 
 void YnDataRandomize(tYnData d)

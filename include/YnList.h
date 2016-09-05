@@ -1,7 +1,7 @@
 #ifndef YNLIST_H
 #define YNLIST_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,8 +12,8 @@ extern "C" {
 /**************** Typedef */
 typedef struct tYnListNode{
     void * val;
-    tYnListNode * next;
-    tYnListNode * prev;
+    struct tYnListNode * next;
+    struct tYnListNode * prev;
 } tYnListNode;
 
 typedef struct tYnList{
@@ -21,7 +21,7 @@ typedef struct tYnList{
     tYnListNode * front;
     tYnListNode * back;
 
-    void * freeFunc;
+    void (*freeFunc)(void *);
 } tYnList;
 
 /**************** Macro */
@@ -41,7 +41,7 @@ typedef struct tYnList{
  * Create new list
  */
 YN_FINAL
-tYnList * YnListNew(void * freeFunc)
+tYnList * YnListMake(void * freeFunc)
 YN_ALSWAY_INLINE;
 
 /*
@@ -59,6 +59,13 @@ void * YnListInsert(tYnList * list, void * pVal)
 YN_ALSWAY_INLINE;
 
 /*
+ * Free list
+ */
+YN_FINAL
+void YnListFree(tYnList * list)
+YN_ALSWAY_INLINE;
+
+/*
  * Free from node
  */
 YN_FINAL
@@ -69,7 +76,7 @@ YN_ALSWAY_INLINE;
  *  Free all member value
  */
 YN_FINAL
-void * YnListFreeAllValue(tYnList * list)
+void YnListFreeAllValue(tYnList * list)
 YN_ALSWAY_INLINE;
 
 /*

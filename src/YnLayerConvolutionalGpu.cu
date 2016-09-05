@@ -56,7 +56,7 @@ YN_GPU_GLOBAL void _YnBinarizeFilters(float *filters,
     }
 }
 
-YN_EXTERN_C YN_STATIC
+YN_EXTERN_C YN_STATIC_INLINE
 void YnBinarizeFilters(float *filters,
         int num,
         int size,
@@ -66,7 +66,7 @@ void YnBinarizeFilters(float *filters,
     YnCudaCheckError(cudaPeekAtLastError());
 }
 
-YN_EXTERN_C YN_STATIC
+YN_EXTERN_C YN_STATIC_INLINE
 void YnBinarySwap(tYnLayer layer)
 {
     float *swap = layer.filtersGpu;

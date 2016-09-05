@@ -1,7 +1,7 @@
 #ifndef YNLAYERCONNECTEDGPU_H
 #define YNLAYERCONNECTEDGPU_H
 
-#include "../YnLayerConnected.h"
+#include "YnLayerConnected.h"
 
 #ifdef __cplusplus
 extern "C" {

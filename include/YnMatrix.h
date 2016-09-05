@@ -1,7 +1,7 @@
 #ifndef YNMATRIX_H
 #define YNMATRIX_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
 
 #ifdef __cplusplus
 extern "C" {

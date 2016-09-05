@@ -1,7 +1,7 @@
 #ifndef YNLAYERDECONVOLUTIONALGPU_H
 #define YNLAYERDECONVOLUTIONALGPU_H
 
-#include "../YnLayerDeconvolutional.h"
+#include "YnLayerDeconvolutional.h"
 
 #ifdef __cplusplus
 extern "C" {

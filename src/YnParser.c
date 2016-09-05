@@ -5,19 +5,20 @@
 
 #include "../include/YnList.h"
 #include "../include/YnOptionList.h"
-#include "../include/YnUtilayer.h"
+#include "../include/YnUtil.h"
+#include "../include/YnNetwork.h"
 #include "../include/YnActivation.h"
 #include "../include/YnLayerCrop.h"
 #include "../include/YnLayerCost.h"
-#include "../include/YnLayerConvolutionalayer.h"
+#include "../include/YnLayerConvolutional.h"
 #include "../include/YnLayerActivation.h"
-#include "../include/YnLayerDeconvolutionalayer.h"
+#include "../include/YnLayerDeconvolutional.h"
 #include "../include/YnLayerConnected.h"
-#include "../include/YnLayerMaxpoolayer.h"
+#include "../include/YnLayerMaxpool.h"
 #include "../include/YnLayerSoftmax.h"
 #include "../include/YnLayerDropout.h"
 #include "../include/YnLayerDetection.h"
-#include "../include/YnLayerAvgpoolayer.h"
+#include "../include/YnLayerAvgpool.h"
 
 #include "../include/YnParser.h"
 
@@ -34,270 +35,270 @@
 /**************** Global variables */
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsNetwork(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsConvolutional(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsActivation(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsLocal(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsDeconvolutional(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsConnected(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsRnn(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsMaxpool(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsAvgpool(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsDropout(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsSoftmax(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsNormalization(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsCrop(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsShortcut(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsCost(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsDetection(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsRoute(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnList * YnParserReadCfg(char *filename)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
-tYnList * YnParserFreeSection(tYnParserSection *s)
+YN_STATIC_INLINE
+void YnParserFreeSection(tYnParserSection *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
-eYnNetworkLearnRatePolicy * YnParserPolicyGet(char *s)
+YN_STATIC_INLINE
+eYnNetworkLearnRatePolicy YnParserPolicyGet(char *s)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnParserTransposeMatrix(float *a,
         int rows,
         int cols)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnParserData(char *data,
         float *a,
         int n)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserDeconvolutional(tYnList *options,
         tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserConvolutional(tYnList *options,
         tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnParserConnectedWeightsSave(tYnLayer layer,
                                   FILE *fp)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserConnected(tYnList *options,
                            tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserSoftmax(tYnList *options,
                          tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserDetection(tYnList *options,
                            tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserCost(tYnList *options,
                       tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserCrop(tYnList *options,
                        tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserMaxpool(tYnList *options,
                          tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserAvgpool(tYnList *options,
                          tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserDropout(tYnList *options,
                          tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserActivation(tYnList *options,
                             tYnParserSizeParams params)
 YN_ALSWAY_INLINE;
 
 /**************** Implement */
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsShortcut(tYnParserSection *s)
 {
     return (strcmp(s->type, "[shortcut]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsCrop(tYnParserSection *s)
 {
     return (strcmp(s->type, "[crop]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsCost(tYnParserSection *s)
 {
     return (strcmp(s->type, "[cost]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsDetection(tYnParserSection *s)
 {
     return (strcmp(s->type, "[detection]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsLocal(tYnParserSection *s)
 {
     return (strcmp(s->type, "[local]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsDeconvolutional(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[deconv]") == 0) ||
             (strcmp(s->type, "[deconvolutional]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsConvolutional(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[conv]") == 0) ||
             (strcmp(s->type, "[convolutional]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsActivation(tYnParserSection *s)
 {
     return (strcmp(s->type, "[activation]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsNetwork(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[net]") == 0) ||
             (strcmp(s->type, "[network]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsRnn(tYnParserSection *s)
 {
     return (strcmp(s->type, "[rnn]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsConnected(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[conn]") == 0) ||
             (strcmp(s->type, "[connected]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsMaxpool(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[max]") == 0) ||
             (strcmp(s->type, "[maxpool]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsAvgpool(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[avg]") == 0) ||
             (strcmp(s->type, "[avgpool]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsDropout(tYnParserSection *s)
 {
     return (strcmp(s->type, "[dropout]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsNormalization(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[lrn]") == 0) ||
             (strcmp(s->type, "[normalization]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsSoftmax(tYnParserSection *s)
 {
     return ((strcmp(s->type, "[soft]") == 0) ||
             (strcmp(s->type, "[softmax]") == 0));
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int YnParserIsRoute(tYnParserSection *s)
 {
     return (strcmp(s->type, "[route]") == 0);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnList * YnParserReadCfg(char *filename)
 {
     char *line;
@@ -309,9 +310,9 @@ tYnList * YnParserReadCfg(char *filename)
     if (file == 0)
         YnUtilErrorOpenFile(filename);
 
-    sections = YnListNew();
+    sections = YnListMake(NULL);
 
-    while ((line = fgetl(file)) != 0)
+    while ((line = YnUtilFileGetLine(file)) != 0)
     {
         ++ nu;
         YnUtilStripString(line);
@@ -321,7 +322,7 @@ tYnList * YnParserReadCfg(char *filename)
             case '[':
                 current = malloc(sizeof(tYnParserSection));
                 YnListInsert(sections, current);
-                current->options = YnListNew();
+                current->options = YnListMake(NULL);
                 current->type = line;
                 break;
             case '\0':
@@ -344,8 +345,8 @@ tYnList * YnParserReadCfg(char *filename)
     return sections;
 }
 
-YN_STATIC
-tYnList * YnParserFreeSection(tYnParserSection *s)
+YN_STATIC_INLINE
+void YnParserFreeSection(tYnParserSection *s)
 {
     YnUtilFree(s->type);
     tYnListNode *n = s->options->front;
@@ -364,22 +365,22 @@ tYnList * YnParserFreeSection(tYnParserSection *s)
     YnUtilFree(s);
 }
 
-YN_STATIC
-eYnNetworkLearnRatePolicy * YnParserPolicyGet(char *s)
+YN_STATIC_INLINE
+eYnNetworkLearnRatePolicy YnParserPolicyGet(char *s)
 {
-    if (strcmp(s, "poly") == 0)       return eYnNetworkLearnRatePoly;
-    if (strcmp(s, "constant") == 0)   return eYnNetworkLearnRateConstant;
-    if (strcmp(s, "step") == 0)       return eYnNetworkLearnRateStep;
-    if (strcmp(s, "exp") == 0)        return eYnNetworkLearnRateExp;
-    if (strcmp(s, "sigmoid") == 0)    return eYnNetworkLearnRateSig;
-    if (strcmp(s, "steps") == 0)      return eYnNetworkLearnRateSteps;
+    if (strcmp(s, "poly") == 0)       return cYnNetworkLearnRatePoly;
+    if (strcmp(s, "constant") == 0)   return cYnNetworkLearnRateConstant;
+    if (strcmp(s, "step") == 0)       return cYnNetworkLearnRateStep;
+    if (strcmp(s, "exp") == 0)        return cYnNetworkLearnRateExp;
+    if (strcmp(s, "sigmoid") == 0)    return cYnNetworkLearnRateSig;
+    if (strcmp(s, "steps") == 0)      return cYnNetworkLearnRateSteps;
 
     fprintf(stderr, "Couldn't find policy %s, going with constant\n", s);
 
-    return eYnNetworkLearnRateConstant;
+    return cYnNetworkLearnRateConstant;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnParserTransposeMatrix(float *a,
         int rows,
         int cols)
@@ -400,7 +401,7 @@ void YnParserTransposeMatrix(float *a,
     YnUtilFree(transpose);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnParserData(char *data,
         float *a,
         int n)
@@ -429,11 +430,11 @@ void YnParserData(char *data,
     }
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserDeconvolutional(tYnList *options,
         tYnParserSizeParams params)
 {
-    tYnLayer layer;
+    tYnLayer layer = {0};
     eYnActivationType activation;
     int batch, h, w, c;
     char *weights;
@@ -447,7 +448,7 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
     if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
     {
         YnUtilError("Get deconvolutional type failed");
-        return NULL;
+        return layer;
     }
 
     h = params.h;
@@ -458,7 +459,7 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
     if (!(h && w && c))
         YnUtilError("Layer before deconvolutional layer must output image");
 
-    layer = YnLayerDeconvolutionalMake(batch, h, w, c, n, size ,stride ,activation);
+    layer = YnLayerDeconvolutionalMake(batch, h, w, c, n, size, stride, activation);
 
     weights = YnOptionFindStr(options, "weights", 0);
     biases = YnOptionFindStr(options, "biases", 0);
@@ -473,11 +474,11 @@ tYnLayer YnParserDeconvolutional(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserConvolutional(tYnList *options,
         tYnParserSizeParams params)
 {
-    tYnLayer layer;
+    tYnLayer layer = {0};
     eYnActivationType activation;
     int batch, h, w, c;
     int batch_normalize;
@@ -494,7 +495,7 @@ tYnLayer YnParserConvolutional(tYnList *options,
     if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
     {
         YnUtilError("Get convolutional type failed");
-        return NULL;
+        return layer;
     }
 
     h = params.h;
@@ -523,7 +524,7 @@ tYnLayer YnParserConvolutional(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnParserConnectedWeightsSave(tYnLayer layer,
                                   FILE *fp)
 {
@@ -544,11 +545,11 @@ void YnParserConnectedWeightsSave(tYnLayer layer,
     }
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserConnected(tYnList *options,
                            tYnParserSizeParams params)
 {
-    tYnLayer layer;
+    tYnLayer layer= {0};
     eYnActivationType activation;
     char *weights;
     char *biases;
@@ -560,7 +561,7 @@ tYnLayer YnParserConnected(tYnList *options,
     if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
     {
         YnUtilError("Get connected type failed");
-        return NULL;
+        return layer;
     }
 
     layer = YnLayerConnectedMake(params.batch, params.inputs, output, activation, batch_normalize);
@@ -578,7 +579,7 @@ tYnLayer YnParserConnected(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserSoftmax(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -588,7 +589,7 @@ tYnLayer YnParserSoftmax(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserDetection(tYnList *options,
                            tYnParserSizeParams params)
 {
@@ -602,17 +603,17 @@ tYnLayer YnParserDetection(tYnList *options,
     layer.softmax = YnOptionFindInt(options, "softmax", 0);
     layer.sqrt = YnOptionFindInt(options, "sqrt", 0);
 
-    layer.coordScale = YnOptionFindFloat(options, "coordScale", 1);
+    layer.coordScale = YnOptionFindFloat(options, "coord_scale", 1);
     layer.forced = YnOptionFindInt(options, "forced", 0);
-    layer.objectScale = YnOptionFindFloat(options, "objectScale", 1);
-    layer.noobjectScale = YnOptionFindFloat(options, "noobjectScale", 1);
-    layer.classScale = YnOptionFindFloat(options, "classScale", 1);
+    layer.objectScale = YnOptionFindFloat(options, "object_scale", 1);
+    layer.noobjectScale = YnOptionFindFloat(options, "noobject_scale", 1);
+    layer.classScale = YnOptionFindFloat(options, "class_scale", 1);
     layer.jitter = YnOptionFindFloat(options, "jitter", .2);
 
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserCost(tYnList *options,
                       tYnParserSizeParams params)
 {
@@ -623,7 +624,7 @@ tYnLayer YnParserCost(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserCrop(tYnList *options,
                        tYnParserSizeParams params)
 {
@@ -654,7 +655,7 @@ tYnLayer YnParserCrop(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserMaxpool(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -676,7 +677,7 @@ tYnLayer YnParserMaxpool(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserAvgpool(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -696,7 +697,7 @@ tYnLayer YnParserAvgpool(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserDropout(tYnList *options,
                          tYnParserSizeParams params)
 {
@@ -708,18 +709,18 @@ tYnLayer YnParserDropout(tYnList *options,
     return layer;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnLayer YnParserActivation(tYnList *options,
                             tYnParserSizeParams params)
 {
-    tYnLayer layer;
+    tYnLayer layer = {0};
     char *activation_s = YnOptionFindStr(options, "activation", "linear");
     eYnActivationType activation;
 
     if (YnActivationTypeFromStringGet(activation_s, &activation) != eYnRetOk)
     {
         YnUtilError("Get activation type failed");
-        return NULL;
+        return layer;
     }
 
     layer = YnLayerActivationMake(params.batch, params.inputs, activation);
@@ -749,11 +750,11 @@ void YnParserNetOptions(tYnList *options,
     float scale;
 
     net->batch = YnOptionFindInt(options, "batch",1);
-    net->learningRate = YnOptionFindFloat(options, "learningRate", .001);
+    net->learningRate = YnOptionFindFloat(options, "learning_rate", .001);
     net->momentum = YnOptionFindFloat(options, "momentum", .9);
     net->decay = YnOptionFindFloat(options, "decay", .0001);
     int subdivs = YnOptionFindInt(options, "subdivisions",1);
-    net->timeSteps = YnOptionFindIntQuiet(options, "timeSteps",1);
+    net->timeSteps = YnOptionFindIntQuiet(options, "time_steps",1);
     net->batch /= subdivs;
     net->batch *= net->timeSteps;
     net->subdivisions = subdivs;
@@ -769,20 +770,19 @@ void YnParserNetOptions(tYnList *options,
     policy_s = YnOptionFindStr(options, "policy", "constant");
 
     net->policy = YnParserPolicyGet(policy_s);
-    if (net->policy == eYnNetworkLearnRateStep)
+    if (net->policy == cYnNetworkLearnRateStep)
     {
         net->step = YnOptionFindInt(options, "step", 1);
         net->scale = YnOptionFindFloat(options, "scale", 1);
     }
-    else if (net->policy == eYnNetworkLearnRateSteps)
+    else if (net->policy == cYnNetworkLearnRateSteps)
     {
         l = YnOptionFind(options, "steps");
         p = YnOptionFind(options, "scales");
 
         if (!l || !p)
-            YbUtilError("STEPS policy must have steps and scales in cfg file");
+            YnUtilError("STEPS policy must have steps and scales in cfg file");
 
-        /* TODO */
         len = strlen(l);
         n = 1;
 
@@ -808,16 +808,16 @@ void YnParserNetOptions(tYnList *options,
         net->num_steps = n;
 
     }
-    else if (net->policy == eYnNetworkLearnRateExp)
+    else if (net->policy == cYnNetworkLearnRateExp)
     {
         net->gamma = YnOptionFindFloat(options, "gamma", 1);
     }
-    else if (net->policy == eYnNetworkLearnRateSig)
+    else if (net->policy == cYnNetworkLearnRateSig)
     {
         net->gamma = YnOptionFindFloat(options, "gamma", 1);
         net->step = YnOptionFindInt(options, "step", 1);
     }
-    else if (net->policy == eYnNetworkLearnRatePoly)
+    else if (net->policy == cYnNetworkLearnRatePoly)
     {
         net->power = YnOptionFindFloat(options, "power", 1);
     }
@@ -846,7 +846,7 @@ tYnNetwork YnParserNetworkCfg(char *filename)
     options = s->options;
 
     if (!YnParserIsNetwork(s))
-        YnutilError("First section must be [net] or [network]");
+        YnUtilError("First section must be [net] or [network]");
 
     YnParserNetOptions(options, &net);
 
@@ -867,7 +867,7 @@ tYnNetwork YnParserNetworkCfg(char *filename)
         fprintf(stderr, "%d: ", count);
         s = (tYnParserSection *)n->val;
         options = s->options;
-        layer = {0};
+        memset(&layer, 0, sizeof(tYnLayer));
 
         if (YnParserIsConvolutional(s))
             layer = YnParserConvolutional(options, params);
@@ -1074,7 +1074,7 @@ void YnPareserWeightsDoubleSave(tYnNetwork net,
     fclose(fp);
 }
 
-void YnPareserConnectedWeightsLoad(tYnLayer layer,
+void YnParserConnectedWeightsLoad(tYnLayer layer,
                                    FILE *fp,
                                    int transpose)
 {
@@ -1111,8 +1111,8 @@ void YnParserWeightsUptoLoad(tYnNetwork *net,
     int transpose;
     int i;
     int num;
-    int locations;
-    int size;
+    /*int locations;*/
+    /*int size;*/
 
     FILE *fp = fopen(filename, "rb");
     if (!fp)
@@ -1170,14 +1170,14 @@ void YnParserWeightsUptoLoad(tYnNetwork *net,
         }
         if (layer.type == cYnLayerConnected)
         {
-            YnLayerConnectedWeightsLoad(layer, fp, transpose);
+        	YnParserConnectedWeightsLoad(layer, fp, transpose);
         }
         if (layer.type == cYnLayerRnn)
         {
             /*
-            load_connected_weights(*(layer.inputLayer), fp, transpose);
-            load_connected_weights(*(layer.selfLayer), fp, transpose);
-            load_connected_weights(*(layer.outputLayer), fp, transpose);
+            YnParserConnectedWeightsLoad(*(layer.inputLayer), fp, transpose);
+            YnParserConnectedWeightsLoad(*(layer.selfLayer), fp, transpose);
+            YnParserConnectedWeightsLoad(*(layer.outputLayer), fp, transpose);
             */
         }
         if (layer.type == cYnLayerLocal)

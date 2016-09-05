@@ -1,23 +1,11 @@
 #ifndef YNNETWORK_H
 #define YNNETWORK_H
 
-#include "../YnLayer.h"
-#include "../YnData.h"
-#include "../YnMatrix.h"
-#include "../YnParser.h"
-#include "../YnUtil.h"
-#include "../YnBlas.h"
-#include "../YnLayerCrop.h"
-#include "../YnLayerConnected.h"
-#include "../YnLayerConvolutional.h"
-#include "../YnLayerActivation.h"
-#include "../YnLayerAvgpool.h"
-#include "../YnLayerDeconvolutional.h"
-#include "../YnLayerDetection.h"
-#include "../YnLayerMaxpool.h"
-#include "../YnLayerCost.h"
-#include "../YnLayerSoftmax.h"
-#include "../YnLayerDropout.h"
+#include "YnLayer.h"
+#include "YnData.h"
+#include "YnMatrix.h"
+#include "YnUtil.h"
+#include "YnBlas.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,12 +19,12 @@ extern "C" {
 
 /**************** Enum */
 typedef enum eYnNetworkLearnRatePolicy{
-    eYnNetworkLearnRateConstant,
-    eYnNetworkLearnRateStep,
-    eYnNetworkLearnRateExp,
-    eYnNetworkLearnRatePoly,
-    eYnNetworkLearnRateSteps,
-    eYnNetworkLearnRateSig,
+    cYnNetworkLearnRateConstant,
+    cYnNetworkLearnRateStep,
+    cYnNetworkLearnRateExp,
+    cYnNetworkLearnRatePoly,
+    cYnNetworkLearnRateSteps,
+    cYnNetworkLearnRateSig,
 } eYnNetworkLearnRatePolicy;
 
 /**************** Struct */
@@ -90,7 +78,7 @@ typedef struct tYnNetworkState {
 
 /**************** Implement */
 YN_FINAL
-int YnNetworkGetCurrentBatch(tYnNetwork net)
+int YnNetworkCurrentBatchGet(tYnNetwork net)
 YN_ALSWAY_INLINE;
 
 YN_FINAL

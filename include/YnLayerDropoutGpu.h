@@ -1,10 +1,10 @@
 #ifndef YNLAYERDROPOUTGPU_H
 #define YNLAYERDROPOUTGPU_H
 
-#include "../YnLayerDropout.h"
-#include "../YnCudaGpu.h"
-#include "../YnActivationGpu.h"
-#include "../YnBlasGpu.h"
+#include "YnLayerDropout.h"
+#include "YnCudaGpu.h"
+#include "YnActivationGpu.h"
+#include "YnBlasGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

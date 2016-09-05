@@ -4,6 +4,7 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerConvolutional.h"
+#include "../include/YnGemm.h"
 
 /**************** Define */
 
@@ -18,12 +19,12 @@
 /**************** Global variables */
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 tYnImage * _YnLayerConvolutionalFiltersGet(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 /**************** Implement */
-YN_STATIC
+YN_STATIC_INLINE
 tYnImage * _YnLayerConvolutionalFiltersGet(tYnLayer layer)
 {
     tYnImage *filters = calloc(layer.n, sizeof(tYnImage));
@@ -76,7 +77,7 @@ tYnLayer YnLayerConvolutionalMake(int batchNum,
     scale = sqrt(2./(size * size * channel));
 
     for (i = 0; i < channel * num * size * size; i ++)
-        layer.filters[i] = scale*rand_uniform(-1, 1);
+        layer.filters[i] = scale * YnUtilRandomUniformNum(-1, 1);
 
     outH = YnLayerConvolutionalOutHeightGet(layer);
     outW = YnLayerConvolutionalOutWidthGet(layer);
@@ -159,16 +160,22 @@ void YnLayerConvolutionalForward(tYnLayer layer,
     int outH = YnLayerConvolutionalOutHeightGet(layer);
     int outW = YnLayerConvolutionalOutWidthGet(layer);
     int i;
+    float *a;
+    float *b;
+    float *c;
+    int m;
+    int k;
+    int n;
 
-    fill_cpu(layer.outputs*layer.batch, 0, layer.output, 1);
+    YnBlasArrayFillValueSet(layer.output, layer.outputs * layer.batch, 1, 0);
 
-    int m = layer.n;
-    int k = layer.size*layer.size*layer.c;
-    int n = outH*outW;
+    m = layer.n;
+    k = layer.size * layer.size * layer.c;
+    n = outH * outW;
 
-    float *a = layer.filters;
-    float *b = layer.colImage;
-    float *c = layer.output;
+    a = layer.filters;
+    b = layer.colImage;
+    c = layer.output;
 
     for (i = 0; i < layer.batch; i ++)
     {
@@ -177,7 +184,7 @@ void YnLayerConvolutionalForward(tYnLayer layer,
         YnGemm(0, 0, m, n, k, 1, a, k, b, n, 1, c, n);
 
         c += n * m;
-        netState.input += layer.c*layer.h*layer.w;
+        netState.input += layer.c * layer.h * layer.w;
     }
 
     if (layer.batchNormalize)
@@ -407,7 +414,7 @@ void YnLayerConvolutionalFiltersRescale(tYnLayer layer,
     }
 }
 
-int YnLayerConvolutionalFiltersRgbgr(tYnLayer layer)
+void YnLayerConvolutionalFiltersRgbgr(tYnLayer layer)
 {
     int i;
     tYnImage im;

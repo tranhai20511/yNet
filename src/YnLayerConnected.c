@@ -4,6 +4,8 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerConnected.h"
+#include "../include/YnGemm.h"
+#include "../include/YnBlas.h"
 
 /**************** Define */
 
@@ -177,7 +179,7 @@ void YnLayerConnectedForward(tYnLayer layer,
             YnBlasArrayNormalizeCal(layer.output, layer.rollingMean, layer.rollingVariance, layer.batch, layer.outputs, 1);
         }
 
-        YnBlasScaleBias(layer.output, layer.scales, layer.batch, layer.outputs, 1);
+        YnBlasArrayBiasScale(layer.output, layer.scales, layer.batch, layer.outputs, 1);
     }
 
     for (i = 0; i < layer.batch; i ++)
@@ -208,12 +210,12 @@ void YnLayerConnectedBackward(tYnLayer layer,
 
     if (layer.batchNormalize)
     {
-        YnBlasBackwardScale(layer.xNorm, layer.delta, layer.batch, layer.outputs, 1, layer.scaleUpdates);
-        YnBlasScaleBias(layer.delta, layer.scales, layer.batch, layer.outputs, 1);
+        YnBlasArrayBackwardScale(layer.xNorm, layer.delta, layer.batch, layer.outputs, 1, layer.scaleUpdates);
+        YnBlasArrayBiasScale(layer.delta, layer.scales, layer.batch, layer.outputs, 1);
 
-        YnBlasMeanDelta(layer.delta, layer.variance, layer.batch, layer.outputs, 1, layer.meanDelta);
-        YnBlasVarianceDelta(layer.x, layer.delta, layer.mean, layer.variance, layer.batch, layer.outputs, 1, layer.varianceDelta);
-        YnBlasNormalizeDelta(layer.x, layer.mean, layer.variance, layer.meanDelta, layer.varianceDelta, layer.batch, layer.outputs, 1, layer.delta);
+        YnBlasArrayMeanGradient(layer.delta, layer.variance, layer.batch, layer.outputs, 1, layer.meanDelta);
+        YnBlasArrayVarianceGradient(layer.x, layer.delta, layer.mean, layer.variance, layer.batch, layer.outputs, 1, layer.varianceDelta);
+        YnBlasArrayNormalizeGradient(layer.x, layer.mean, layer.variance, layer.meanDelta, layer.varianceDelta, layer.batch, layer.outputs, 1, layer.delta);
     }
 
     m = layer.outputs;

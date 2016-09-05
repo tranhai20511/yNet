@@ -1,10 +1,10 @@
 #ifndef YNVOC_H
 #define YNVOC_H
 
-#include "../YnNetwork.h"
+#include "YnNetwork.h"
 
 #ifdef YN_GPU
-#include "../YnNetworkGpu.h"
+#include "YnNetworkGpu.h"
 #endif
 
 #ifdef __cplusplus
@@ -74,7 +74,7 @@ void YnVocCpuDemo(char *cfgfile,
         char *weightfile,
         float thresh,
         int cam_index,
-        char *filename)
+		const char *filename)
 YN_ALSWAY_INLINE;
 
 #endif

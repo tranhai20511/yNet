@@ -21,7 +21,7 @@
 /**************** Local Implement */
 
 /**************** Implement */
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmOnGpu(int TA,
         int TB,
         int M,

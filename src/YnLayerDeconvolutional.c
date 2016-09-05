@@ -4,6 +4,7 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerDeconvolutional.h"
+#include "../include/YnGemm.h"
 
 /**************** Define */
 
@@ -27,7 +28,6 @@ tYnLayer YnLayerDeconvolutionalMake(int batchNum,
         int num,
         int size,
         int stride,
-        int pad,
         eYnActivationType activation)
 {
     int i;
@@ -55,15 +55,15 @@ tYnLayer YnLayerDeconvolutionalMake(int batchNum,
     scale = 1. / sqrt(size * size * channel);
 
     for (i = 0; i < channel * num * size * size; i ++)
-        layer.filters[i] = scale * rand_normal();
+        layer.filters[i] = scale * YnUtilRandomNormalNum();
 
     for (i = 0; i < num; i ++)
     {
         layer.biases[i] = scale;
     }
 
-    out_h = deconvolutional_out_height(layer);
-    out_w = deconvolutional_out_width(layer);
+    out_h = YnLayerDeconvolutionalOutHeightGet(layer);
+    out_w = YnLayerDeconvolutionalOutWidthGet(layer);
 
     layer.outH = out_h;
     layer.outW = out_w;
@@ -72,8 +72,8 @@ tYnLayer YnLayerDeconvolutionalMake(int batchNum,
     layer.inputs = layer.w * layer.h * layer.c;
 
     layer.colImage = calloc(height * width * size * size * num, sizeof(float));
-    layer.output = calloc(layer.batch*out_h * out_w * num, sizeof(float));
-    layer.delta  = calloc(layer.batch*out_h * out_w * num, sizeof(float));
+    layer.output = calloc(layer.batch * out_h * out_w * num, sizeof(float));
+    layer.delta  = calloc(layer.batch * out_h * out_w * num, sizeof(float));
 
 #ifdef YN_GPU
     layer.filtersGpu = YnCudaMakeArray(layer.filters, channel * num * size * size);
@@ -113,11 +113,11 @@ void YnLayerDeconvolutionalForward(tYnLayer layer,
 
     for (i = 0; i < layer.batch; i ++)
     {
-        *a = layer.filters;
-        *b = netState.input + i * layer.c * layer.h * layer.w;
-        *c = layer.colImage;
+        a = layer.filters;
+        b = netState.input + i * layer.c * layer.h * layer.w;
+        c = layer.colImage;
 
-        YnGemm(1,0,m,n,k,1,a,m,b,n,0,c,n);
+        YnGemm(1, 0, m, n, k, 1, a, m, b, n, 0, c, n);
 
         YnImageCol2Image(c, layer.n, out_h, out_w, layer.size, layer.stride, 0, layer.output + i * layer.n * size);
     }
@@ -175,7 +175,6 @@ void YnLayerDeconvolutionalBackward(tYnLayer layer,
 }
 
 void YnLayerDeconvolutionalUpdate(tYnLayer layer,
-        int32 batch,
         float learningRate,
         float momentum,
         float decay)

@@ -1,7 +1,10 @@
 #ifndef YNDATA_H
 #define YNDATA_H
 
-#include "../YnMatrix.h"
+#include "YnMatrix.h"
+#include "YnImage.h"
+#include "YnList.h"
+#include "YnUtil.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,11 +79,11 @@ typedef struct tYnDataBoxLabel{
 
 /**************** Implement */
 YN_FINAL
-uint32 YnDataSeedGet(void)
+int YnDataSeedGet(void)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnDataSeedSet(uint32 seed)
+void YnDataSeedSet(int seed)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
@@ -221,7 +224,7 @@ void YnDataFree(tYnData data)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-tYnData YnDaraLoadRegion(int n,
+tYnData YnDataLoadRegion(int n,
         char **paths,
         int m,
         int w,
@@ -276,7 +279,7 @@ pthread_t YnDataLoadInThread(tYnDataLoadArgs args)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-tYnData YnDAtaLoadWriting(char **paths,
+tYnData YnDataLoadWriting(char **paths,
         int n,
         int m,
         int w,
@@ -306,16 +309,6 @@ tYnData YnDataConcat(tYnData d1,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-tYnData YnDataLoadCategoricalCsv(char *filename,
-        int target,
-        int k)
-YN_ALSWAY_INLINE;
-
-YN_FINAL
-tYnData YnDataLoadCifar10(char *filename)
-YN_ALSWAY_INLINE;
-
-YN_FINAL
 void YnDataRandomBatchGet(tYnData d,
         int n,
         float * X,
@@ -328,10 +321,6 @@ void YnDataNextBatchGet(tYnData d,
         int offset,
         float *X,
         float *y)
-YN_ALSWAY_INLINE;
-
-YN_FINAL
-tYnData YnDataLoadAllCifar10()
 YN_ALSWAY_INLINE;
 
 YN_FINAL

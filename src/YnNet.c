@@ -3,6 +3,7 @@
 //	DD-MM-YYYY  :   29-08-2016
 //	Author      :   haittt
 
+#include "../include/YnGpu.h"
 #include "../include/YnVoc.h"
 
 /**************** Define */
@@ -22,13 +23,13 @@
 /**************** Implement */
 int main(int argc, char* argv[])
 {
-    if(argc < 2)
+    if (argc < 2)
     {
-        fprintf(stderr, "not enough param\n", argv[0]);
+        fprintf(stderr, "not enough param %s\n", argv[0]);
         return 0;
     }
 
-    if  (YnUtilFindCharArg(argc, argv, "-nogpu"))
+    if  (YnUtilFindArg(argc, argv, "-nogpu"))
         YnCudaGpuIndexSet(-1);
     else
         YnCudaGpuIndexSet(YnUtilFindIntArg(argc, argv, "-i", 0));

@@ -1,4 +1,4 @@
-//	File        :   YnBlas.c
+//	File        :   YnCudaGpu.c
 //	Brief       :   Implement methods.
 //	DD-MM-YYYY  :   28-06-2016
 //	Author      :   haittt

@@ -1,7 +1,7 @@
 #ifndef YNLAYERCOSTGPU_H
 #define YNLAYERCOSTGPU_H
 
-#include "../YnLayerCost.h"
+#include "YnLayerCost.h"
 
 #ifdef __cplusplus
 extern "C" {

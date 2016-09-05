@@ -22,15 +22,6 @@
 /**************** Local Implement */
 
 /**************** Implement */
-void YnUtilFree (void * mem)
-{
-    if (mem)
-    {
-        free(mem);
-        mem = NULL;
-    }
-}
-
 void YnUtilFreeArrPtrs (void ** mem,
         uint32 num)
 {
@@ -60,7 +51,7 @@ void YnUtilDelArg (uint32 argc,
     argv[i] = 0;
 }
 
-bool YnUtilFindDelArg (uint32 argc,
+bool YnUtilFindArg (uint32 argc,
         char ** argv,
         char * argFind)
 {
@@ -83,10 +74,10 @@ bool YnUtilFindDelArg (uint32 argc,
 
 int YnUtilFindIntArg (uint32 argc,
         char ** argv,
-        char * argFind)
+        char * argFind,
+		int def)
 {
     uint32 i;
-    int ret = 0;
 
     for (i = 0; i < argc - 1; i ++)
     {
@@ -95,7 +86,7 @@ int YnUtilFindIntArg (uint32 argc,
 
         if (strcmp(argv[i], argFind) == 0)
         {
-            ret = atoi(argv[i + 1]);
+        	def = atoi(argv[i + 1]);
 
             YnUtilDelArg(argc, argv, i);
             YnUtilDelArg(argc, argv, i);
@@ -104,15 +95,15 @@ int YnUtilFindIntArg (uint32 argc,
         }
     }
 
-    return ret;
+    return def;
 }
 
 float YnUtilFindFloatArg(uint32 argc,
         char ** argv,
-        char * argFind)
+        char * argFind,
+		float def)
 {
     uint32 i;
-    float ret = 0;
 
     for (i = 0; i < argc - 1; i ++)
     {
@@ -121,7 +112,7 @@ float YnUtilFindFloatArg(uint32 argc,
 
         if (strcmp(argv[i], argFind) == 0)
         {
-            ret = atof(argv[i + 1]);
+        	def = atof(argv[i + 1]);
 
             YnUtilDelArg(argc, argv, i);
             YnUtilDelArg(argc, argv, i);
@@ -130,15 +121,15 @@ float YnUtilFindFloatArg(uint32 argc,
         }
     }
 
-    return ret;
+    return def;
 }
 
 char * YnUtilFindCharArg(uint32 argc,
         char ** argv,
-        char * argFind)
+        char * argFind,
+		char * def)
 {
     uint32 i;
-    char * ret = 0;
 
     for (i = 0; i < argc - 1; i ++)
     {
@@ -147,7 +138,7 @@ char * YnUtilFindCharArg(uint32 argc,
 
         if (strcmp(argv[i], argFind) == 0)
         {
-            ret = argv[i + 1];
+        	def = argv[i + 1];
 
             YnUtilDelArg(argc, argv, i);
             YnUtilDelArg(argc, argv, i);
@@ -156,7 +147,7 @@ char * YnUtilFindCharArg(uint32 argc,
         }
     }
 
-    return ret;
+    return def;
 }
 
 char * YnUtilFindBaseConfig(char * configPath)
@@ -267,7 +258,7 @@ tYnList * YnUtilSplitString(char * str,
     uint32 i;
     uint32 len = strlen(str);
 
-    tYnList * list = YnListNew(NULL);
+    tYnList * list = YnListMake(NULL);
 
     YnListInsert(list, str);
 
@@ -350,7 +341,7 @@ char * YnUtilFileGetLine(FILE * file)
             line = realloc(line, size * sizeof(char));
             if (!line)
             {
-                printf("%ld\n", size);
+                printf("%d\n", size);
                 YnUtilErrorMalloc();
             }
         }
@@ -359,7 +350,12 @@ char * YnUtilFileGetLine(FILE * file)
         if (readsize > INT_MAX)
             readsize = INT_MAX - 1;
 
-        fgets(&line[curr], readsize, file);
+        if (!fgets(&line[curr], readsize, file))
+        {
+            YnUtilFree(line);
+            return NULL;
+        }
+
         curr = strlen(line);
     }
 
@@ -479,20 +475,7 @@ float YnUtilConstrain(float min,
     return val;
 }
 
-
-float YnUtilArraySum(char * array,
-        uint32 numField)
-{
-    uint32 i = 0;
-    float sum = 0;
-
-    for (i = 0; i < numField; i ++)
-        sum += array[i];
-
-    return sum;
-}
-
-float YnUtilArrayMean(char * array,
+float YnUtilArrayMean(float * array,
         uint32 numField)
 {
     return YnUtilArraySum(array, numField)/numField;
@@ -635,4 +618,25 @@ float YnUtilRandomNormalNum()
 float YnUtilRandomUniformNum(float min, float max)
 {
     return ((float)rand()/RAND_MAX * (max - min)) + min;
+}
+
+void YnUtilFree (void * mem)
+{
+    if (mem)
+    {
+        free(mem);
+        mem = NULL;
+    }
+}
+
+float YnUtilArraySum(float * array,
+        uint32 numField)
+{
+    uint32 i = 0;
+    float sum = 0;
+
+    for (i = 0; i < numField; i ++)
+        sum += array[i];
+
+    return sum;
 }

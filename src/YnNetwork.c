@@ -4,6 +4,18 @@
 //	Author      :   haittt
 
 #include "../include/YnNetwork.h"
+#include "../include/YnParser.h"
+#include "../include/YnLayerCrop.h"
+#include "../include/YnLayerConnected.h"
+#include "../include/YnLayerConvolutional.h"
+#include "../include/YnLayerActivation.h"
+#include "../include/YnLayerAvgpool.h"
+#include "../include/YnLayerDeconvolutional.h"
+#include "../include/YnLayerDetection.h"
+#include "../include/YnLayerMaxpool.h"
+#include "../include/YnLayerCost.h"
+#include "../include/YnLayerSoftmax.h"
+#include "../include/YnLayerDropout.h"
 
 /**************** Define */
 
@@ -20,7 +32,7 @@
 /**************** Local Implement */
 
 /**************** Implement */
-int YnNetworkGetCurrentBatch(tYnNetwork net)
+int YnNetworkCurrentBatchGet(tYnNetwork net)
 {
     return ((*net.seen) / (net.batch * net.subdivisions));
 }
@@ -48,11 +60,11 @@ float YnNetworkCurrentRateget(tYnNetwork net)
 
     switch (net.policy)
     {
-        case eYnNetworkLearnRateConstant:
+        case cYnNetworkLearnRateConstant:
             return net.learningRate;
-        case eYnNetworkLearnRateStep:
+        case cYnNetworkLearnRateStep:
             return net.learningRate * pow(net.scale, batchNum / net.step);
-        case eYnNetworkLearnRateSteps:
+        case cYnNetworkLearnRateSteps:
             rate = net.learningRate;
 
             for (i = 0; i < net.num_steps; i ++)
@@ -63,15 +75,15 @@ float YnNetworkCurrentRateget(tYnNetwork net)
                 rate *= net.scales[i];
 
                 if (net.steps[i] > batchNum - 1)
-                    YnNwtworkResetMomentum(net);
+                    YnNetworkResetMomentum(net);
             }
 
             return rate;
-        case eYnNetworkLearnRateExp:
+        case cYnNetworkLearnRateExp:
             return net.learningRate * pow(net.gamma, batchNum);
-        case eYnNetworkLearnRatePoly:
+        case cYnNetworkLearnRatePoly:
             return net.learningRate * pow(1 - (float)batchNum / net.max_batches, net.power);
-        case eYnNetworkLearnRateSig:
+        case cYnNetworkLearnRateSig:
             return net.learningRate * (1. / (1. + exp(net.gamma * (batchNum - net.step))));
         default:
             fprintf(stderr, "Policy is weird!\n");
@@ -322,7 +334,7 @@ void YnNetworkBackward(tYnNetwork net,
                 YnLayerActivationBackward(layer, state);
                 break;
             case cYnLayerLocal:
-                YnLayerLocalBackward(layer, state);
+                /*YnLayerLocalBackward(layer, state);*/
                 break;
             case cYnLayerDeconvolutional:
                 YnLayerDeconvolutionalBackward(layer, state);
@@ -434,7 +446,7 @@ float YnNetworkTrain(tYnNetwork net,
 
     for (i = 0; i < n; i ++)
     {
-        YnNetworkNextBatchGet(d, batch, i * batch, X, y);
+        YnDataNextBatchGet(d, batch, i * batch, X, y);
         err = YnNetworkTrainDatum(net, X, y);
         sum += err;
     }
@@ -661,7 +673,7 @@ float * YnNetworkPredict(tYnNetwork net,
     state.delta = 0;
 
     YnNetworkForward(net, state);
-    out = get_network_output(net);
+    out = YnNetworkOutputGet(net);
 
     return out;
 }
@@ -674,7 +686,7 @@ tYnMatrix YnNetworkPredictDataMulti(tYnNetwork net,
     float *X;
     float *out;
     int i, j, b, m;
-    int k = get_network_output_size(net);
+    int k = YnNetworkOutputSizeGet(net);
 
     pred = YnMatrixMake(test.x.rows, k);
     X = calloc(net.batch*test.x.rows, sizeof(float));

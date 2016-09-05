@@ -1,19 +1,19 @@
 #ifndef YNNETWORKGPU_H
 #define YNNETWORKGPU_H
 
-#include "../YnNetwork.h"
-#include "../YnBlasGpu.h"
-#include "../YnLayerCropGpu.h"
-#include "../YnLayerConnectedGpu.h"
-#include "../YnLayerConvolutionalGpu.h"
-#include "../YnLayerActivationGpu.h"
-#include "../YnLayerAvgpoolGpu.h"
-#include "../YnLayerDeconvolutionalGpu.h"
-#include "../YnLayerDetectionGpu.h"
-#include "../YnLayerMaxpoolGpu.h"
-#include "../YnLayerCostGpu.h"
-#include "../YnLayerSoftmaxGpu.h"
-#include "../YnLayerDropoutGpu.h"
+#include "YnNetwork.h"
+#include "YnBlasGpu.h"
+#include "YnLayerCropGpu.h"
+#include "YnLayerConnectedGpu.h"
+#include "YnLayerConvolutionalGpu.h"
+#include "YnLayerActivationGpu.h"
+#include "YnLayerAvgpoolGpu.h"
+#include "YnLayerDeconvolutionalGpu.h"
+#include "YnLayerDetectionGpu.h"
+#include "YnLayerMaxpoolGpu.h"
+#include "YnLayerCostGpu.h"
+#include "YnLayerSoftmaxGpu.h"
+#include "YnLayerDropoutGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

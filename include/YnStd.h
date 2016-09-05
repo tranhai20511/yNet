@@ -13,26 +13,30 @@
 #include <limits.h>
 #include <time.h>
 #include <assert.h>
+#include <pthread.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
-#include <sys/shm.h>
+#include <sys/time.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**************** Define */
+/*
 #define YN_GPU
 #define YN_OPENCV
+*/
 
 #define YN_VIRTUAL
-#define YN_FINAL
+#define YN_FINAL			YN_INLINE
 
 #define YN_INLINE           inline
 #define YN_STATIC           static
 #define YN_STATIC_INLINE    static inline
 #define YN_EXTERN_C         extern "C"
-#define YN_ALSWAY_INLINE    __attribute__((always_inline))
+#define YN_ALSWAY_INLINE
+/*#define YN_ALSWAY_INLINE    __attribute__((always_inline))*/
 
 
 #define YN_CHAR_BUFF        (1024)
@@ -50,8 +54,8 @@ typedef signed short int    int16;
 typedef unsigned short int  uint16;
 typedef signed int          int32;
 typedef unsigned int        uint32;
-typedef unsigned long long  uint64;
-typedef long long           int64;
+/*typedef unsigned long long  uint64*/;
+/*typedef long long           int64;*/
 typedef unsigned char       uchar;
 
 
@@ -66,7 +70,6 @@ typedef enum eYnRetCode {
 }eYnRetCode;
 
 /**************** Macro */
-#define NULL (void *)0
 #define mYnRetEqualPointer(_val, _exVal, _retVal)  if ((_val) == (_exVal)) (*(type)) = (_retVal)
 #define mYnNullRetNull(_val)  if ((_val) == NULL) return NULL
 #define mYnNullRetRet(_val, _ret)  if ((_val) == NULL) return _ret

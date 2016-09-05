@@ -8,7 +8,7 @@
 #include "../include/YnActivation.h"
 #include "../include/YnBlas.h"
 #include "../include/YnBBox.h"
-#include "../include/YnCuda.h"
+#include "../include/YnGpu.h"
 
 /**************** Define */
 
@@ -163,7 +163,7 @@ void YnLayerDetectionForward(tYnLayer layer,
                     avg_allcat += layer.output[class_index + j];
                 }
 
-                tYnBBox truth = YnBBoxFromArray(netState.truth + truth_index + 1 + layer.classes);
+                truth = YnBBoxFromArray(netState.truth + truth_index + 1 + layer.classes);
                 truth.x /= layer.side;
                 truth.y /= layer.side;
 
@@ -262,6 +262,7 @@ void YnLayerDetectionForward(tYnLayer layer,
                         cYnActivationLogistic, layer.delta + index + locations * layer.classes);
             }
         }
+
         printf("Detection Avg IOU: %f, Pos Cat: %f, All Cat: %f, Pos Obj: %f, Any Obj: %f, count: %d\n",
                 avg_iou / count,
                 avg_cat / count,

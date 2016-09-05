@@ -1,7 +1,7 @@
 #ifndef YNACTIVATION_H
 #define YNACTIVATION_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,61 +11,60 @@ extern "C" {
 
 /**************** Macro */
 
-#define mYnActivationLinear (inVal)   (inVal)
+#define mYnActivationLinear(inVal)   (inVal)
 
-#define mYnGradientLinear (inVal)     (1)
+#define mYnGradientLinear(inVal)     (1)
 
-#define mYnActivationRelu (inVal)\
+#define mYnActivationRelu(inVal) \
     ((inVal) * ((inVal) > 0))
 
-#define mYnGradientRelu (inVal)\
+#define mYnGradientRelu(inVal) \
     ((inVal) > 0)
 
-#define mYnActivationElu (inVal)\
+#define mYnActivationElu(inVal) \
     ((inVal) * ((inVal) >= 0) + (exp((inVal)) - 1) * ((inVal) < 0))
 
-#define mYnGradientElu (inVal)\
+#define mYnGradientElu(inVal) \
     (((inVal) >= 0) + ((inVal) + 1) * ((inVal) < 0))
 
-#define mYnActivationRamp (inVal)\
+#define mYnActivationRamp(inVal) \
     ((inVal) * ((inVal) > 0) + 0.1 * (inVal))
 
-#define mYnGradientRamp (inVal)\
+#define mYnGradientRamp(inVal) \
     (((inVal) > 0) + 0.1)
 
-#define mYnActivationLeaky (inVal)\
+#define mYnActivationLeaky(inVal) \
     ((inVal) * ((inVal) > 0) + 0.1 * (inVal) *((inVal) <= 0))
 
-#define mYnGradientLeaky (inVal)\
+#define mYnGradientLeaky(inVal) \
     (((inVal) > 0) + 0.1 * ((inVal) <= 0))
 
-#define mYnActivationTanh (inVal)\
+#define mYnActivationTanh(inVal) \
     ((exp(2 * (inVal)) - 1) / (exp(2 * (inVal)) + 1))
 
-#define mYnGradientTanh (inVal)\
+#define mYnGradientTanh(inVal) \
     (1 - (inVal) * (inVal))
 
-#define mYnActivationPlse (inVal)\
+#define mYnActivationPlse(inVal) \
     (((inVal) < -4) ? (.01 * ((inVal) + 4)) :\
     (((inVal) > 4) ? (.01 * ((inVal) - 4) + 1) : (.125 * (inVal) + .5)))
 
-#define mYnGradientPlse (inVal)\
+#define mYnGradientPlse(inVal) \
         (((inVal) < 0 || (inVal) > 1) ? .01 : .125)
 
-#define mYnActivationLogistic (inVal)\
+#define mYnActivationLogistic(inVal) \
     (1. / (1. + exp(-(inVal))))
 
-#define mYnGradientLogistic (inVal)\
+#define mYnGradientLogistic(inVal) \
     ((inVal) * (1 - (inVal)))
 
-#define mYnActivationLoggy (inVal)\
+#define mYnActivationLoggy(inVal) \
     (2. / (1. + exp(-(inVal))) - 1)
 
-#define mYnGradientLoggy (inVal)\
+#define mYnGradientLoggy(inVal) \
     (2 * (1 - (((inVal) + 1.) / 2.)) * (((inVal) + 1.) / 2.))
 
 /**************** Enum */
-
 /*
  *	Activation function types
  */

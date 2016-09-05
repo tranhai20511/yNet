@@ -3,6 +3,7 @@
 //	DD-MM-YYYY  :   03-07-2016
 //	Author      :   haittt
 
+#include "../include/YnUtil.h"
 #include "../include/YnBBox.h"
 
 /**************** Define */
@@ -25,51 +26,51 @@ typedef struct tYnBBoxSortable{
 /**************** Global variables */
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 tYnBBoxD _YnBBoxD(tYnBBox box1,
         tYnBBox box2)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 float _YnBBoxOverlap(float x1,
         float width1,
         float x2,
         float width2)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 float _YnBBoxIntersection(tYnBBox box1,
         tYnBBox box2)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 float _YnBBoxUnion(tYnBBox box1,
         tYnBBox box2)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnBBoxD _YnBBoxIntersectionD(tYnBBox box1,
         tYnBBox box2)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnBBoxD _YnBBoxUnionD(tYnBBox box1,
         tYnBBox box2)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 int _YnBBoxNmsComparator(const void *box1,
         const void *box2)
 YN_ALSWAY_INLINE;
 
 /**************** Implement */
 
-YN_STATIC
-tYnBBox _YnBBoxD(tYnBBox box1,
+YN_STATIC_INLINE
+tYnBBoxD _YnBBoxD(tYnBBox box1,
         tYnBBox box2)
 {
     tYnBBoxD d = {0};
-    float l1 = 0
+    float l1 = 0;
     float l2 = 0;
     float r1 = 0;
     float r2 = 0;
@@ -134,7 +135,7 @@ tYnBBox _YnBBoxD(tYnBBox box1,
     return d;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 float _YnBBoxOverlap(float x1,
         float width1,
         float x2,
@@ -153,7 +154,7 @@ float _YnBBoxOverlap(float x1,
     return right - left;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 float _YnBBoxIntersection(tYnBBox box1,
         tYnBBox box2)
 {
@@ -166,7 +167,7 @@ float _YnBBoxIntersection(tYnBBox box1,
     return (w * h);
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 float _YnBBoxUnion(tYnBBox box1,
         tYnBBox box2)
 {
@@ -176,7 +177,7 @@ float _YnBBoxUnion(tYnBBox box1,
     return u;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnBBoxD _YnBBoxIntersectionD(tYnBBox box1,
         tYnBBox box2)
 {
@@ -194,7 +195,7 @@ tYnBBoxD _YnBBoxIntersectionD(tYnBBox box1,
     return di;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 tYnBBoxD _YnBBoxUnionD(tYnBBox box1,
         tYnBBox box2)
 {
@@ -209,7 +210,7 @@ tYnBBoxD _YnBBoxUnionD(tYnBBox box1,
     return dunion;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 int _YnBBoxNmsComparator(const void * pBox1,
         const void * pBox2)
 {
@@ -372,8 +373,8 @@ void YnBBoxNmsSort(tYnBBox * boxes,
     }
 }
 
-tYnBBox YnBBoxDecode(tYnBBox * box,
-        tYnBBox * anchor)
+tYnBBox YnBBoxDecode(tYnBBox box,
+        tYnBBox anchor)
 {
     tYnBBox encode = {0};
 
@@ -385,7 +386,8 @@ tYnBBox YnBBoxDecode(tYnBBox * box,
     return encode;
 }
 
-tYnBBox YnBBoxEncode(tYnBBox * box, tYnBBox * anchor)
+tYnBBox YnBBoxEncode(tYnBBox box,
+		tYnBBox anchor)
 {
     tYnBBox decode = {0};
 

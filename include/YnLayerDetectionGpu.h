@@ -1,10 +1,10 @@
 #ifndef YNLAYERDETECTIONGPU_H
 #define YNLAYERDETECTIONGPU_H
 
-#include "../YnLayerDetection.h"
-#include "../YnCudaGpu.h"
-#include "../YnActivationGpu.h"
-#include "../YnBlasGpu.h"
+#include "YnLayerDetection.h"
+#include "YnCudaGpu.h"
+#include "YnActivationGpu.h"
+#include "YnBlasGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

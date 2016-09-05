@@ -4,8 +4,9 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerMaxpool.h"
+
+#include "../include/YnGpu.h"
 #include "../include/YnUtil.h"
-#include "../include/YnCuda.h"
 
 /**************** Define */
 

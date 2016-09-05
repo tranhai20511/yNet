@@ -1,8 +1,8 @@
 #ifndef YNLAYERDETECTION_H
 #define YNLAYERDETECTION_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
 
 #ifdef __cplusplus
 extern "C" {

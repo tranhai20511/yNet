@@ -4,8 +4,9 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerDropout.h"
+
+#include "../include/YnGpu.h"
 #include "../include/YnUtil.h"
-#include "../include/YnCuda.h"
 
 /**************** Define */
 
@@ -85,7 +86,7 @@ void YnLayerDropoutBackward(tYnLayer layer,
     }
 }
 
-void YnLayerDropoutResize(tYnLayer layer,
+void YnLayerDropoutResize(tYnLayer * layer,
         int inputs)
 {
     layer->rand = realloc(layer->rand, layer->inputs * layer->batch * sizeof(float));

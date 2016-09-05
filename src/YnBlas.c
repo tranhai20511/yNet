@@ -4,6 +4,7 @@
 //	Author      :   haittt
 
 #include "../include/YnBlas.h"
+#include "../include/YnUtil.h"
 
 /**************** Define */
 
@@ -238,7 +239,7 @@ void YnBlasArrayVarianceCal(float * inArr,
         {
             for (k = 0; k < spatial; ++k)
             {
-                int32 index = j * filters * spatial + i * spatial + k;
+                index = j * filters * spatial + i * spatial + k;
                 varianceArr[i] += pow((inArr[index] - meanArr[i]), 2);
             }
         }

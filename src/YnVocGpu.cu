@@ -58,15 +58,14 @@ static int processing = 0;
 
 /**************** Global variables */
 YN_EXTERN_C char *voc_names[];
-YN_EXTERN_C tYnImage voc_labels[];
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 int _YnVocSizeofCvMat(CvMat *mat)
 YN_ALSWAY_INLINE;
 
 /**************** Implement */
-YN_STATIC
+YN_STATIC_INLINE
 int _YnVocSizeofCvMat(CvMat *mat)
 {
     return mat->rows * mat->step;
@@ -149,7 +148,7 @@ void *_YnVocThreadDetect(void *ptr)
     printf("\nFPS:%.0f\n",fps);
     printf("Objects:\n\n");
 
-    YnImageDrawDetections1(det, layer.side * layer.side * layer.n, demo_thresh, boxes, probs, voc_names, voc_labels, YN_VOC_NUMCLASS, boxesShare, numBoxSend);
+    YnImageDrawDetections1(det, layer.side * layer.side * layer.n, demo_thresh, boxes, probs, voc_names, NULL, YN_VOC_NUMCLASS, boxesShare, numBoxSend);
 
     *vdisp = 1;
     return 0;

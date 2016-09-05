@@ -4,8 +4,8 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerSoftmax.h"
-#include "../include/YnUtilayer.h"
-#include "../include/YnCuda.h"
+#include "../include/YnUtil.h"
+#include "../include/YnGpu.h"
 
 /**************** Define */
 

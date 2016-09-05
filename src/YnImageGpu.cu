@@ -4,7 +4,7 @@
 //	Author      :   haittt
 
 extern "C" {
-#include "../include/YnCuda.h"
+#include "../include/YnGpu.h"
 #include "../include/YnImageGpu.h"
 }
 

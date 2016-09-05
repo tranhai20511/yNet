@@ -1,11 +1,11 @@
 #ifndef YNLAYERCONVOLUTIONAL_H
 #define YNLAYERCONVOLUTIONAL_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnActivation.h"
-#include "../YnLayer.h"
-#include "../YnImage.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnActivation.h"
+#include "YnLayer.h"
+#include "YnImage.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -102,7 +102,7 @@ void YnLayerConvolutionalFiltersRescale(tYnLayer layer,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-int YnLayerConvolutionalFiltersRgbgr(tYnLayer layer)
+void YnLayerConvolutionalFiltersRgbgr(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus

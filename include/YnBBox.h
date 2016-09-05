@@ -1,7 +1,7 @@
 #ifndef YNBBOX_H
 #define YNBBOX_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -100,16 +100,16 @@ YN_ALSWAY_INLINE;
  * Box decode
  */
 YN_FINAL
-tYnBBox YnBBoxDecode(tYnBBox * box,
-        tYnBBox * anchor)
+tYnBBox YnBBoxDecode(tYnBBox box,
+        tYnBBox anchor)
 YN_ALSWAY_INLINE;
 
 /*
  * Box encode
  */
 YN_FINAL
-tYnBBox YnBBoxEncode(tYnBBox * box,
-        tYnBBox * anchor)
+tYnBBox YnBBoxEncode(tYnBBox box,
+        tYnBBox anchor)
 YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus

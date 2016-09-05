@@ -1,7 +1,7 @@
 #ifndef YNBLASGPU_H
 #define YNBLASGPU_H
 
-#include "../YnBlas.h"
+#include "YnBlas.h"
 
 #ifdef __cplusplus
 extern "C" {

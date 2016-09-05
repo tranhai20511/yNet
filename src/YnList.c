@@ -4,6 +4,7 @@
 //	Author      :   haittt
 
 #include "../include/YnList.h"
+#include "../include/YnUtil.h"
 
 /**************** Define */
 
@@ -20,7 +21,7 @@
 /**************** Local Implement */
 
 /**************** Implement */
-tYnList * YnListNew(void * freeFunc)
+tYnList * YnListMake(void * freeFunc)
 {
     tYnList * list = malloc(sizeof(tYnList));
     mYnNullRetNull(list);
@@ -54,7 +55,8 @@ void * YnListPop(tYnList * list)
     return popVal;
 }
 
-void * YnListInsert(tYnList * list, void * pVal)
+void * YnListInsert(tYnList * list,
+		void * pVal)
 {
     tYnListNode * newNode = malloc(sizeof(tYnListNode));
     mYnNullRetNull(newNode);
@@ -79,7 +81,8 @@ void * YnListInsert(tYnList * list, void * pVal)
     return pVal;
 }
 
-void YnListFreeFromNode(tYnList * list, tYnListNode * node)
+void YnListFreeFromNode(tYnList * list,
+		tYnListNode * node)
 {
     tYnListNode * nextNode = NULL;
 
@@ -98,7 +101,7 @@ void YnListFreeFromNode(tYnList * list, tYnListNode * node)
 
 void YnListFree(tYnList * list)
 {
-    YnListFreeFromNode(list->front);
+    YnListFreeFromNode(list, list->front);
     YnUtilFree(list);
 }
 

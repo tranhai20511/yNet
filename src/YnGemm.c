@@ -4,8 +4,9 @@
 //	Author      :   haittt
 
 #include "../include/YnGemm.h"
+
+#include "../include/YnGpu.h"
 #include "../include/YnUtil.h"
-#include "../include/YnCuda.h"
 
 /**************** Define */
 
@@ -20,7 +21,7 @@
 /**************** Global variables */
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmNn(int M,
         int N,
         int K,
@@ -33,7 +34,7 @@ void YnGemmNn(int M,
         int ldc)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmNt(int M,
         int N,
         int K,
@@ -46,7 +47,7 @@ void YnGemmNt(int M,
         int ldc)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmTn(int M,
         int N,
         int K,
@@ -59,7 +60,7 @@ void YnGemmTn(int M,
         int ldc)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmTt(int M,
         int N,
         int K,
@@ -73,7 +74,7 @@ void YnGemmTt(int M,
 YN_ALSWAY_INLINE;
 
 /**************** Implement */
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmNn(int M,
         int N,
         int K,
@@ -102,7 +103,7 @@ void YnGemmNn(int M,
     }
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmNt(int M,
         int N,
         int K,
@@ -132,7 +133,7 @@ void YnGemmNt(int M,
     }
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmTn(int M,
         int N,
         int K,
@@ -161,7 +162,7 @@ void YnGemmTn(int M,
     }
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void YnGemmTt(int M,
         int N,
         int K,

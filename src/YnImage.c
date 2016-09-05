@@ -3,16 +3,14 @@
 //	DD-MM-YYYY  :   04-07-2016
 //	Author      :   haittt
 
-#include "../YnCuda.h"
-#include "../YnImage.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "../lib/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../lib/stb_image_write.h"
 
-#ifdef YN_OPENCV
-#include "opencv2/highgui/highgui_c.height"
-#include "opencv2/imgproc/imgproc_c.height"
-#endif
-
-#include "stb_image.h"
-#include "stb_image_write.h"
+#include "../include/YnUtil.h"
+#include "../include/YnGpu.h"
+#include "../include/YnImage.h"
 
 /**************** Define */
 #define class_test_car      (6)
@@ -34,7 +32,7 @@
 float colors[6][3] = { {1,0,1},{0,0,1},{0,1,1},{0,1,0},{1,1,0},{1,0,0} };
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 float _YnImage2ColPixelGet(float *im,
         int height,
         int width,
@@ -45,7 +43,7 @@ float _YnImage2ColPixelGet(float *im,
         int pad)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void _YnImage2ColPixelAdd(float *im,
         int height,
         int width,
@@ -58,7 +56,7 @@ void _YnImage2ColPixelAdd(float *im,
 YN_ALSWAY_INLINE;
 
 /**************** Implement */
-YN_STATIC
+YN_STATIC_INLINE
 float _YnImage2ColPixelGet(float *im,
         int height,
         int width,
@@ -74,10 +72,10 @@ float _YnImage2ColPixelGet(float *im,
     if (row < 0 || col < 0 || row >= height || col >= width)
         return 0;
 
-    return im[col + width*(row + height*channel)];
+    return im[col + width * (row + height * channel)];
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void _YnImage2ColPixelAdd(float *im,
         int height,
         int width,
@@ -128,14 +126,14 @@ void YnImageDrawLabel(tYnImage a,
     if (r - h >= 0)
         r = r - h;
 
-    for (j = 0; j < h && j + r < a.height; ++j)
+    for (j = 0; j < h && j + r < a.height; j ++)
     {
         for (i = 0; i < w && i + c < a.width; i ++)
         {
-            for (k = 0; k < label.channel; ++k)
+            for (k = 0; k < label.channel; k ++)
             {
-                val =  YnImageGetPixel(rl, i, j, k);
-                YnImageSetPixel(a, i + c, j + r, k, rgb[k] * val);
+                val =  YnImagePixelGet(rl, i, j, k);
+                YnImagePixelSet(a, i + c, j + r, k, rgb[k] * val);
             }
         }
     }
@@ -158,43 +156,43 @@ void YnImageDrawBox(tYnImage a,
     if (x1 < 0)
         x1 = 0;
     if (x1 >= a.width)
-        x1 = a.width-1;
+        x1 = a.width - 1;
     if (x2 < 0)
         x2 = 0;
     if (x2 >= a.width)
-        x2 = a.width-1;
+        x2 = a.width - 1;
 
     if (y1 < 0)
         y1 = 0;
     if (y1 >= a.height)
-        y1 = a.height-1;
+        y1 = a.height - 1;
     if (y2 < 0)
         y2 = 0;
     if (y2 >= a.height)
-        y2 = a.height-1;
+        y2 = a.height - 1;
 
     for (i = x1; i <= x2; i ++)
     {
-        a.data[i + y1*a.width + 0*a.width*a.height] = r;
-        a.data[i + y2*a.width + 0*a.width*a.height] = r;
+        a.data[i + y1 * a.width + 0 * a.width * a.height] = r;
+        a.data[i + y2 * a.width + 0 * a.width * a.height] = r;
 
-        a.data[i + y1*a.width + 1*a.width*a.height] = g;
-        a.data[i + y2*a.width + 1*a.width*a.height] = g;
+        a.data[i + y1 * a.width + 1 * a.width * a.height] = g;
+        a.data[i + y2 * a.width + 1 * a.width * a.height] = g;
 
-        a.data[i + y1*a.width + 2*a.width*a.height] = b;
-        a.data[i + y2*a.width + 2*a.width*a.height] = b;
+        a.data[i + y1 * a.width + 2 * a.width * a.height] = b;
+        a.data[i + y2 * a.width + 2 * a.width * a.height] = b;
     }
 
     for (i = y1; i <= y2; i ++)
     {
-        a.data[x1 + i*a.width + 0*a.width*a.height] = r;
-        a.data[x2 + i*a.width + 0*a.width*a.height] = r;
+        a.data[x1 + i * a.width + 0 * a.width * a.height] = r;
+        a.data[x2 + i * a.width + 0 * a.width * a.height] = r;
 
-        a.data[x1 + i*a.width + 1*a.width*a.height] = g;
-        a.data[x2 + i*a.width + 1*a.width*a.height] = g;
+        a.data[x1 + i * a.width + 1 * a.width * a.height] = g;
+        a.data[x2 + i * a.width + 1 * a.width * a.height] = g;
 
-        a.data[x1 + i*a.width + 2*a.width*a.height] = b;
-        a.data[x2 + i*a.width + 2*a.width*a.height] = b;
+        a.data[x1 + i * a.width + 2 * a.width * a.height] = b;
+        a.data[x2 + i * a.width + 2 * a.width * a.height] = b;
     }
 }
 
@@ -212,7 +210,7 @@ void YnImageDrawBoxWidth(tYnImage a,
 
     for (i = 0; i < w; i ++)
     {
-        YnImageDrawBox(a, x1+i, y1+i, x2-i, y2-i, r, g, b);
+        YnImageDrawBox(a, x1 + i, y1 + i, x2 - i, y2 - i, r, g, b);
     }
 }
 
@@ -224,10 +222,10 @@ void YnImageDrawBbox(tYnImage a,
         float b)
 {
     int i;
-    int left  = (bbox.x-bbox.width/2)*a.width;
-    int right = (bbox.x+bbox.width/2)*a.width;
-    int top   = (bbox.y-bbox.height/2)*a.height;
-    int bot   = (bbox.y+bbox.height/2)*a.height;
+    int left  = (bbox.x - bbox.width / 2) * a.width;
+    int right = (bbox.x + bbox.width / 2) * a.width;
+    int top   = (bbox.y - bbox.height / 2) * a.height;
+    int bot   = (bbox.y + bbox.height / 2) * a.height;
 
     for (i = 0; i < w; i ++)
     {
@@ -256,30 +254,32 @@ void YnImageDrawDetections(tYnImage im,
     int right;
     int top;
     int bot;
+    int class;
+    float prob;
 
     for (i = 0; i < num; i ++)
     {
-        int class = YnUtilArrayMaxIndex(probs[i], classes);
-        float prob = probs[i][class];
+        class = YnUtilArrayMaxIndex(probs[i], classes);
+        prob = probs[i][class];
 
         if (prob > thresh)
         {
             width = pow(prob, 1./2.)*10+1;
             printf("%s: %.2f\n", names[class], prob);
             offset = class*17 % classes;
-            red = get_color(0,offset,classes);
-            green = get_color(1,offset,classes);
-            blue = get_color(2,offset,classes);
+            red = YnImageColorGet(0, offset, classes);
+            green = YnImageColorGet(1, offset, classes);
+            blue = YnImageColorGet(2, offset, classes);
 
             rgb[0] = red;
             rgb[1] = green;
             rgb[2] = blue;
             b = boxes[i];
 
-            left  = (b.x-b.width/2.)*im.width;
-            right = (b.x+b.width/2.)*im.width;
-            top   = (b.y-b.height/2.)*im.height;
-            bot   = (b.y+b.height/2.)*im.height;
+            left  = (b.x - b.width / 2.) * im.width;
+            right = (b.x + b.width / 2.) * im.width;
+            top   = (b.y - b.height / 2.) * im.height;
+            bot   = (b.y + b.height / 2.) * im.height;
 
             if (left < 0)
                 left = 0;
@@ -290,11 +290,10 @@ void YnImageDrawDetections(tYnImage im,
             if (bot > im.height-1)
                 bot = im.height-1;
 
-            YnImageDrawBoxWidth(im, left, top, right, bot, width,
-                    red, green, blue);
+            YnImageDrawBoxWidth(im, left, top, right, bot, width, red, green, blue);
 
             if (labels)
-                YnImgeDrawLabel(im, top + width, left, labels[class], rgb);
+                YnImageDrawLabel(im, top + width, left, labels[class], rgb);
         }
     }
 }
@@ -312,7 +311,6 @@ void YnImageDrawDetections1(tYnImage im,
 {
     int countBox = 0;
     int i;
-    int sameClass = 0;
     int class;
     float prob;
     int width;
@@ -377,7 +375,7 @@ void YnImageDrawDetections1(tYnImage im,
             countBox ++;
 
             if (labels)
-                YnImgeDrawLabel(im, top + width, left, labels[class], rgb);
+                YnImageDrawLabel(im, top + width, left, labels[class], rgb);
         }
     }
 
@@ -444,8 +442,8 @@ void YnImageEmbed(tYnImage source,
         {
             for (x = 0; x < source.width; x ++)
             {
-                val = YnImageGetPixel(source, x,y,k);
-                YnOmgeSetPixel(dest, dx+x, dy+y, k, val);
+                val = YnImagePixelGet(source, x,y,k);
+                YnImagePixelSet(dest, dx + x, dy + y, k, val);
             }
         }
     }
@@ -459,7 +457,7 @@ tYnImage YnImageCollapseLayers(tYnImage source,
     int h = source.height;
 
     h = (h + border) * source.channel - border;
-    tYnImage dest = YnImgeMake(source.width, h, 1);
+    tYnImage dest = YnImageMake(source.width, h, 1);
 
     for (i = 0; i < source.channel; i ++)
     {
@@ -542,19 +540,6 @@ tYnImage YnImageCopy(tYnImage p)
     return copy;
 }
 
-void YnImageRgbgr(tYnImage im)
-{
-    int i;
-    float swap;
-
-    for (i = 0; i < im.width * im.height; i ++)
-    {
-        swap = im.data[i];
-        im.data[i] = im.data[i + im.width * im.height * 2];
-        im.data[i + im.width * im.height * 2] = swap;
-    }
-}
-
 void YnImageShow(tYnImage p,
         const char *name)
 {
@@ -615,31 +600,6 @@ void YnImageShowCollapsed(tYnImage p,
     YnImageFree(c);
 }
 
-tYnImage YnImageMakeEmpty(int w,
-        int h,
-        int c)
-{
-    tYnImage out;
-
-    out.data = 0;
-    out.height = h;
-    out.width = w;
-    out.channel = c;
-
-    return out;
-}
-
-tYnImage YnImageMake(int w,
-        int h,
-        int c)
-{
-    tYnImage out = YnImageMakeEmpty(w, h, c);
-
-    out.data = calloc(h * w * c , sizeof(float));
-
-    return out;
-}
-
 tYnImage YnImageMakeRandom(int w,
         int h,
         int c)
@@ -685,8 +645,8 @@ tYnImage YnImageRotate(tYnImage im,
             {
                 rx = cos(rad)*(x-cx) - sin(rad)*(y-cy) + cx;
                 ry = sin(rad)*(x-cx) + cos(rad)*(y-cy) + cy;
-                val = bilinear_interpolate(im, rx, ry, c);
-                YnImageSetPixel(rot, x, y, c, val);
+                val = YnImageBilinearInterpolate(im, rx, ry, c);
+                YnImagePixelSet(rot, x, y, c, val);
             }
         }
     }
@@ -733,10 +693,10 @@ tYnImage YnImageCrop(tYnImage im,
 
                 if ((r >= 0) && (r < im.height) && (c >= 0) && (c < im.width))
                 {
-                    val = YnImageGetPixel(im, c, r, k);
+                    val = YnImagePixelGet(im, c, r, k);
                 }
 
-                YnIMageSetPixel(cropped, i, j, k, val);
+                YnImagePixelSet(cropped, i, j, k, val);
             }
         }
     }
@@ -772,9 +732,9 @@ void YnImageRgbToHsv(tYnImage im)
     {
         for (i = 0; i < im.width; i ++)
         {
-            r = YnImageGetPixel(im, i , j, 0);
-            g = YnImageGetPixel(im, i , j, 1);
-            b = YnImageGetPixel(im, i , j, 2);
+            r = YnImagePixelGet(im, i , j, 0);
+            g = YnImagePixelGet(im, i , j, 1);
+            b = YnImagePixelGet(im, i , j, 2);
             max = YnImageThreeWayMax(r,g,b);
             min = YnImageThreeWayMin(r,g,b);
             delta = max - min;
@@ -804,9 +764,9 @@ void YnImageRgbToHsv(tYnImage im)
                 if (h < 0)
                     h += 6;
             }
-            YnImageSetPixel(im, i, j, 0, h);
-            YnImageThreeWay(im, i, j, 1, s);
-            YnImageThreeWay(im, i, j, 2, v);
+            YnImagePixelSet(im, i, j, 0, h);
+            YnImagePixelSet(im, i, j, 1, s);
+            YnImagePixelSet(im, i, j, 2, v);
         }
     }
 }
@@ -825,9 +785,9 @@ void YnImageHsvToRgb(tYnImage im)
     {
         for (i = 0; i < im.width; i ++)
         {
-            h = YnImageGetPixel(im, i , j, 0);
-            s = YnImageGetPixel(im, i , j, 1);
-            v = YnImageGetPixel(im, i , j, 2);
+            h = YnImagePixelGet(im, i , j, 0);
+            s = YnImagePixelGet(im, i , j, 1);
+            v = YnImagePixelGet(im, i , j, 2);
 
             if (s == 0)
             {
@@ -879,9 +839,9 @@ void YnImageHsvToRgb(tYnImage im)
                 }
             }
 
-            YnImageSetPixel(im, i, j, 0, r);
-            YnImageSetPixel(im, i, j, 1, g);
-            YnImageSetPixel(im, i, j, 2, b);
+            YnImagePixelSet(im, i, j, 0, r);
+            YnImagePixelSet(im, i, j, 1, g);
+            YnImagePixelSet(im, i, j, 2, b);
         }
     }
 }
@@ -900,7 +860,7 @@ tYnImage YnImageGrayscale(tYnImage im)
         {
             for (i = 0; i < im.width; i ++)
             {
-                gray.data[i + (im.width * j)] += scale[k] * YnImageGetPixel(im, i, j, k);
+                gray.data[i + (im.width * j)] += scale[k] * YnImagePixelGet(im, i, j, k);
             }
         }
     }
@@ -938,10 +898,10 @@ tYnImage YnImageBlend(tYnImage fore,
         {
             for (i = 0; i < fore.width; i ++)
             {
-                val = alpha * YnImageGetPixel(fore, i, j, k) +
-                    (1 - alpha)* get_pixel(back, i, j, k);
+                val = alpha * YnImagePixelGet(fore, i, j, k) +
+                    (1 - alpha) * YnImagePixelGet(back, i, j, k);
 
-                YnImageSetPixel(blend, i, j, k, val);
+                YnImagePixelSet(blend, i, j, k, val);
             }
         }
     }
@@ -960,9 +920,9 @@ void YnImageScaleChannel(tYnImage im,
     {
         for (i = 0; i < im.width; i ++)
         {
-            pix = YnImageGetPixel(im, i, j, c);
+            pix = YnImagePixelGet(im, i, j, c);
             pix = pix*v;
-            YnIMageSetPixel(im, i, j, c, pix);
+            YnImagePixelSet(im, i, j, c, pix);
         }
     }
 }
@@ -971,7 +931,7 @@ void YnImageSaturate(tYnImage im,
         float sat)
 {
     YnImageRgbToHsv(im);
-    YnImageSaleChannel(im, 1, sat);
+    YnImageScaleChannel(im, 1, sat);
     YnImageHsvToRgb(im);
     YnImageConstrain(im);
 }
@@ -982,7 +942,7 @@ void YnImageExposure(tYnImage im,
     YnImageRgbToHsv(im);
     YnImageScaleChannel(im, 2, sat);
     YnImageHsvToRgb(im);
-    YnIMageConstrain(im);
+    YnImageConstrain(im);
 }
 
 void YnImageSaturateExposure(tYnImage im,
@@ -1007,83 +967,12 @@ float YnImageBilinearInterpolate(tYnImage im,
     float dx = x - ix;
     float dy = y - iy;
 
-    val = (1-dy)    * (1-dx) * YnImageGetPixelExtend(im, ix,    iy,     c) +
-            dy      * (1-dx) * YnImageGetPixelExtend(im, ix,    iy+1,   c) +
-            (1-dy)  *   dx   * YnImageGetPixelExtend(im, ix+1,  iy,     c) +
-            dy      *   dx   * YnImageGetPixelExtend(im, ix+1,  iy+1,   c);
+    val = (1-dy)    * (1-dx) * YnImagePixelGetExtend(im, ix,    iy,     c) +
+            dy      * (1-dx) * YnImagePixelGetExtend(im, ix,    iy+1,   c) +
+            (1-dy)  *   dx   * YnImagePixelGetExtend(im, ix+1,  iy,     c) +
+            dy      *   dx   * YnImagePixelGetExtend(im, ix+1,  iy+1,   c);
 
     return val;
-}
-
-tYnImage YnImageResize(tYnImage im,
-        int w,
-        int h)
-{
-    float val;
-    float sx;
-    int ix;
-    float dx;
-    float sy;
-    int iy;
-    float dy;
-    tYnImage resized = YnImageMake(w, h, im.channel);
-    tYnImage part = YnImageMake(w, im.height, im.channel);
-    int r, c, k;
-    float w_scale = (float)(im.width - 1) / (w - 1);
-    float h_scale = (float)(im.height - 1) / (h - 1);
-
-    for (k = 0; k < im.channel; k ++)
-    {
-        for (r = 0; r < im.height; r ++)
-        {
-            for (c = 0; c < w; c ++)
-            {
-                val = 0;
-                if (c == w-1 || im.width == 1)
-                {
-                    val = get_pixel(im, im.width-1, r, k);
-                }
-                else
-                {
-                    sx = c * w_scale;
-                    ix = (int) sx;
-                    dx = sx - ix;
-                    val = (1 - dx) * YnImageGetPixel(im, ix, r, k) +
-                            dx * YnImageGetPixel(im, ix + 1, r, k);
-                }
-
-                YnImageSetPixel(part, c, r, k, val);
-            }
-        }
-    }
-
-    for (k = 0; k < im.channel; k ++)
-    {
-        for (r = 0; r < h; r ++)
-        {
-            sy = r * h_scale;
-            iy = (int) sy;
-            dy = sy - iy;
-
-            for (c = 0; c < w; c ++)
-            {
-                val = (1-dy) * YnImageGetPixel(part, c, iy, k);
-                YnImageSetPixel(resized, c, r, k, val);
-            }
-
-            if ((r == h-1) || (im.height == 1))
-                continue;
-
-            for (c = 0; c < w; c ++)
-            {
-                val = dy * YnImageGetPixel(part, c, iy+1, k);
-                YnImageAddPixel(resized, c, r, k, val);
-            }
-        }
-    }
-
-    YnImageFree(part);
-    return resized;
 }
 
 void YnImageTestResize(char *filename)
@@ -1094,17 +983,17 @@ void YnImageTestResize(char *filename)
 
     printf("L2 Norm: %f\n", mag);
 
-    tYnImage sat2 = copy_image(im);
-    saturate_image(sat2, 2);
+    tYnImage sat2 = YnImageCopy(im);
+    YnImageSaturate(sat2, 2);
 
-    tYnImage sat5 = copy_image(im);
-    saturate_image(sat5, .5);
+    tYnImage sat5 = YnImageCopy(im);
+    YnImageSaturate(sat5, .5);
 
-    tYnImage exp2 = copy_image(im);
-    exposure_image(exp2, 2);
+    tYnImage exp2 = YnImageCopy(im);
+    YnImageExposure(exp2, 2);
 
-    tYnImage exp5 = copy_image(im);
-    exposure_image(exp5, .5);
+    tYnImage exp5 = YnImageCopy(im);
+    YnImageExposure(exp5, .5);
 
     #ifdef YN_GPU
     tYnImage r = YnImageResize(im, im.width, im.height);
@@ -1173,36 +1062,6 @@ tYnImage YnImageLoadStb(char *filename,
     return im;
 }
 
-tYnImage YnImageLoad(char *filename,
-        int w,
-        int h,
-        int c)
-{
-    tYnImage resized;
-
-#ifdef YN_OPENCV
-    tYnImage out = YnImageCvLoad(filename, c);
-#else
-    tYnImage out = YnImageLoadStb(filename, c);
-#endif
-
-    if ((h && w) && ((h != out.height) || (w != out.width)))
-    {
-        resized = YnImageResize(out, w, h);
-        YnImageFree(out);
-        out = resized;
-    }
-
-    return out;
-}
-
-tYnImage YnImageLoadColor(char *filename,
-        int w,
-        int h)
-{
-    return YnImageLoad(filename, w, h, 3);
-}
-
 tYnImage YnImageGetLayer(tYnImage m,
         int l)
 {
@@ -1217,16 +1076,7 @@ tYnImage YnImageGetLayer(tYnImage m,
     return out;
 }
 
-float YnImageGetPixel(tYnImage m,
-        int x,
-        int y,
-        int c)
-{
-    assert((x < m.width) && (y < m.height) && (c < m.channel));
-    return m.data[(c * m.height * m.width) + (y * m.width) + x];
-}
-
-float YnImageGetPixelExtend(tYnImage m,
+float YnImagePixelGetExtend(tYnImage m,
         int x,
         int y,
         int c)
@@ -1234,10 +1084,10 @@ float YnImageGetPixelExtend(tYnImage m,
     if ((x < 0) || (x >= m.width) || (y < 0) || (y >= m.height) || (c < 0) || (c >= m.channel))
         return 0;
 
-    return YnImageGetPixel(m, x, y, c);
+    return YnImagePixelGet(m, x, y, c);
 }
 
-void YnImageSetPixel(tYnImage m,
+void YnImagePixelSet(tYnImage m,
         int x,
         int y,
         int c,
@@ -1369,8 +1219,8 @@ tYnImage YnImageCollapseHorz(tYnImage *ims,
         {
             for (j = 0; j < copy.channel; j ++)
             {
-                h_offset = j*(size + border);
-                layer = get_image_layer(copy, j);
+                h_offset = j * (size + border);
+                layer = YnImageGetLayer(copy, j);
                 YnImageEmbed(layer, filters, w_offset, h_offset);
                 YnImageFree(layer);
             }
@@ -1501,4 +1351,122 @@ void YnImageCol2Image(float* data_col,
             }
         }
     }
+}
+
+tYnImage YnImageMake(int w,
+        int h,
+        int c)
+{
+    tYnImage out = YnImageMakeEmpty(w, h, c);
+
+    out.data = calloc(h * w * c , sizeof(float));
+
+    return out;
+}
+
+tYnImage YnImageMakeEmpty(int w,
+        int h,
+        int c)
+{
+    tYnImage out;
+
+    out.data = 0;
+    out.height = h;
+    out.width = w;
+    out.channel = c;
+
+    return out;
+}
+
+void YnImageRgbgr(tYnImage im)
+{
+    int i;
+    float swap;
+
+    for (i = 0; i < im.width * im.height; i ++)
+    {
+        swap = im.data[i];
+        im.data[i] = im.data[i + im.width * im.height * 2];
+        im.data[i + im.width * im.height * 2] = swap;
+    }
+}
+
+tYnImage YnImageResize(tYnImage im,
+        int w,
+        int h)
+{
+    float val;
+    float sx;
+    int ix;
+    float dx;
+    float sy;
+    int iy;
+    float dy;
+    tYnImage resized = YnImageMake(w, h, im.channel);
+    tYnImage part = YnImageMake(w, im.height, im.channel);
+    int r, c, k;
+    float w_scale = (float)(im.width - 1) / (w - 1);
+    float h_scale = (float)(im.height - 1) / (h - 1);
+
+    for (k = 0; k < im.channel; k ++)
+    {
+        for (r = 0; r < im.height; r ++)
+        {
+            for (c = 0; c < w; c ++)
+            {
+                val = 0;
+                if (c == w-1 || im.width == 1)
+                {
+                    val = YnImagePixelGet(im, im.width-1, r, k);
+                }
+                else
+                {
+                    sx = c * w_scale;
+                    ix = (int) sx;
+                    dx = sx - ix;
+                    val = (1 - dx) * YnImagePixelGet(im, ix, r, k) +
+                            dx * YnImagePixelGet(im, ix + 1, r, k);
+                }
+
+                YnImagePixelSet(part, c, r, k, val);
+            }
+        }
+    }
+
+    for (k = 0; k < im.channel; k ++)
+    {
+        for (r = 0; r < h; r ++)
+        {
+            sy = r * h_scale;
+            iy = (int) sy;
+            dy = sy - iy;
+
+            for (c = 0; c < w; c ++)
+            {
+                val = (1-dy) * YnImagePixelGet(part, c, iy, k);
+                YnImagePixelSet(resized, c, r, k, val);
+            }
+
+            if ((r == h-1) || (im.height == 1))
+                continue;
+
+            for (c = 0; c < w; c ++)
+            {
+                val = dy * YnImagePixelGet(part, c, iy+1, k);
+                YnImageAddPixel(resized, c, r, k, val);
+            }
+        }
+    }
+
+    YnImageFree(part);
+    return resized;
+}
+
+float YnImagePixelGet(tYnImage m,
+        int x,
+        int y,
+        int c)
+{
+    assert((x < m.width) && (y < m.height) && (c < m.channel));
+    return m.data[(c * m.height * m.width) + (y * m.width) + x];
 }

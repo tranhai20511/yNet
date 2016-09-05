@@ -1,9 +1,9 @@
 #ifndef YNLAYERCROP_H
 #define YNLAYERCROP_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnImage.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnImage.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +25,7 @@ extern "C" {
 
 /**************** Implement */
 YN_FINAL
-tYnImage YnLayerCropMake(int32 batchNum,
+tYnLayer YnLayerCropMake(int32 batchNum,
         int32 height,
         int32 width,
         int32 channel,
@@ -47,7 +47,7 @@ tYnImage YnLayerCropImageGet(tYnLayer layer)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerCropResize(tYnLayer layer,
+void YnLayerCropResize(tYnLayer * layer,
         int32 width,
         int32 height)
 YN_ALSWAY_INLINE;

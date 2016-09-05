@@ -1,9 +1,9 @@
 #ifndef YNLAYERCONNECTED_H
 #define YNLAYERCONNECTED_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnActivation.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnActivation.h"
 
 #ifdef __cplusplus
 extern "C" {

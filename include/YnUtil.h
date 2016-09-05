@@ -1,7 +1,7 @@
 #ifndef YNUTIL_H
 #define YNUTIL_H
 
-#include "../YnList.h"
+#include "YnList.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,7 +22,6 @@ extern "C" {
 /**************** Local Implement */
 
 /**************** Implement */
-
 /*
  * Free mem
  */
@@ -51,7 +50,7 @@ YN_ALSWAY_INLINE;
  * Find a argument
  */
 YN_FINAL
-bool YnUtilFindDelArg (uint32 argc,
+bool YnUtilFindArg (uint32 argc,
         char ** argv,
         char * argFind)
 YN_ALSWAY_INLINE;
@@ -63,7 +62,8 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 int YnUtilFindIntArg (uint32 argc,
         char ** argv,
-        char * argFind)
+        char * argFind,
+		int def)
 YN_ALSWAY_INLINE;
 
 /*
@@ -73,7 +73,8 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 float YnUtilFindFloatArg(uint32 argc,
         char ** argv,
-        char * argFind)
+        char * argFind,
+		float def)
 YN_ALSWAY_INLINE;
 
 /*
@@ -83,7 +84,8 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 char * YnUtilFindCharArg(uint32 argc,
         char ** argv,
-        char * argFind)
+        char * argFind,
+		char *def)
 YN_ALSWAY_INLINE;
 
 /*
@@ -193,7 +195,7 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 void YnUtilFileRead(int fd,
         char * buffer,
-        uint32 size);
+        uint32 size)
 YN_ALSWAY_INLINE;
 
 /*
@@ -202,21 +204,21 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 void YnUtilFileWrite(int fd,
         char * buffer,
-        uint32 size);
+        uint32 size)
 YN_ALSWAY_INLINE;
 
 /*
  * str copy
  */
 YN_FINAL
-char * YnUtilStringCopy(char * str);
+char * YnUtilStringCopy(char * str)
 YN_ALSWAY_INLINE;
 
 /*
  * Count fields in line
  */
 YN_FINAL
-uint32 YnUtilLineFieldCount(char * line);
+uint32 YnUtilLineFieldCount(char * line)
 YN_ALSWAY_INLINE;
 
 /*
@@ -224,7 +226,7 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 float * YnUtilLineFieldParse(char * line,
-        uint32 numField);
+        uint32 numField)
 YN_ALSWAY_INLINE;
 
 /*
@@ -233,23 +235,23 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 float YnUtilConstrain(float min,
         float max,
-        float val);
+        float val)
 YN_ALSWAY_INLINE;
 
 /*
  * Sum array
  */
 YN_FINAL
-float YnUtilArraySum(char * array,
-        uint32 numField);
+float YnUtilArraySum(float * array,
+        uint32 numField)
 YN_ALSWAY_INLINE;
 
 /*
  * Mean array
  */
 YN_FINAL
-float YnUtilArrayMean(char * array,
-        uint32 numField);
+float YnUtilArrayMean(float * array,
+        uint32 numField)
 YN_ALSWAY_INLINE;
 
 /*
@@ -257,7 +259,7 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 float YnUtilArrayVariance(float * array,
-        uint32 num);
+        uint32 num)
 YN_ALSWAY_INLINE;
 
 /*
@@ -265,7 +267,7 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 float YnUtilArrayMse(float * arrayErr,
-        uint32 num);
+        uint32 num)
 YN_ALSWAY_INLINE;
 
 /*
@@ -273,7 +275,7 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 void YnUtilArrayNormalize(float * array,
-        uint32 num);
+        uint32 num)
 YN_ALSWAY_INLINE;
 
 /*
@@ -281,7 +283,7 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 float YnUtilArrayMag(float * arrayErr,
-        uint32 num);
+        uint32 num)
 YN_ALSWAY_INLINE;
 
 /*
@@ -290,7 +292,7 @@ YN_ALSWAY_INLINE;
 YN_FINAL
 void YnUtilArrayScale(float * array,
         uint32 num,
-        float scale);
+        float scale)
 YN_ALSWAY_INLINE;
 
 /*
@@ -307,21 +309,21 @@ YN_ALSWAY_INLINE;
  */
 YN_FINAL
 float YnUtilArrayMaxIndex(float * array,
-        uint32 num);
+        uint32 num)
 YN_ALSWAY_INLINE;
 
 /*
  * Get random normal number
  */
 YN_FINAL
-float YnUtilRandomNormalNum();
+float YnUtilRandomNormalNum()
 YN_ALSWAY_INLINE;
 
 /*
  * Get random uniform number
  */
 YN_FINAL
-float YnUtilRandomUniformNum(float min, float max);
+float YnUtilRandomUniformNum(float min, float max)
 YN_ALSWAY_INLINE;
 
 #ifdef __cplusplus

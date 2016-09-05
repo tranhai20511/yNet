@@ -1,9 +1,9 @@
 #ifndef YNLAYERMAXPOOL_H
 #define YNLAYERMAXPOOL_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnImage.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnImage.h"
 
 #ifdef __cplusplus
 extern "C" {

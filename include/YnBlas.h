@@ -1,7 +1,7 @@
 #ifndef YNBLAS_H
 #define YNBLAS_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
 
 #ifdef __cplusplus
 extern "C" {

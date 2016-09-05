@@ -4,8 +4,8 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerCost.h"
-#include "../include/YnCuda.h"
 #include "../include/YnBlas.h"
+#include "../include/YnGpu.h"
 #include "../include/YnUtil.h"
 
 /**************** Define */
@@ -75,7 +75,7 @@ tYnLayer YnLayerCostMake(int32 batchNum,
     return layer;
 }
 
-void YnLayerCostResize(tYnLayer layer,
+void YnLayerCostResize(tYnLayer * layer,
         int inputNum)
 {
     layer->inputs = inputNum;

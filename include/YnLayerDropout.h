@@ -1,8 +1,8 @@
 #ifndef YNLAYERDROPOUT_H
 #define YNLAYERDROPOUT_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,7 +40,7 @@ void YnLayerDropoutBackward(tYnLayer layer,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerDropoutResize(tYnLayer layer,
+void YnLayerDropoutResize(tYnLayer * layer,
         int inputs)
 YN_ALSWAY_INLINE;
 

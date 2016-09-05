@@ -1,9 +1,9 @@
 #ifndef YNLAYERCOST_H
 #define YNLAYERCOST_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnActivation.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnActivation.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,7 +50,7 @@ char * YnLayerCostTypeToString(eYnLayerCostType type)
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnLayerCostResize(tYnLayer layer,
+void YnLayerCostResize(tYnLayer * layer,
         int input)
 YN_ALSWAY_INLINE;
 

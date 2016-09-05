@@ -1,11 +1,10 @@
 #ifndef YNLAYERDECONVOLUTIONAL_H
 #define YNLAYERDECONVOLUTIONAL_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnActivation.h"
-#include "../YnLayer.h"
-#include "../YnImage.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnActivation.h"
+#include "YnImage.h"
 
 #ifdef __cplusplus
 extern "C" {

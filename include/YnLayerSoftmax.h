@@ -1,10 +1,10 @@
 #ifndef YNLAYERSOFTMAX_H
 #define YNLAYERSOFTMAX_H
 
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
-#include "../YnCuda.h"
-#include "../YnBlas.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
+#include "YnBlas.h"
+#include "YnGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

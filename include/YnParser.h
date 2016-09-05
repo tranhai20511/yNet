@@ -1,7 +1,8 @@
 #ifndef YNPARSER_H
 #define YNPARSER_H
 
-#include "../YnOptionList.h"
+#include "YnNetwork.h"
+#include "YnOptionList.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,12 +47,6 @@ void YnParserNetOptions(tYnList *options,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnParserConnectedWeightsSave(tYnList *options,
-        tYnNetwork *net)
-YN_ALSWAY_INLINE;
-
-
-YN_FINAL
 void YnParserSaveNetwork(tYnNetwork net,
         char *filename)
 YN_ALSWAY_INLINE;
@@ -84,7 +79,7 @@ void YnParserWeightsUptoLoad(tYnNetwork *net,
 YN_ALSWAY_INLINE;
 
 YN_FINAL
-void YnPareserConnectedWeightsLoad(tYnLayer layer,
+void YnParserConnectedWeightsLoad(tYnLayer layer,
        FILE *fp,
        int transpose)
 YN_ALSWAY_INLINE;

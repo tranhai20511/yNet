@@ -1,7 +1,9 @@
 #ifndef YNLAYER_H
 #define YNLAYER_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
+#include "YnUtil.h"
+#include "YnActivation.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -135,9 +137,9 @@ typedef struct tYnLayer{
     float * x;
     float * xNorm;
 
-    tYnLayer * inputLayer;
-    tYnLayer * selfLayer;
-    tYnLayer * outputLayer;
+    struct tYnLayer * inputLayer;
+    struct tYnLayer * selfLayer;
+    struct tYnLayer * outputLayer;
 
     int * indexesGpu;
     float * stateGpu;

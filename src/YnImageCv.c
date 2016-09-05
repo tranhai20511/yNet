@@ -3,15 +3,10 @@
 //	DD-MM-YYYY  :   24-07-2016
 //	Author      :   haittt
 
-#include "stb_image.h"
-#include "stb_image_write.h"
+#include "../lib/stb_image.h"
+#include "../lib/stb_image_write.h"
 
 #include "../include/YnImage.h"
-
-#ifdef YN_OPENCV
-#include "opencv2/highgui/highgui_c.h"
-#include "opencv2/imgproc/imgproc_c.h"
-
 
 /**************** Define */
 
@@ -33,7 +28,7 @@ void YnImageCvShow(tYnImage p,
         const char *name)
 {
     char buff[256];
-    int x,y,k;
+    int x, y, k;
     tYnImage copy = YnImageCopy(p);
     IplImage * disp;
     int step;
@@ -41,21 +36,21 @@ void YnImageCvShow(tYnImage p,
     sprintf(buff, "%s", name);
 
     YnImageConstrain(copy);
-    if (p.c == 3)
+    if (p.channel == 3)
         YnImageRgbgr(copy);
 
-    *disp = cvCreateImage(cvSize(p.w,p.h), IPL_DEPTH_8U, p.c);
+    disp = cvCreateImage(cvSize(p.width, p.height), IPL_DEPTH_8U, p.channel);
     step = disp->widthStep;
     cvNamedWindow(buff, CV_WINDOW_NORMAL);
 
-    ++windows;
-    for (y = 0; y < p.h; y ++)
+    windows ++;
+    for (y = 0; y < p.height; y ++)
     {
-        for (x = 0; x < p.w; x ++)
+        for (x = 0; x < p.width; x ++)
         {
-            for (k = 0; k < p.c; k ++)
+            for (k = 0; k < p.channel; k ++)
             {
-                disp->imageData[(y * step) + (x * p.c) + k] = (unsigned char)(get_pixel(copy,x,y,k)*255);
+                disp->imageData[(y * step) + (x * p.channel) + k] = (unsigned char)(YnImagePixelGet(copy, x, y, k) * 255);
             }
         }
     }
@@ -70,23 +65,23 @@ void YnImageSaveImage(tYnImage p,
 {
     IplImage *disp;
     tYnImage copy = YnImageCopy(p);
-    int x,y,k;
+    int x, y ,k;
     int step;
     char buff[256];
 
     sprintf(buff, "%s.jpg", name);
 
     YnImageRgbgr(copy);
-    disp = cvCreateImage(cvSize(p.w,p.h), IPL_DEPTH_8U, p.c);
+    disp = cvCreateImage(cvSize(p.width, p.height), IPL_DEPTH_8U, p.channel);
 
     step = disp->widthStep;
-    for (y = 0; y < p.h; y ++)
+    for (y = 0; y < p.height; y ++)
     {
-        for (x = 0; x < p.w; x ++)
+        for (x = 0; x < p.width; x ++)
         {
-            for (k= 0; k < p.c; k ++)
+            for (k= 0; k < p.channel; k ++)
             {
-                disp->imageData[y * step + x * p.c + k] = (unsigned char)(YnImageGet(copy, x, y, k) * 255);
+                disp->imageData[y * step + x * p.channel + k] = (unsigned char)(YnImagePixelGet(copy, x, y, k) * 255);
             }
         }
     }
@@ -97,25 +92,45 @@ void YnImageSaveImage(tYnImage p,
     YnImageFree(copy);
 }
 
-tYnImage YnImageCvIplToimage(IplImage* src)
+tYnImage YnImageFromStreamGet(CvCapture *cap)
 {
-    unsigned char *data = (unsigned char *)src->imageData;
-    int h = src->height;
-    int w = src->width;
-    int c = src->nChannels;
-    int step = src->widthStep;
-    int i, j, k, count=0;
-    tYnImage out = YnImageMake(w, h, c);
+    tYnImage im;
+    IplImage* src = cvQueryFrame(cap);
 
-    for (k= 0; k < c; k ++)
+    if (!src)
+        return YnImageMakeEmpty(0, 0, 0);
+
+    im = YnImageCvIplToimage(src);
+    YnImageRgbgr(im);
+
+    return im;
+}
+
+tYnImage YnImageLoadColor(char *filename,
+        int w,
+        int h)
+{
+    return YnImageLoad(filename, w, h, 3);
+}
+
+tYnImage YnImageLoad(char *filename,
+        int w,
+        int h,
+        int c)
+{
+    tYnImage resized;
+
+#ifdef YN_OPENCV
+    tYnImage out = YnImageCvLoad(filename, c);
+#else
+    tYnImage out = YnImageLoadStb(filename, c);
+#endif
+
+    if ((h && w) && ((h != out.height) || (w != out.width)))
     {
-        for (i = 0; i < h; i ++)
-        {
-            for (j = 0; j < w; j ++)
-            {
-                out.data[count++] = data[(i * step) + (j * c) + k] / 255.;
-            }
-        }
+        resized = YnImageResize(out, w, h);
+        YnImageFree(out);
+        out = resized;
     }
 
     return out;
@@ -143,7 +158,7 @@ tYnImage YnImageCvLoad(char *filename,
         exit(0);
     }
 
-    out = YnImageIplToImage(src);
+    out = (tYnImage)YnImageCvIplToimage(src);
 
     cvReleaseImage(&src);
     YnImageRgbgr(out);
@@ -151,18 +166,26 @@ tYnImage YnImageCvLoad(char *filename,
     return out;
 }
 
-tYnImage YnImageFromStreamGet(CvCapture *cap)
+tYnImage YnImageCvIplToimage(IplImage* src)
 {
-    tYnImage im;
-    IplImage* src = cvQueryFrame(cap);
+    unsigned char *data = (unsigned char *)src->imageData;
+    int h = src->height;
+    int w = src->width;
+    int c = src->nChannels;
+    int step = src->widthStep;
+    int i, j, k, count = 0;
+    tYnImage out = YnImageMake(w, h, c);
 
-    if (!src)
-        return YnImageMakeEmpty(0, 0, 0);
+    for (k = 0; k < c; k ++)
+    {
+        for (i = 0; i < h; i ++)
+        {
+            for (j = 0; j < w; j ++)
+            {
+                out.data[count++] = data[(i * step) + (j * c) + k] / 255.;
+            }
+        }
+    }
 
-    im = YnImageCvIplToimage(src);
-    YnImageRgbgr(im);
-
-    return im;
+    return out;
 }
-
-#endif

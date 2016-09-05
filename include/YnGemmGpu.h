@@ -1,7 +1,7 @@
 #ifndef YNGEMMGPU_H
 #define YNGEMMGPU_H
 
-#include "../YnGemm.h"
+#include "YnGemm.h"
 
 #ifdef __cplusplus
 extern "C" {

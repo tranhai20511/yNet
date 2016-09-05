@@ -1,7 +1,7 @@
 #ifndef YNLAYERCROPGPU_H
 #define YNLAYERCROPGPU_H
 
-#include "../YnLayerCrop.h"
+#include "YnLayerCrop.h"
 
 #ifdef __cplusplus
 extern "C" {

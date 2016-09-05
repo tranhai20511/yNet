@@ -1,10 +1,10 @@
 #ifndef YNLAYERMAXPOOLGPU_H
 #define YNLAYERMAXPOOLGPU_H
 
-#include "../YnLayerMaxpool.h"
-#include "../YnCudaGpu.h"
-#include "../YnBlasGpu.h"
-#include "../YnImageGpu.h"
+#include "YnLayerMaxpool.h"
+#include "YnCudaGpu.h"
+#include "YnBlasGpu.h"
+#include "YnImageGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,10 +1,10 @@
 #ifndef YNLAYERSOFTMAXGPU_H
 #define YNLAYERSOFTMAXGPU_H
 
-#include "../YnLayerSoftmax.h"
-#include "../YnCudaGpu.h"
-#include "../YnBlasGpu.h"
-#include "../YnImageGpu.h"
+#include "YnLayerSoftmax.h"
+#include "YnCudaGpu.h"
+#include "YnBlasGpu.h"
+#include "YnImageGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

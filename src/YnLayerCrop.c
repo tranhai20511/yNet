@@ -4,8 +4,8 @@
 //	Author      :   haittt
 
 #include "../include/YnLayerCrop.h"
-#include "../include/YnCuda.h"
 #include "../include/YnBlas.h"
+#include "../include/YnGpu.h"
 #include "../include/YnUtil.h"
 
 /**************** Define */
@@ -23,7 +23,7 @@
 /**************** Local Implement */
 
 /**************** Implement */
-tYnImage YnLayerCropMake(int32 batchNum,
+tYnLayer YnLayerCropMake(int32 batchNum,
         int32 height,
         int32 width,
         int32 channel,
@@ -123,7 +123,7 @@ tYnImage YnLayerCropImageGet(tYnLayer layer)
     return YnImageFloatToImage(w, h, c, layer.output);
 }
 
-void YnLayerCropResize(tYnLayer layer,
+void YnLayerCropResize(tYnLayer * layer,
         int32 width,
         int32 height)
 {

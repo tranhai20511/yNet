@@ -1,9 +1,9 @@
 #ifndef YNLAYERACTIVATIONGPU_H
 #define YNLAYERACTIVATIONGPU_H
 
-#include "../YnActivation.h"
-#include "../YnLayer.h"
-#include "../YnNetwork.h"
+#include "YnActivation.h"
+#include "YnLayer.h"
+#include "YnNetwork.h"
 
 
 #ifdef __cplusplus

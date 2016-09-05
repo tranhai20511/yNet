@@ -1,7 +1,7 @@
 #ifndef YNACTIVATIONGPU_H
 #define YNACTIVATIONGPU_H
 
-#include "../YnActivation.h"
+#include "YnActivation.h"
 
 #ifdef __cplusplus
 extern "C" {

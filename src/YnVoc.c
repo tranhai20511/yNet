@@ -4,9 +4,22 @@
 //	Author      :   haittt
 
 #include "../include/YnVoc.h"
+#include "../include/YnParser.h"
+#include "../include/YnLayerCrop.h"
+#include "../include/YnLayerConnected.h"
+#include "../include/YnLayerConvolutional.h"
+#include "../include/YnLayerActivation.h"
+#include "../include/YnLayerAvgpool.h"
+#include "../include/YnLayerDeconvolutional.h"
+#include "../include/YnLayerDetection.h"
+#include "../include/YnLayerMaxpool.h"
+#include "../include/YnLayerCost.h"
+#include "../include/YnLayerSoftmax.h"
+#include "../include/YnLayerDropout.h"
 
 #ifdef YN_OPENCV
 #include "opencv2/highgui/highgui_c.h"
+#endif
 
 /**************** Define */
 
@@ -31,14 +44,13 @@ static float demo_thresh = 0;
 
 /**************** Global variables */
 char *voc_names[] = {"aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"};
-tYnImage voc_labels[YN_VOC_NUMCLASS];
 
 /**************** Local Implement */
-YN_STATIC
+YN_STATIC_INLINE
 void * _YnVocThreadFetch(void *ptr)
 YN_ALSWAY_INLINE;
 
-YN_STATIC
+YN_STATIC_INLINE
 void * _YnVocThreadDetect(void *ptr)
 YN_ALSWAY_INLINE;
 
@@ -58,7 +70,7 @@ void YnVocTrain(char *cfgfile,
     char **paths;
     tYnNetwork net;
     pthread_t load_thread;
-    clock_t time;
+    clock_t timeClock;
     float loss;
     char buff[256];
 
@@ -68,7 +80,7 @@ void YnVocTrain(char *cfgfile,
     tYnDataLoadArgs args = {0};
 
     srand(time(0));
-    YndataSeedSet(time(0));
+    YnDataSeedSet(time(0));
 
     base = YnUtilFindBaseConfig(cfgfile);
     printf("%s\n", base);
@@ -80,7 +92,7 @@ void YnVocTrain(char *cfgfile,
 
     printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learningRate, net.momentum, net.decay);
 
-    imgs = net.batch*net.subdivisions;
+    imgs = net.batch * net.subdivisions;
     i = *net.seen/imgs;
 
     layer = net.layers[net.n - 1];
@@ -104,28 +116,28 @@ void YnVocTrain(char *cfgfile,
     args.type = cYnDataRegion;
 
     load_thread = YnDataLoadInThread(args);
-    while (YnNetworkGetCurrentBatch(net) < net.max_batches)
+    while (YnNetworkCurrentBatchGet(net) < net.max_batches)
     {
         i += 1;
-        time = clock();
+        timeClock = clock();
         pthread_join(load_thread, 0);
         train = buffer;
         load_thread = YnDataLoadInThread(args);
 
-        printf("Loaded: %lf seconds\n", sec(clock()-time));
-        time = clock();
+        printf("Loaded: %lf seconds\n", YnUtilSecFromClock(clock() - timeClock));
+        timeClock = clock();
 
         loss = YnNetworkTrain(net, train);
         if (avg_loss < 0)
             avg_loss = loss;
-        avg_loss = avg_loss*.9 + loss*.1;
+        avg_loss = avg_loss * .9 + loss * .1;
 
         printf("%d: %f, %f avg, %f rate, %lf seconds, %d images\n",
                 i,
                 loss,
                 avg_loss,
                 YnNetworkCurrentRateget(net),
-                sec(clock() - time),
+				YnUtilSecFromClock(clock() - timeClock),
                 i * imgs);
 
         if(i % 1000 == 0 || i == 600)
@@ -251,9 +263,9 @@ void YnVocTest(char *cfgfile,
         time = clock();
         predictions = YnNetworkPredict(net, X);
 
-        printf("%s: Predicted in %f seconds.\n", input, sec(clock() - time));
+        printf("%s: Predicted in %f seconds.\n", input, YnUtilSecFromClock(clock() - time));
 
-        YnConvertVocDetections(predictions, layer.classes, layer.n, layer.sqrt, layer.side, 1, 1, thresh, probs, boxes, 0);
+        YnVocConvertDetections(predictions, layer.classes, layer.n, layer.sqrt, layer.side, 1, 1, thresh, probs, boxes, 0);
         if (nms)
             YnBBoxNmsSort(boxes, probs, layer.side * layer.side * layer.n, layer.classes, nms);
 
@@ -273,7 +285,7 @@ void YnVocTest(char *cfgfile,
     }
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void * _YnVocThreadFetch(void *ptr)
 {
     in = YnImageFromStreamGet(cap);
@@ -281,7 +293,7 @@ void * _YnVocThreadFetch(void *ptr)
     return 0;
 }
 
-YN_STATIC
+YN_STATIC_INLINE
 void *_YnVocThreadDetect(void *ptr)
 {
     float nms = .4;
@@ -289,7 +301,7 @@ void *_YnVocThreadDetect(void *ptr)
     float *X = det_s.data;
     float *predictions = YnNetworkPredict(net, X);
     YnImageFree(det_s);
-    YnConvertVocDetections(predictions, layer.classes, layer.n, layer.sqrt, layer.side, 1, 1, demo_thresh, probs, boxes, 0);
+    YnVocConvertDetections(predictions, layer.classes, layer.n, layer.sqrt, layer.side, 1, 1, demo_thresh, probs, boxes, 0);
 
     if (nms > 0)
         YnBBoxNmsSort(boxes, probs, layer.side * layer.side * layer.n, layer.classes, nms);
@@ -299,7 +311,7 @@ void *_YnVocThreadDetect(void *ptr)
     printf("\nFPS:%.0f\n",fps);
     printf("Objects:\n\n");
 
-    YnImageDrawDetections(det, layer.side * layer.side * layer.n, demo_thresh, boxes, probs, voc_names, voc_labels, YN_VOC_NUMCLASS);
+    YnImageDrawDetections(det, layer.side * layer.side * layer.n, demo_thresh, boxes, probs, voc_names, NULL, YN_VOC_NUMCLASS);
     return 0;
 }
 
@@ -307,7 +319,7 @@ void YnVocCpuDemo(char *cfgfile,
         char *weightfile,
         float thresh,
         int cam_index,
-        char *filename)
+        const char *filename)
 {
     int j;
     float curr;
@@ -317,7 +329,7 @@ void YnVocCpuDemo(char *cfgfile,
     pthread_t detect_thread;
 
     demo_thresh = thresh;
-    printf("VOC demo\n");
+    printf("VOC demo CPU, threshold: %f\n", demo_thresh);
     net = YnParserNetworkCfg(cfgfile);
 
     if (weightfile)
@@ -398,19 +410,11 @@ void YnVocDemo(char *cfgfile,
 void YnVocRun(int argc,
         char **argv)
 {
-    int i;
-    char buff[256];
     float thresh;
     int cam_index;
     char *cfg;
     char *weights;
     char *filename;
-
-    for(i = 0; i < YN_VOC_NUMCLASS; i ++)
-    {
-        sprintf(buff, "data/labels/%s.png", voc_names[i]);
-        voc_labels[i] = YnImageLoadColor(buff, 0, 0);
-    }
 
     thresh = YnUtilFindFloatArg(argc, argv, "-thresh", .2);
     cam_index = YnUtilFindIntArg(argc, argv, "-c", 0);
@@ -432,5 +436,3 @@ void YnVocRun(int argc,
     else if (0 == strcmp(argv[2], "demo"))
         YnVocDemo(cfg, weights, thresh, cam_index, filename);
 }
-
-#endif

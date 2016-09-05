@@ -4,6 +4,7 @@
 //	Author      :   haittt
 
 #include "../include/YnMatrix.h"
+#include "../include/YnUtil.h"
 
 /**************** Define */
 
@@ -148,12 +149,12 @@ tYnMatrix YnMatrixCsvToMatrix(char *filename)
         YnUtilErrorOpenFile(filename);
 
     matrix.cols = -1;
-    matrix.vals = calloc(size, sizeof(float*));\
+    matrix.vals = calloc(size, sizeof(float*));
 
-    while ((line = fgetl(fp)))
+    while ((line = YnUtilFileGetLine(fp)))
     {
         if (matrix.cols == -1)
-            matrix.cols = count_fields(line);
+            matrix.cols = YnUtilLineFieldCount(line);
 
         if (n == size)
         {
@@ -162,7 +163,7 @@ tYnMatrix YnMatrixCsvToMatrix(char *filename)
         }
 
         matrix.vals[n] = YnUtilLineFieldParse(line, matrix.cols);
-        YnMatrixFree(line);
+        YnUtilFree(line);
 
         ++ n;
     }

@@ -1,7 +1,7 @@
 #ifndef YNOPTIONLIST_H
 #define YNOPTIONLIST_H
 
-#include "../YnList.h"
+#include "YnList.h"
 
 #ifdef __cplusplus
 extern "C" {

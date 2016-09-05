@@ -1,7 +1,7 @@
 #ifndef YNGEMM_H
 #define YNGEMM_H
 
-#include "../YnStd.h"
+#include "YnStd.h"
 
 #ifdef __cplusplus
 extern "C" {

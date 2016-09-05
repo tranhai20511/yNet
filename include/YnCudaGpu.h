@@ -1,11 +1,10 @@
 #ifndef YNCUDAGPU_H
 #define YNCUDAGPU_H
 
-#include "../YnCuda.h"
-
 #include "cuda_runtime.h"
 #include "curand.h"
 #include "cublas_v2.h"
+#include "YnGpu.h"
 
 #ifdef __cplusplus
 extern "C" {

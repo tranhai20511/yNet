@@ -1,7 +1,7 @@
 #ifndef YNIMAGEGPU_H
 #define YNIMAGEGPU_H
 
-#include "../YnImage.h"
+#include "YnImage.h"
 
 #ifdef __cplusplus
 extern "C" {
