@@ -1,4 +1,4 @@
 # yNet
 
-Refactor, update & optimize based on https://github.com/pjreddie/darknet
+Refactoring, updating & optimizing are based on https://github.com/pjreddie/darknet
 
